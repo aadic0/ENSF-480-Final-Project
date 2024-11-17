@@ -41,4 +41,9 @@ public class Receipt {
     public void removeTicket(Ticket ticket) {
         tickets.remove(ticket);
     }
+
+    public void printReceipt(){
+        
+    }
+
 }

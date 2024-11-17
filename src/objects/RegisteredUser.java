@@ -62,7 +62,31 @@ public class RegisteredUser extends User {
         this.postalCode = postalCode;
     }
     
+    public String getFName(){
+        return firstName;
+    }
+
+    public void setFName(String fname){
+        this.firstName = fname;
+    }
+
+    public String getLName(){
+        return lastName;
+    }
+
+    public void setLName(String lname){
+        this.lastName = lname;
+    }
+
+
+
     //-------------//
     //   Methods   //
     //-------------//
+    public Receipt checkout(){
+
+        
+
+    }
+
 }

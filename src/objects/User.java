@@ -1,9 +1,12 @@
 package objects;
+import java.util.ArrayList;
 public class User {
     //---------------//
     //   Variables   //
     //---------------//
     private String email;
+    private ArrayList<Ticket> ticketsSelected;
+
 
     //---------------//
     //  Constructor  //
@@ -23,7 +26,23 @@ public class User {
         this.email = email;
     }
 
+
+
     //-------------//
     //   Methods   //
     //-------------//
+
+    public void selectTicket(Ticket ticket){
+        ticketsSelected.add(ticket);
+    }
+
+    public void deselectTicket(Ticket ticket){
+        ticketsSelected.remove(ticket);
+    }
+
+    public Receipt checkout(paymentInfo){
+        
+    }
+
+
 }
