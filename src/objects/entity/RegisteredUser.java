@@ -1,4 +1,4 @@
-package objects;
+package objects.entity;
 public class RegisteredUser extends User {
     
     //---------------//
@@ -84,9 +84,7 @@ public class RegisteredUser extends User {
     //   Methods   //
     //-------------//
     public Receipt checkout(){
-
-        
-
+        return new Receipt(0);
     }
 
 }

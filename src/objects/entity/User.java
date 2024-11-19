@@ -1,4 +1,4 @@
-package objects;
+package objects.entity;
 import java.util.ArrayList;
 public class User {
     //---------------//
@@ -40,8 +40,8 @@ public class User {
         ticketsSelected.remove(ticket);
     }
 
-    public Receipt checkout(paymentInfo){
-        
+    public Receipt checkout(PaymentInfo paymentInfo){
+        return new Receipt(0);
     }
 
 

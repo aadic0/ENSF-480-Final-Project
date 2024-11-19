@@ -110,6 +110,13 @@ SELECT * FROM REGISTERED_USER;
 DELETE FROM USER 
 WHERE Email = 'test@test.com';
 
-
+-- @block
+SELECT * FROM user;
+SELECT * FROM registered_user;
+SELECT * FROM theatre;
+SELECT * FROM movie;
+SELECT * FROM showtime;
+SELECT * FROM seatmap;
+SELECT * FROM theatre_showtime_seating;
 
 

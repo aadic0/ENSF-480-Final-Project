@@ -1,4 +1,4 @@
-package objects;
+package objects.entity;
 
 import java.util.HashMap;
 
@@ -20,9 +20,6 @@ public class Theatre {
         this.name = name;
         this.mapShowtimeSeating = mapShowtimeSeating;
     }
-
-
-
 
     //---------------------//
     //  Getters + Setters  //
