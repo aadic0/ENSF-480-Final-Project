@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import objects.entity.RegisteredUser;
 import objects.entity.User;
 
 /**
@@ -40,7 +39,7 @@ public class UserController {
 
 
             // Try to connect to database
-            try (Connection connection = DatabaseController.getConnection();) { 
+            try (Connection connection = DatabaseController.createConnection()) { 
 
                 // Prepare query
                 String query = "INSERT INTO REGISTERED_USER(Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) VALUES(?,?,?,?,?,?,?,?)";
@@ -60,6 +59,8 @@ public class UserController {
                 // Execute Query
                 preparedStatement.executeUpdate();
 
+                
+
             }
             catch (SQLException e) {
                 System.out.println(e);
@@ -74,7 +75,7 @@ public class UserController {
      */
     public void createUser(String email, String pwd) {
         // Try to connect to database
-        try (Connection connection = DatabaseController.getConnection();) { 
+        try (Connection connection = DatabaseController.createConnection();) { 
             
             // Prepare query
             String query = "INSERT INTO DEFAULT_USER(Email, Pwd) VALUES(?,?)";

@@ -20,7 +20,7 @@ public class DatabaseController {
      * Create a connection to SQL database
      * @return connection to database
      */
-    public static Connection getConnection() {
+    public static Connection createConnection() {
         // Success
         try { connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); } 
 
@@ -46,6 +46,14 @@ public class DatabaseController {
             connection = null;
         }
         
+    }
+
+    /**
+     * return Connection status
+     * @return
+     */
+    public static Connection getConnection() {
+        return connection;
     }
 
 }
