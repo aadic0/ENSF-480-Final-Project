@@ -8,12 +8,17 @@ import objects.entity.User;
 // NOTE: I'm using this file to test out database communication, this will (probably) not be the actual main we use
 public class Main {
     public static void main(String[] args) {
-        UserController userController = new UserController();
+    /* UserController testing */
+        // UserController userController = new UserController();
 
-        userController.createUser("test@gobo.com", "pwd");
-        userController.createRegisteredUser(new User("test@gobo.com"), "pwd", 
-        "Borgen", "Schmorgen", 
-        "123 abc", "Salt Lake City", "Manitoba", "T2P0G5");
+        // userController.createUser("test@gobo.com", "pwd");
+        // userController.createRegisteredUser(new User("test@gobo.com"), "pwd", 
+        // "Borgen", "Schmorgen", 
+        // "123 abc", "Salt Lake City", "Manitoba", "T2P0G5");
+
+    /* ShowtimeController Testing */
+        // ShowtimeController showtimeController = new ShowtimeController();
+        // showtimeController.showShowtimes();
 
     }
 }
