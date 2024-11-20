@@ -6,7 +6,7 @@ import objects.entity.User;
 public class UserController {
     
     public UserController(){}
-
+ 
     /**
      * turn a regular user into a registered user
      */

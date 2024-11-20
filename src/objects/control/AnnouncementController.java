@@ -16,5 +16,5 @@ public class AnnouncementController {
      */
     public void sendAnnouncement(Announcement announcement, ArrayList<RegisteredUser> registeredUsersList) {
 
-    }
+    } 
 }
