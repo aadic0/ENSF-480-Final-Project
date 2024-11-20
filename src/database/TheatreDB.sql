@@ -84,6 +84,16 @@ CREATE TABLE THEATRE_SHOWTIME_SEATING (
     FOREIGN KEY (SeatMapID) REFERENCES SEATMAP(SeatMapID) ON DELETE CASCADE
 );
 
+-- ------------- --
+-- USER CREATION --
+-- ------------- --
+
+DROP USER IF EXISTS 'theatre_connect'@'localhost';
+CREATE USER 'theatre_connect'@'localhost' IDENTIFIED WITH 'caching_sha2_password' BY 'theatre';
+GRANT ALL ON THEATRE_DB.* TO 'theatre_connect'@'localhost';
+
+
+
 -- ------------ --
 -- TEST QUERIES --
 -- ------------ --
