@@ -54,7 +54,7 @@ CREATE TABLE MOVIE (
 DROP TABLE IF EXISTS SHOWTIME;
 CREATE TABLE SHOWTIME (
     ShowtimeID      INT AUTO_INCREMENT,
-    MovieID         INT,
+    MovieID         INT NOT NULL,
     ShowingTime     DATETIME NOT NULL, 
 
     PRIMARY KEY (ShowtimeID),
@@ -64,7 +64,7 @@ CREATE TABLE SHOWTIME (
 DROP TABLE IF EXISTS SEATMAP;
 CREATE TABLE SEATMAP (
     SeatMapID   INT AUTO_INCREMENT,
-    ShowtimeID  INT, 
+    ShowtimeID  INT NOT NULL, 
     -- Seats JSON,   -- Need to add this comment otherwise Query bugs out
 
     PRIMARY KEY (SeatMapID),
@@ -74,9 +74,9 @@ CREATE TABLE SEATMAP (
 -- Table that links Theatre, Showtime, and SeatMap (HashMap from Theatre object)
 DROP TABLE IF EXISTS THEATRE_SHOWTIME_SEATING;
 CREATE TABLE THEATRE_SHOWTIME_SEATING (
-    TheatreID   INT,
-    ShowtimeID  INT,
-    SeatMapID   INT,
+    TheatreID   INT NOT NULL,
+    ShowtimeID  INT NOT NULL,
+    SeatMapID   INT NOT NULL,
 
     PRIMARY KEY (TheatreID, ShowtimeID),
     FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON DELETE CASCADE,
@@ -97,6 +97,10 @@ GRANT ALL ON THEATRE_DB.* TO 'theatre_connect'@'localhost';
 -- ------------ --
 -- TEST QUERIES --
 -- ------------ --
+
+
+-- INSERT --
+
 -- @block
 INSERT INTO USER (Email, Pwd)
 VALUES ('test@test.com', 'pwd');
@@ -105,9 +109,65 @@ INSERT INTO REGISTERED_USER (Email, FName, LName)
 VALUES ('test@test.com', 'John', 'Doe');
 
 -- @block
+INSERT INTO THEATRE (Name) VALUES 
+('Cineplex Scotiabank Theatre'), 
+('Landmark Cinemas'), 
+('Globe Cinema'), 
+('IMAX Theatre');
+
+INSERT INTO MOVIE (Title, Genre, Rating) VALUES 
+('Inception', 'Sci-Fi', 'PG-13'),
+('The Dark Knight', 'Action', 'PG-13'),
+('Titanic', 'Romance', 'PG-13'),
+('Interstellar', 'Sci-Fi', 'PG-13'),
+('The Godfather', 'Crime', 'R');
+
+INSERT INTO SHOWTIME (MovieID, ShowingTime) VALUES 
+(1, '2024-11-20 19:00:00'), 
+(2, '2024-11-20 21:30:00'), 
+(3, '2024-11-21 18:00:00'), 
+(4, '2024-11-21 20:00:00'), 
+(5, '2024-11-22 19:00:00');
+
+INSERT INTO SEATMAP (ShowtimeID) VALUES 
+(1), 
+(2), 
+(3), 
+(4), 
+(5);
+
+INSERT INTO THEATRE_SHOWTIME_SEATING (TheatreID, ShowtimeID, SeatMapID) VALUES 
+(1, 1, 1), 
+(1, 2, 2), 
+(2, 3, 3), 
+(3, 4, 4), 
+(4, 5, 5);
+
+
+-- SELECT --
+-- @block
 SELECT * FROM USER;
 SELECT * FROM REGISTERED_USER;
 
+-- @block
+SELECT * FROM default_user;
+SELECT * FROM registered_user;
+
+-- @block
+SELECT * FROM theatre;
+SELECT * FROM movie;
+SELECT * FROM showtime;
+SELECT * FROM seatmap;
+SELECT * FROM theatre_showtime_seating;
+
+
+
+-- @block
+SELECT * FROM default_user;
+-- @block
+SELECT * FROM registered_user;
+
+-- DELETE --
 -- @block
 -- DELETE FROM REGISTERED_USER
 -- WHERE Email = 'test@test.com';
@@ -116,20 +176,5 @@ DELETE * FROM USER
 WHERE Email = 'test@test.com';
 
 -- @block
-SELECT * FROM default_user;
-SELECT * FROM registered_user;
-SELECT * FROM theatre;
-SELECT * FROM movie;
-SELECT * FROM showtime;
-SELECT * FROM seatmap;
-SELECT * FROM theatre_showtime_seating;
-
--- @block
 DELETE FROM DEFAULT_USER;
 DELETE FROM REGISTERED_USER;
-
--- @block
-SELECT * FROM default_user;
--- @block
-SELECT * FROM registered_user;
-
