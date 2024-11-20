@@ -20,5 +20,15 @@ public class Main {
         // ShowtimeController showtimeController = new ShowtimeController();
         // showtimeController.showShowtimes();
 
+    RegisteredUserController controller = new RegisteredUserController();
+    
+    // Test the method
+    String testEmail = "test@test.com";
+    String testPassword = "jdoe";
+    boolean isAuthenticated = controller.authenticateUser(testEmail, testPassword);
+    
+    System.out.println("Authentication result: " + isAuthenticated);
+    
+
     }
 }

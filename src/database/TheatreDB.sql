@@ -102,11 +102,12 @@ GRANT ALL ON THEATRE_DB.* TO 'theatre_connect'@'localhost';
 -- INSERT --
 
 -- @block
-INSERT INTO USER (Email, Pwd)
+DELETE FROM DEFAULT_USER;
+INSERT INTO DEFAULT_USER (Email, Pwd)
 VALUES ('test@test.com', 'pwd');
 
-INSERT INTO REGISTERED_USER (Email, FName, LName)
-VALUES ('test@test.com', 'John', 'Doe');
+INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode)
+VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
 
 -- @block
 INSERT INTO THEATRE (Name) VALUES 
