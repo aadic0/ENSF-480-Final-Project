@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 /**
  * Singleton class representing SQL database
+ * Used to create and close connections to MySQL database
  */
 public class DatabaseController {
     private static String username = "theatre_connect";
