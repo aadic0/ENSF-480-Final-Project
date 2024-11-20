@@ -7,29 +7,45 @@ import java.sql.SQLException;
 /**
  * Singleton class representing SQL database
  * Used to create and close connections to MySQL database
+ * @author Damon Mazurek    
+ * @version v1.0
  */
 public class DatabaseController {
-    private static String username = "theatre_connect";
-    private static String password = "theatre";
-    private static String url = "jdbc:mysql://localhost/THEATRE_DB";
+    private static String USERNAME = "theatre_connect";
+    private static String PASSWORD = "theatre";
+    private static String URL = "jdbc:mysql://localhost/THEATRE_DB";
     private static Connection connection = null;
 
     /**
-     * Connect to Theatre SQL database
-     * @return Connection to database
-     * @throws SQLException
+     * Create a connection to SQL database
+     * @return connection to database
      */
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+    public static Connection getConnection() {
+        // Success
+        try { connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); } 
+
+        // Failure
+        catch (SQLException e) { connection = null; }
+
+        return connection;
     }
+
     /**
-     * Disconnect from Theatre SQL database
+     * Close connection to SQL database
      * @throws SQLException
      */
     public static void closeConnection() throws SQLException {
-        if (connection != null && connection.isClosed() == false) {
-            connection.close();
+        // Try closing connection
+        try {
+            if (connection != null && !connection.isClosed()) { 
+                connection.close(); 
+            }
+        } catch(SQLException e) {} // Ignore SQLException for now (Nov 19)
+
+        finally {
+            connection = null;
         }
+        
     }
 
 }
