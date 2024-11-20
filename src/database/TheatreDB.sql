@@ -112,7 +112,7 @@ SELECT * FROM REGISTERED_USER;
 -- DELETE FROM REGISTERED_USER
 -- WHERE Email = 'test@test.com';
 
-DELETE FROM USER 
+DELETE * FROM USER 
 WHERE Email = 'test@test.com';
 
 -- @block
@@ -124,4 +124,12 @@ SELECT * FROM showtime;
 SELECT * FROM seatmap;
 SELECT * FROM theatre_showtime_seating;
 
+-- @block
+DELETE FROM DEFAULT_USER;
+DELETE FROM REGISTERED_USER;
+
+-- @block
+SELECT * FROM default_user;
+-- @block
+SELECT * FROM registered_user;
 

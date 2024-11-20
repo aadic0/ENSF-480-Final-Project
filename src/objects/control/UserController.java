@@ -7,26 +7,63 @@ import java.sql.SQLException;
 import objects.entity.RegisteredUser;
 import objects.entity.User;
 
+/**
+ * The controller for Users
+ * Create and/or register users on the database 
+ * @author Damon Mazurek
+ * @version v1.0
+ */
 public class UserController {
     
     public UserController(){}
  
     /**
-     * turn a regular user into a registered user
-     * @param user
-     * @return RegisteredUser object (may not keep)
+     * Register a regular user into a registered user in DB
+     * @param user user to sign up
+     * @param pwd 
+     * @param firstName
+     * @param lastName
+     * @param streetAddress
+     * @param city
+     * @param province
+     * @param postalCode
      */
-    public RegisteredUser createRegisteredUser(User user) {
-        RegisteredUser regUser = new RegisteredUser(
-            null, null, 
-            null, null, null, null, 
-            user.getEmail(), null
-        );
-
-        // Add to database
-        // ...
+    public void createRegisteredUser(
+        User user, String pwd, 
+        String firstName, String lastName, 
+        String streetAddress, String city, String province, String postalCode ) {
         
-        return regUser;
+            /* TO DO */
+            // Add an Observer for Announcement to add them to list of RegisteredUsers objects to send announcements to
+            // Optional: Add a check for a DEFAULT_USER using the name email before creating a RegisteredUser 
+                // Idk if we'll need to do this because we'll be able to control when users sign up in the presentation layer
+
+
+            // Try to connect to database
+            try (Connection connection = DatabaseController.getConnection();) { 
+
+                // Prepare query
+                String query = "INSERT INTO REGISTERED_USER(Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) VALUES(?,?,?,?,?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+                preparedStatement.setString(1, user.getEmail()); // Changes '?' to the text
+                preparedStatement.setString(2, pwd);
+
+                preparedStatement.setString(3, firstName);
+                preparedStatement.setString(4, lastName);
+
+                preparedStatement.setString(5, streetAddress);
+                preparedStatement.setString(6, city);
+                preparedStatement.setString(7, province);
+                preparedStatement.setString(8, postalCode);
+
+                // Execute Query
+                preparedStatement.executeUpdate();
+
+            }
+            catch (SQLException e) {
+                System.out.println(e);
+            }
     }
 
     /**
@@ -35,7 +72,7 @@ public class UserController {
      * @param pwd
      * @return user object (may not keep)
      */
-    public User createUser(String email, String pwd) {
+    public void createUser(String email, String pwd) {
         // Try to connect to database
         try (Connection connection = DatabaseController.getConnection();) { 
             
@@ -47,14 +84,11 @@ public class UserController {
             preparedStatement.setString(2, pwd);
             
             // Execute Query
-            // preparedStatement.executeQuery();
             preparedStatement.executeUpdate();
             
         }
-        catch (SQLException e) { return null; }
-
-        User user = new User(email);
-
-        return user;
+        catch (SQLException e) {
+            System.out.println(e);
+        }
     }
 }
