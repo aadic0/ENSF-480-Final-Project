@@ -13,6 +13,7 @@
 
 ### PaymentController.java  
 - Implement a method to process payments
+    - Ticket and RegisteredUser would have a PaymentController in their methods to facilitate payments? (unsure of how to implement this rn 11/19)
 
 ### ~~ReceiptController.java~~ __Can just put implementation into purachsing a ticket__ 
 - ~~Implement sendReceipt() method~~
@@ -32,13 +33,16 @@
 - selecting seat will be done in gui, which will be passed to boundary class, which is passed to this class
 
 ### ShowtimeController.java  
-- Add showTheatreShowtimes() method
-    - Shows showtimes for a specific theatre
 - Add showShowtimes() method
     - Shows showtimes for all theatres
     
 ### TheatreController.java  
-- 
+- Add showTheatreShowtimes() method
+    - Shows showtimes for a specific theatre
+
+- Add showTheatreMovies() method
+    - Shows all movies being shown at a theatre
+    - Could do a method or just steal movie data from showTheatreShowtimes()
 
 ### TicketController.java 
 - implement cancelTicket() method
