@@ -113,17 +113,18 @@ CREATE TABLE SEAT (
     SeatRow         INT NOT NULL,
     SeatNumber      INT NOT NULL,  
 
-    PRIMARY KEY (SeatID),
-    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID),
     UNIQUE (TheatreRoomID, SeatRow, SeatNumber) 
+
+    PRIMARY KEY (SeatID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID), 
 );
 
 DROP TABLE IF EXISTS SHOWTIME;
 CREATE TABLE SHOWTIME (
-    ShowtimeID INT,
-    TheatreRoomID INT NOT NULL,
-    ShowDateTime DATETIME NOT NULL,
-    MovieTitle VARCHAR(255) NOT NULL,
+    ShowtimeID      INT,
+    TheatreRoomID   INT NOT NULL,
+    ShowDateTime    DATETIME NOT NULL,
+    MovieTitle      VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (ShowtimeID),
     FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID)
@@ -143,16 +144,17 @@ CREATE TABLE MOVIE (
 -- Ticket table
 DROP TABLE IF EXISTS TICKET;
 CREATE TABLE TICKET (
-    TicketID INT,
-    ShowtimeID INT NOT NULL,
-    SeatID INT NOT NULL,
-    UserID INT NOT NULL, -- Assuming a Users table exists
-    PurchaseDateTime DATETIME NOT NULL,
+    TicketID            INT,
+    ShowtimeID          INT NOT NULL,
+    SeatID              INT NOT NULL,
+    PurchaseDateTime    DATETIME NOT NULL,
+
+    UNIQUE (ShowtimeID, SeatID) -- Ensure a seat can't be double-booked
 
     PRIMARY KEY (TicketID),
     FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID),
     FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
-    UNIQUE (ShowtimeID, SeatID) -- Ensure a seat can't be double-booked
+    
 );
 
 
