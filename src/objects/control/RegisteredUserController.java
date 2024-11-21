@@ -16,6 +16,20 @@ public class RegisteredUserController {
     private static final String DB_USER = "admin";
     private static final String DB_PASSWORD = "admin"; // replace with ur guys' user and password, theres probably a better way to implement htis
 
+    // constructor should 
+
+
+
+    /****************** 
+     * 
+     * NOTE FOR LAB MEMBERS:
+     * 
+     * SINCE REGISTERED USER USES DEFAULT USER AS A FOREIGN KEY, FOR ANY INSERTIONS YOU GOTTA UPDATE DEFAULT USER AS WELL
+     * 
+     * - AADI
+     * 
+     * ********************/
+
 
     /**
      * Verifies if the given email and password match a record in the REGISTERED_USER table.
@@ -49,18 +63,45 @@ public class RegisteredUserController {
         return false;
     }
 
-    public static void main(String[] args) {
-        RegisteredUserController controller = new RegisteredUserController();
+    
+    public void registerUser(String email, String pwd, String fname, String lname, String addr, String city, String province, String postalCode) {
+        String queryInsertDefaultUser = "INSERT INTO DEFAULT_USER (Email, Pwd) VALUES (?, ?)";
+        String queryInsertRegisteredUser = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
-        // Test the method
-        String testEmail = "test@test.com";
-        String testPassword = "jdoe";
-        boolean isAuthenticated = controller.authenticateUser(testEmail, testPassword);
-        
-        System.out.println("Authentication result: " + isAuthenticated);
+        // Gotta setup default user first due to foreign key constraints
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            // Insert into DEFAULT_USER
+            try (PreparedStatement psDefaultUser = connection.prepareStatement(queryInsertDefaultUser)) {
+                psDefaultUser.setString(1, email);
+                psDefaultUser.setString(2, pwd);
+                psDefaultUser.executeUpdate();
+            }
+
+            // Insert into REGISTERED_USER
+            try (PreparedStatement psRegisteredUser = connection.prepareStatement(queryInsertRegisteredUser)) {
+                psRegisteredUser.setString(1, email);
+                psRegisteredUser.setString(2, pwd);
+                psRegisteredUser.setString(3, fname);
+                psRegisteredUser.setString(4, lname);
+                psRegisteredUser.setString(5, addr);
+                psRegisteredUser.setString(6, city);
+                psRegisteredUser.setString(7, province);
+                psRegisteredUser.setString(8, postalCode);
+                int rowsAffected = psRegisteredUser.executeUpdate();
+
+
+                // Just for testing, feel free to remove whenever
+                if (rowsAffected > 0) {
+                    System.out.println("User successfully registered!");
+                } else {
+                    System.out.println("Failed to register user.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
 
 
 
@@ -107,4 +148,8 @@ public class RegisteredUserController {
     // public void cancelRegistration(RegisteredUser regUser) {
 
     // }
+
+
+
+
 }

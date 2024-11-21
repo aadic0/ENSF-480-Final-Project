@@ -28,7 +28,11 @@ public class Main {
     boolean isAuthenticated = controller.authenticateUser(testEmail, testPassword);
     
     System.out.println("Authentication result: " + isAuthenticated);
+
+
+    controller.registerUser("aadichauhan321@gmail.com", "deezNutz", "Aadi", "Chauhan", "93 Legacy Common SE", "Calgary", testEmail, testPassword);
     
+
 
     }
 }
