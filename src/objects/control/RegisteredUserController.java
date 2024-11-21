@@ -16,8 +16,7 @@ public class RegisteredUserController {
     private static final String DB_USER = "admin";
     private static final String DB_PASSWORD = "admin"; // replace with ur guys' user and password, theres probably a better way to implement htis
 
-    // constructor should 
-
+    private String emailID;
 
 
     /****************** 
@@ -104,6 +103,7 @@ public class RegisteredUserController {
                 // Just for testing, feel free to remove whenever
                 if (rowsAffected > 0) {
                     System.out.println("User successfully registered!");
+                    emailID = email;
                 } else {
                     System.out.println("Failed to register user.");
                 }
@@ -130,7 +130,23 @@ public class RegisteredUserController {
      * @param address 
      */
     public void updateAddressInfo(String address) {
+        String query = "UPDATE REGISTERED_USER SET StreetAddress = ? WHERE Email = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, emailID);
 
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Only for testing
+            if (rowsAffected > 0) {
+                System.out.println("Address updated successfully.");
+            } else {
+                System.out.println("No rows updated. Check the email address.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -139,6 +155,22 @@ public class RegisteredUserController {
      * @param lastName
      */
     public void updateName(String firstName, String lastName) {
+        String query = "UPDATE REGISTERED_USER SET FirstName = ? WHERE email = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, emailID);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Only for testing
+            if (rowsAffected > 0) {
+                System.out.println("Name updated successfully.");
+            } else {
+                System.out.println("No rows updated. Check the email address.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -147,7 +179,35 @@ public class RegisteredUserController {
      * @param email 
      */
     public void updateEmailInfo(String email) {
+        // String queryDefaultUser = "UPDATE DEFAULT_USER SET Email = ? WHERE Email = ?";
+        String queryRegisteredUser = "UPDATE REGISTERED_USER SET Email = ? WHERE Email = ?";
 
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        //     // Update email in DEFAULT_USER
+        //     try (PreparedStatement psDefaultUser = connection.prepareStatement(queryDefaultUser)) {
+        //         psDefaultUser.setString(1, email);
+        //         psDefaultUser.setString(2, emailID);
+        //         psDefaultUser.executeUpdate();
+                
+        //     }
+
+            // Update email in REGISTERED_USER
+            try (PreparedStatement psRegisteredUser = connection.prepareStatement(queryRegisteredUser)) {
+                psRegisteredUser.setString(1, email);
+                psRegisteredUser.setString(2, emailID);
+                int rowsAffected = psRegisteredUser.executeUpdate();
+
+                // For testing
+                if (rowsAffected > 0) {
+                    System.out.println("Email updated successfully.");
+                    emailID = email; // Update local reference to the new email
+                } else {
+                    System.out.println("No rows updated. Check the email address.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

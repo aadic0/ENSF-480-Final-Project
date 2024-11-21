@@ -29,7 +29,7 @@ CREATE TABLE REGISTERED_USER (
     -- Payment_Info   JSON,  -- Could turn into json but im commenting it out for now
     
     PRIMARY KEY (Email),
-    FOREIGN KEY (Email) REFERENCES DEFAULT_USER(Email) ON DELETE CASCADE
+    FOREIGN KEY (Email) REFERENCES DEFAULT_USER(Email) ON UPDATE CASCADE
 
 );
 
