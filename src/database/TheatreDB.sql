@@ -101,7 +101,7 @@ CREATE TABLE THEATREROOM (
     TheatreID       INT NOT NULL,
     RoomName        VARCHAR(255) NOT NULL,
 
-    PRIMARY KEY (TheatreRoomID)
+    PRIMARY KEY (TheatreRoomID),
     FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID)
 );
 
