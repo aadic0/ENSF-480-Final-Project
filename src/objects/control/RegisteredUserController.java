@@ -63,7 +63,17 @@ public class RegisteredUserController {
         return false;
     }
 
-    
+    /**
+     * Register the user
+     * @param email
+     * @param pwd
+     * @param fname
+     * @param lname
+     * @param addr
+     * @param city
+     * @param province
+     * @param postalCode
+     */
     public void registerUser(String email, String pwd, String fname, String lname, String addr, String city, String province, String postalCode) {
         String queryInsertDefaultUser = "INSERT INTO DEFAULT_USER (Email, Pwd) VALUES (?, ?)";
         String queryInsertRegisteredUser = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) " +
