@@ -33,12 +33,100 @@ CREATE TABLE REGISTERED_USER (
 
 );
 
+-- DROP TABLE IF EXISTS THEATRE;
+-- CREATE TABLE THEATRE (
+--     TheatreID INT AUTO_INCREMENT,
+--     Name VARCHAR(255) NOT NULL,
+
+--     PRIMARY KEY (TheatreID)
+-- );
+
+-- DROP TABLE IF EXISTS MOVIE;
+-- CREATE TABLE MOVIE (
+--     MovieID     INT AUTO_INCREMENT,
+--     Title       VARCHAR(255) NOT NULL,
+--     Genre       VARCHAR(255) NOT NULL,
+--     Rating      VARCHAR(255) NOT NULL,
+
+--     PRIMARY KEY (MovieID)
+-- );
+
+-- DROP TABLE IF EXISTS SHOWTIME;
+-- CREATE TABLE SHOWTIME (
+--     ShowtimeID      INT AUTO_INCREMENT,
+--     MovieID         INT NOT NULL,
+--     ShowingTime     DATETIME NOT NULL, 
+
+--     PRIMARY KEY (ShowtimeID),
+--     FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON DELETE CASCADE
+-- );
+
+-- DROP TABLE IF EXISTS SEATMAP;
+-- CREATE TABLE SEATMAP (
+--     SeatMapID   INT AUTO_INCREMENT,
+--     ShowtimeID  INT NOT NULL, 
+--     -- Seats JSON,   -- Need to add this comment otherwise Query bugs out
+
+--     PRIMARY KEY (SeatMapID),
+--     FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE
+-- );
+
+-- -- Table that links Theatre, Showtime, and SeatMap (HashMap from Theatre object)
+-- DROP TABLE IF EXISTS THEATRE_SHOWTIME_SEATING;
+-- CREATE TABLE THEATRE_SHOWTIME_SEATING (
+--     TheatreID   INT NOT NULL,
+--     ShowtimeID  INT NOT NULL,
+--     SeatMapID   INT NOT NULL,
+
+--     PRIMARY KEY (TheatreID, ShowtimeID),
+--     FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON DELETE CASCADE,
+--     FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE,
+--     FOREIGN KEY (SeatMapID) REFERENCES SEATMAP(SeatMapID) ON DELETE CASCADE
+-- );
+
+-- Theatre table
 DROP TABLE IF EXISTS THEATRE;
 CREATE TABLE THEATRE (
-    TheatreID INT AUTO_INCREMENT,
-    Name VARCHAR(255) NOT NULL,
+    TheatreID       INT,
+    TheatreName     VARCHAR(100) NOT NULL,
+    Location        VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (TheatreID)
+);
+
+-- TheatreRoom table
+DROP TABLE IF EXISTS THEATREROOM;
+CREATE TABLE THEATREROOM (
+    TheatreRoomID   INT,
+    TheatreID       INT NOT NULL,
+    RoomName        VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (TheatreRoomID)
+    FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID)
+);
+
+-- Seat table (SeatMap)
+DROP TABLE IF EXISTS SEAT;
+CREATE TABLE SEAT (
+    SeatID          INT,
+    TheatreRoomID   INT NOT NULL,
+    SeatRow         INT NOT NULL,
+    SeatNumber      INT NOT NULL,  
+
+    PRIMARY KEY (SeatID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID),
+    UNIQUE (TheatreRoomID, SeatRow, SeatNumber) 
+);
+
+DROP TABLE IF EXISTS SHOWTIME;
+CREATE TABLE SHOWTIME (
+    ShowtimeID INT,
+    TheatreRoomID INT NOT NULL,
+    ShowDateTime DATETIME NOT NULL,
+    MovieTitle VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (ShowtimeID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID)
 );
 
 DROP TABLE IF EXISTS MOVIE;
@@ -47,42 +135,26 @@ CREATE TABLE MOVIE (
     Title       VARCHAR(255) NOT NULL,
     Genre       VARCHAR(255) NOT NULL,
     Rating      VARCHAR(255) NOT NULL,
+    Runtime     DATETIME NOT NULL,
 
     PRIMARY KEY (MovieID)
 );
 
-DROP TABLE IF EXISTS SHOWTIME;
-CREATE TABLE SHOWTIME (
-    ShowtimeID      INT AUTO_INCREMENT,
-    MovieID         INT NOT NULL,
-    ShowingTime     DATETIME NOT NULL, 
+-- Ticket table
+DROP TABLE IF EXISTS TICKET;
+CREATE TABLE TICKET (
+    TicketID INT,
+    ShowtimeID INT NOT NULL,
+    SeatID INT NOT NULL,
+    UserID INT NOT NULL, -- Assuming a Users table exists
+    PurchaseDateTime DATETIME NOT NULL,
 
-    PRIMARY KEY (ShowtimeID),
-    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON DELETE CASCADE
+    PRIMARY KEY (TicketID),
+    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID),
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
+    UNIQUE (ShowtimeID, SeatID) -- Ensure a seat can't be double-booked
 );
 
-DROP TABLE IF EXISTS SEATMAP;
-CREATE TABLE SEATMAP (
-    SeatMapID   INT AUTO_INCREMENT,
-    ShowtimeID  INT NOT NULL, 
-    -- Seats JSON,   -- Need to add this comment otherwise Query bugs out
-
-    PRIMARY KEY (SeatMapID),
-    FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE
-);
-
--- Table that links Theatre, Showtime, and SeatMap (HashMap from Theatre object)
-DROP TABLE IF EXISTS THEATRE_SHOWTIME_SEATING;
-CREATE TABLE THEATRE_SHOWTIME_SEATING (
-    TheatreID   INT NOT NULL,
-    ShowtimeID  INT NOT NULL,
-    SeatMapID   INT NOT NULL,
-
-    PRIMARY KEY (TheatreID, ShowtimeID),
-    FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON DELETE CASCADE,
-    FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE,
-    FOREIGN KEY (SeatMapID) REFERENCES SEATMAP(SeatMapID) ON DELETE CASCADE
-);
 
 -- ------------- --
 -- USER CREATION --
