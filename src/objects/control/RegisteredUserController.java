@@ -12,11 +12,13 @@ import java.sql.ResultSet;
 public class RegisteredUserController {
 
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3307/THEATRE_DB"; // i already had some shit running on port 3306, so i used 3307, change urs to 3306 or whatever port u are using
-    private static final String DB_USER = "admin";
-    private static final String DB_PASSWORD = "admin"; // replace with ur guys' user and password, theres probably a better way to implement htis
+    // private static final String DB_URL = "jdbc:mysql://localhost:3307/THEATRE_DB"; // i already had some shit running on port 3306, so i used 3307, change urs to 3306 or whatever port u are using
+    // private static final String DB_USER = "admin";
+    // private static final String DB_PASSWORD = "admin"; // replace with ur guys' user and password, theres probably a better way to implement htis
 
     private String emailID;
+
+    public RegisteredUserController() {}
 
 
     /****************** 
@@ -42,7 +44,7 @@ public class RegisteredUserController {
         
 
         // For now i have it setup so that it connects to the DB on function call, might change later if we decide to just have one constant 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DatabaseController.createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
             // Set the query parameters
@@ -74,21 +76,14 @@ public class RegisteredUserController {
      * @param postalCode
      */
     public void registerUser(String email, String pwd, String fname, String lname, String addr, String city, String province, String postalCode) {
-        String queryInsertDefaultUser = "INSERT INTO DEFAULT_USER (Email, Pwd) VALUES (?, ?)";
-        String queryInsertRegisteredUser = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) " +
+        String query = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) " +
                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         // Gotta setup default user first due to foreign key constraints
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Insert into DEFAULT_USER
-            try (PreparedStatement psDefaultUser = connection.prepareStatement(queryInsertDefaultUser)) {
-                psDefaultUser.setString(1, email);
-                psDefaultUser.setString(2, pwd);
-                psDefaultUser.executeUpdate();
-            }
-
+        try (Connection connection = DatabaseController.createConnection()) {
+            
             // Insert into REGISTERED_USER
-            try (PreparedStatement psRegisteredUser = connection.prepareStatement(queryInsertRegisteredUser)) {
+            try (PreparedStatement psRegisteredUser = connection.prepareStatement(query)) {
                 psRegisteredUser.setString(1, email);
                 psRegisteredUser.setString(2, pwd);
                 psRegisteredUser.setString(3, fname);
@@ -107,15 +102,11 @@ public class RegisteredUserController {
                 } else {
                     System.out.println("Failed to register user.");
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-
-
-    public RegisteredUserController() {}
 
     /**
      * Update payment information in SQL database
@@ -131,7 +122,7 @@ public class RegisteredUserController {
      */
     public void updateAddressInfo(String address) {
         String query = "UPDATE REGISTERED_USER SET StreetAddress = ? WHERE Email = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DatabaseController.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, address);
             preparedStatement.setString(2, emailID);
@@ -156,7 +147,7 @@ public class RegisteredUserController {
      */
     public void updateName(String firstName, String lastName) {
         String query = "UPDATE REGISTERED_USER SET FirstName = ? WHERE email = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DatabaseController.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, emailID);
@@ -182,14 +173,7 @@ public class RegisteredUserController {
         // String queryDefaultUser = "UPDATE DEFAULT_USER SET Email = ? WHERE Email = ?";
         String queryRegisteredUser = "UPDATE REGISTERED_USER SET Email = ? WHERE Email = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        //     // Update email in DEFAULT_USER
-        //     try (PreparedStatement psDefaultUser = connection.prepareStatement(queryDefaultUser)) {
-        //         psDefaultUser.setString(1, email);
-        //         psDefaultUser.setString(2, emailID);
-        //         psDefaultUser.executeUpdate();
-                
-        //     }
+        try (Connection connection = DatabaseController.createConnection()) {
 
             // Update email in REGISTERED_USER
             try (PreparedStatement psRegisteredUser = connection.prepareStatement(queryRegisteredUser)) {

@@ -5,14 +5,7 @@ DROP DATABASE IF EXISTS THEATRE_DB;
 CREATE DATABASE THEATRE_DB;
 USE THEATRE_DB;
 
-DROP TABLE IF EXISTS DEFAULT_USER;
-CREATE TABLE DEFAULT_USER(
-    Email   VARCHAR(255) NOT NULL,
-    Pwd     VARCHAR(25) NOT NULL,
-
-    PRIMARY KEY (Email)
-);
-
+-- RegisteredIser table
 DROP TABLE IF EXISTS REGISTERED_USER;
 CREATE TABLE REGISTERED_USER (
     Email          VARCHAR(255) NOT NULL,
@@ -28,10 +21,99 @@ CREATE TABLE REGISTERED_USER (
     
     -- Payment_Info   JSON,  -- Could turn into json but im commenting it out for now
     
-    PRIMARY KEY (Email),
-    FOREIGN KEY (Email) REFERENCES DEFAULT_USER(Email) ON UPDATE CASCADE
+    PRIMARY KEY (Email)
+    -- FOREIGN KEY (Email) REFERENCES DEFAULT_USER(Email) ON UPDATE CASCADE
 
 );
+
+-- Theatre table
+DROP TABLE IF EXISTS THEATRE;
+CREATE TABLE THEATRE (
+    TheatreID       INT,
+    TheatreName     VARCHAR(100) NOT NULL,
+    Location        VARCHAR(255) NOT NULL, -- This line is creating errors because of column name
+
+    PRIMARY KEY (TheatreID)
+);
+
+-- TheatreRoom table
+DROP TABLE IF EXISTS THEATREROOM;
+CREATE TABLE THEATREROOM (
+    TheatreRoomID   INT,
+    TheatreID       INT NOT NULL,
+    RoomName        VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (TheatreRoomID),
+    FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID) ON UPDATE CASCADE
+);
+
+-- Seat table (SeatMap)
+DROP TABLE IF EXISTS SEAT;
+CREATE TABLE SEAT (
+    SeatID          INT,
+    TheatreRoomID   INT NOT NULL,
+    SeatRow         INT NOT NULL,
+    SeatNumber      INT NOT NULL,  
+
+    UNIQUE (TheatreRoomID, SeatRow, SeatNumber),
+
+    PRIMARY KEY (SeatID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID) ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS SHOWTIME;
+CREATE TABLE SHOWTIME (
+    ShowtimeID      INT,
+    TheatreRoomID   INT NOT NULL,
+    ShowDateTime    DATETIME NOT NULL,
+    MovieTitle      VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (ShowtimeID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID) ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS MOVIE;
+CREATE TABLE MOVIE (
+    MovieID     INT AUTO_INCREMENT,
+    Title       VARCHAR(255) NOT NULL,
+    Genre       VARCHAR(255) NOT NULL,
+    Rating      VARCHAR(255) NOT NULL,
+    Runtime     DATETIME NOT NULL,
+
+    PRIMARY KEY (MovieID)
+);
+
+-- Ticket table
+DROP TABLE IF EXISTS TICKET;
+CREATE TABLE TICKET (
+    TicketID            INT,
+    ShowtimeID          INT NOT NULL,
+    SeatID              INT NOT NULL,
+    PurchaseDateTime    DATETIME NOT NULL,
+
+-- Not making a foreign key because acountless users can have an email without being on DB
+-- I'm thinking we do email checks in the java code 
+-- Damon Nov 21
+    Email               VARCHAR(255) NOT NULL, 
+
+    UNIQUE (ShowtimeID, SeatID), -- Ensure a seat can't be double-booked
+
+    PRIMARY KEY (TicketID),
+    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID) ON UPDATE CASCADE,
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID) ON UPDATE CASCADE
+    
+);
+
+-- Nasty old DB (Will delete before we submit) Damon Nov 21
+
+-- DROP TABLE IF EXISTS DEFAULT_USER;
+-- CREATE TABLE DEFAULT_USER(
+--     Email   VARCHAR(255) NOT NULL,
+--     Pwd     VARCHAR(25) NOT NULL,
+
+--     PRIMARY KEY (Email)
+-- );
+
 
 -- DROP TABLE IF EXISTS THEATRE;
 -- CREATE TABLE THEATRE (
@@ -83,79 +165,6 @@ CREATE TABLE REGISTERED_USER (
 --     FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE,
 --     FOREIGN KEY (SeatMapID) REFERENCES SEATMAP(SeatMapID) ON DELETE CASCADE
 -- );
-
--- Theatre table
-DROP TABLE IF EXISTS THEATRE;
-CREATE TABLE THEATRE (
-    TheatreID       INT,
-    TheatreName     VARCHAR(100) NOT NULL,
-    Location        VARCHAR(255) NOT NULL,
-
-    PRIMARY KEY (TheatreID)
-);
-
--- TheatreRoom table
-DROP TABLE IF EXISTS THEATREROOM;
-CREATE TABLE THEATREROOM (
-    TheatreRoomID   INT,
-    TheatreID       INT NOT NULL,
-    RoomName        VARCHAR(255) NOT NULL,
-
-    PRIMARY KEY (TheatreRoomID),
-    FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID)
-);
-
--- Seat table (SeatMap)
-DROP TABLE IF EXISTS SEAT;
-CREATE TABLE SEAT (
-    SeatID          INT,
-    TheatreRoomID   INT NOT NULL,
-    SeatRow         INT NOT NULL,
-    SeatNumber      INT NOT NULL,  
-
-    UNIQUE (TheatreRoomID, SeatRow, SeatNumber) 
-
-    PRIMARY KEY (SeatID),
-    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID), 
-);
-
-DROP TABLE IF EXISTS SHOWTIME;
-CREATE TABLE SHOWTIME (
-    ShowtimeID      INT,
-    TheatreRoomID   INT NOT NULL,
-    ShowDateTime    DATETIME NOT NULL,
-    MovieTitle      VARCHAR(255) NOT NULL,
-
-    PRIMARY KEY (ShowtimeID),
-    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID)
-);
-
-DROP TABLE IF EXISTS MOVIE;
-CREATE TABLE MOVIE (
-    MovieID     INT AUTO_INCREMENT,
-    Title       VARCHAR(255) NOT NULL,
-    Genre       VARCHAR(255) NOT NULL,
-    Rating      VARCHAR(255) NOT NULL,
-    Runtime     DATETIME NOT NULL,
-
-    PRIMARY KEY (MovieID)
-);
-
--- Ticket table
-DROP TABLE IF EXISTS TICKET;
-CREATE TABLE TICKET (
-    TicketID            INT,
-    ShowtimeID          INT NOT NULL,
-    SeatID              INT NOT NULL,
-    PurchaseDateTime    DATETIME NOT NULL,
-
-    UNIQUE (ShowtimeID, SeatID) -- Ensure a seat can't be double-booked
-
-    PRIMARY KEY (TicketID),
-    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID),
-    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID),
-    
-);
 
 
 -- ------------- --
@@ -225,15 +234,10 @@ SELECT * FROM USER;
 SELECT * FROM REGISTERED_USER;
 
 -- @block
-SELECT * FROM default_user;
 SELECT * FROM registered_user;
 
 -- @block
-SELECT * FROM theatre;
-SELECT * FROM movie;
-SELECT * FROM showtime;
-SELECT * FROM seatmap;
-SELECT * FROM theatre_showtime_seating;
+
 
 
 

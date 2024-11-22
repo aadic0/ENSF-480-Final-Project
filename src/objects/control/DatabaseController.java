@@ -22,10 +22,11 @@ public class DatabaseController {
      */
     public static Connection createConnection() {
         // Success
-        try { connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); } 
-
+        try { 
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); 
+        } 
         // Failure
-        catch (SQLException e) { connection = null; }
+        catch (SQLException e) { connection = null; } 
 
         return connection;
     }
@@ -40,7 +41,7 @@ public class DatabaseController {
             if (connection != null && !connection.isClosed()) { 
                 connection.close(); 
             }
-        } catch(SQLException e) {} // Ignore SQLException for now (Nov 19)
+        } catch(SQLException e) {} // Ignore SQLException for now -Damon Nov 19 
 
         finally {
             connection = null;
