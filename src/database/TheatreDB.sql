@@ -44,7 +44,7 @@ CREATE TABLE THEATREROOM (
     RoomName        VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (TheatreRoomID),
-    FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID) ON UPDATE CASCADE
+    FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON UPDATE CASCADE
 );
 
 -- Seat table (SeatMap)
@@ -58,18 +58,7 @@ CREATE TABLE SEAT (
     UNIQUE (TheatreRoomID, SeatRow, SeatNumber),
 
     PRIMARY KEY (SeatID),
-    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID) ON UPDATE CASCADE
-);
-
-DROP TABLE IF EXISTS SHOWTIME;
-CREATE TABLE SHOWTIME (
-    ShowtimeID      INT,
-    TheatreRoomID   INT NOT NULL,
-    ShowDateTime    DATETIME NOT NULL,
-    MovieTitle      VARCHAR(255) NOT NULL,
-
-    PRIMARY KEY (ShowtimeID),
-    FOREIGN KEY (TheatreRoomID) REFERENCES TheatreRoom(TheatreRoomID) ON UPDATE CASCADE
+    FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS MOVIE;
@@ -82,6 +71,20 @@ CREATE TABLE MOVIE (
 
     PRIMARY KEY (MovieID)
 );
+
+DROP TABLE IF EXISTS SHOWTIME;
+CREATE TABLE SHOWTIME (
+    ShowtimeID      INT,
+    TheatreRoomID   INT NOT NULL,
+    ShowDateTime    DATETIME NOT NULL,
+    MovieID         INT,
+
+    PRIMARY KEY (ShowtimeID),
+    FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE,
+    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE
+);
+
+
 
 -- Ticket table
 DROP TABLE IF EXISTS TICKET;
@@ -174,60 +177,65 @@ VALUES
     (111, 3, 4, 1), (112, 3, 4, 2), (113, 3, 4, 3), (114, 3, 4, 4), (115, 3, 4, 5),
     (116, 3, 4, 6), (117, 3, 4, 7), (118, 3, 4, 8), (119, 3, 4, 9), (120, 3, 4, 10);
 
-
--- Insert 10 movies
-INSERT INTO MOVIE (MovieID, Title, Genre, Rating, Runtime)
+-- Movies
+INSERT INTO MOVIE (Title, Genre, Rating, Runtime)
 VALUES
-    (1, 'Glimbo''s Revenge', 'Sci-Fi', 'PG-13', '02:28:00'),
-    (2, 'The Adventures of The Bag of Grain', 'Action', 'PG-13', '02:22:50'),
-    (3, 'Smoochin'' on the Moon', 'Romance', 'PG-13', '04:15:00'),
-    (4, 'Avengers: Endgame', 'Action', 'PG-13', '03:01:00'),
-    (5, 'Toy Anecdote', 'Animation', 'G', '01:00:00'),
-    (6, 'Finding Norman', 'Animation', 'G', '01:13:00'),
-    (7, 'The Godmother', 'Crime', 'R', '02:45:00'),
-    (8, 'The Matrices', 'Sci-Fi', 'R', '02:46:00'),
-    (9, 'Scary Shark Movie', 'Thriller', 'PG', '02:00:00'),
-    (10, 'Devonian Park', 'Adventure', 'PG-13', '02:01:00');
+    ('Glimbo''s Revenge', 'Sci-Fi', 'PG-13', '02:28:00'),
+    ('The Adventures of The Bag of Grain', 'Action', 'PG-13', '02:22:50'),
+    ('Smoochin'' on the Moon', 'Romance', 'PG-13', '04:15:00'),
+    ('Endvengers: EndEndEndEndgame', 'Action', 'PG-13', '03:01:00'),
+    ('Toy Anecdote', 'Animation', 'G', '01:00:00'),
+    ('Finding Norman', 'Animation', 'G', '01:13:00'),
+    ('The Godmother', 'Crime', 'R', '02:45:00'),
+    ('The Matrices', 'Sci-Fi', 'R', '02:46:00'),
+    ('Scary Shark Movie', 'Thriller', 'PG', '02:00:00'),
+    ('Devonian Park', 'Adventure', 'PG-13', '02:01:00');
 
--- Insert 30 showtimes (manually distribute movies and times)
--- Insert 30 showtimes for the new movies and distribute them across 3 theatre rooms
-INSERT INTO SHOWTIME (ShowtimeID, TheatreRoomID, ShowDateTime, MovieTitle)
+-- Showtimes
+INSERT INTO SHOWTIME (ShowtimeID, TheatreRoomID, ShowDateTime, MovieID)
 VALUES
-    -- Room 1
-    (1, 1, '2024-11-22 14:00:00', 'Glimbo''s Revenge'),
-    (2, 1, '2024-11-22 17:00:00', 'The Adventures of The Bag of Grain'),
-    (3, 1, '2024-11-22 20:00:00', 'Smoochin'' on the Moon'),
-    (4, 1, '2024-11-23 14:00:00', 'Avengers: Endgame'),
-    (5, 1, '2024-11-23 17:00:00', 'Toy Anecdote'),
-    (6, 1, '2024-11-23 20:00:00', 'Finding Norman'),
-    (19, 1, '2024-11-24 14:00:00', 'Scary Shark Movie'),
-    (20, 1, '2024-11-24 17:00:00', 'Devonian Park'),
-    (21, 1, '2024-11-24 20:00:00', 'Glimbo''s Revenge'),
-    (22, 1, '2024-11-25 14:00:00', 'The Matrices'),
+    (1, 1, '2024-11-22 12:00:00', 1),
+    (2, 1, '2024-11-22 14:30:00', 2),
+    (3, 2, '2024-11-22 15:00:00', 3),
+    (4, 2, '2024-11-22 17:00:00', 4),
+    (5, 3, '2024-11-22 18:00:00', 5),
+    (6, 3, '2024-11-22 20:00:00', 6),
+    (7, 1, '2024-11-23 12:00:00', 7),
+    (8, 1, '2024-11-23 14:30:00', 8),
+    (9, 2, '2024-11-23 15:00:00', 9),
+    (10, 2, '2024-11-23 17:00:00', 10),
+    (11, 3, '2024-11-23 18:00:00', 1),
+    (12, 3, '2024-11-23 20:00:00', 2),
+    (13, 1, '2024-11-24 12:00:00', 3),
+    (14, 1, '2024-11-24 14:30:00', 4),
+    (15, 2, '2024-11-24 15:00:00', 5),
+    (16, 2, '2024-11-24 17:00:00', 6),
+    (17, 3, '2024-11-24 18:00:00', 7),
+    (18, 3, '2024-11-24 20:00:00', 8),
+    (19, 1, '2024-11-25 12:00:00', 9),
+    (20, 1, '2024-11-25 14:30:00', 10),
+    (21, 2, '2024-11-25 15:00:00', 1),
+    (22, 2, '2024-11-25 17:00:00', 2),
+    (23, 3, '2024-11-25 18:00:00', 3),
+    (24, 3, '2024-11-25 20:00:00', 4),
+    (25, 1, '2024-11-26 12:00:00', 5),
+    (26, 1, '2024-11-26 14:30:00', 6),
+    (27, 2, '2024-11-26 15:00:00', 7),
+    (28, 2, '2024-11-26 17:00:00', 8),
+    (29, 3, '2024-11-26 18:00:00', 9),
+    (30, 3, '2024-11-26 20:00:00', 10),
+    (31, 1, '2024-11-27 12:00:00', 1),
+    (32, 1, '2024-11-27 14:30:00', 2),
+    (33, 2, '2024-11-27 15:00:00', 3),
+    (34, 2, '2024-11-27 17:00:00', 4),
+    (35, 3, '2024-11-27 18:00:00', 5),
+    (36, 3, '2024-11-27 20:00:00', 6),
+    (37, 1, '2024-11-28 12:00:00', 7),
+    (38, 1, '2024-11-28 14:30:00', 8),
+    (39, 2, '2024-11-28 15:00:00', 9),
+    (40, 2, '2024-11-28 17:00:00', 10);
 
-    -- Room 2
-    (7, 2, '2024-11-22 15:00:00', 'The Godmother'),
-    (8, 2, '2024-11-22 18:00:00', 'The Matrices'),
-    (9, 2, '2024-11-22 21:00:00', 'Scary Shark Movie'),
-    (10, 2, '2024-11-23 15:00:00', 'Devonian Park'),
-    (11, 2, '2024-11-23 18:00:00', 'Glimbo''s Revenge'),
-    (12, 2, '2024-11-23 21:00:00', 'The Adventures of The Bag of Grain'),
-    (23, 2, '2024-11-24 15:00:00', 'The Adventures of The Bag of Grain'),
-    (24, 2, '2024-11-24 18:00:00', 'Smoochin'' on the Moon'),
-    (25, 2, '2024-11-24 21:00:00', 'Avengers: Endgame'),
-    (26, 2, '2024-11-25 17:00:00', 'Scary Shark Movie'),
 
-    -- Room 3
-    (13, 3, '2024-11-22 14:30:00', 'Smoochin'' on the Moon'),
-    (14, 3, '2024-11-22 18:00:00', 'Avengers: Endgame'),
-    (15, 3, '2024-11-22 21:00:00', 'Toy Anecdote'),
-    (16, 3, '2024-11-23 14:30:00', 'Finding Norman'),
-    (17, 3, '2024-11-23 18:00:00', 'The Godmother'),
-    (18, 3, '2024-11-23 21:00:00', 'The Matrices'),
-    (27, 3, '2024-11-24 14:30:00', 'Toy Anecdote'),
-    (28, 3, '2024-11-24 18:00:00', 'Finding Norman'),
-    (29, 3, '2024-11-24 21:00:00', 'The Godmother'),
-    (30, 3, '2024-11-25 20:00:00', 'Devonian Park');
 
 
 -- ------------ --
@@ -235,22 +243,17 @@ VALUES
 -- ------------ --
 
 
--- INSERT --
+
 
 -- @block
-DELETE FROM DEFAULT_USER;
-INSERT INTO DEFAULT_USER (Email, Pwd)
-VALUES ('test@test.com', 'pwd');
-
+-- INSERT --
 INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode)
 VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
 
+
 -- @block
-
-
-
 -- SELECT --
--- @block
+
 SELECT * FROM REGISTERED_USER;
 SELECT * FROM THEATRE;
 SELECT * FROM THEATREROOM;
@@ -258,11 +261,19 @@ SELECT * FROM SEAT;
 SELECT * FROM MOVIE;
 SELECT * FROM SHOWTIME;
 
-
+-- @block
 -- DELETE --
 
--- @block
+SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checks
+
 DELETE FROM REGISTERED_USER;
+DELETE FROM SEAT;
+DELETE FROM MOVIE;
+DELETE FROM SHOWTIME;
+DELETE FROM THEATREROOM;
+DELETE FROM THEATRE;
+
+SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
 
 
 -- @block
