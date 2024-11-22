@@ -27,8 +27,14 @@ public class Main {
     //------------------------//
     //   ShowtimeController   //
     //------------------------//
-    ShowtimeController showtimeController = new ShowtimeController();
-    showtimeController.getAllShowtimes();
+    // ShowtimeController showtimeController = new ShowtimeController();
+    // showtimeController.getAllShowtimes();
+
+    //------------------------//
+    //     MovieController    //
+    //------------------------//
+    MovieController movieController = new MovieController();
+    movieController.getAllMovies();
 
 
     }
