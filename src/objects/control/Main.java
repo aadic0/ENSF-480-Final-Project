@@ -28,7 +28,14 @@ public class Main {
     boolean isAuthenticated = controller.authenticateUser(testEmail, testPassword);
     
     System.out.println("Authentication result: " + isAuthenticated);
+
+
+    controller.registerUser("aadichauhan321@gmail.com", "deezNutz", "Aadi", "Chauhan", "93 Legacy Common SE", "Calgary", "Alberta", "T2X 2A9");
     
+    controller.updateAddressInfo("Fake address");
+    controller.updateName("Aaditya", "Chonuts");
+    
+    controller.updateEmailInfo("deeznuts@gmail.com");
 
     }
 }
