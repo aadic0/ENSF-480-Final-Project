@@ -1,40 +1,48 @@
 package objects.entity;
+
+import java.time.LocalDateTime;
+
 public class Ticket {
     //---------------//
     //   Variables   //
     //---------------//
     private int ticketID;
     private Showtime showtime;
-    private Theatre theatre;
     private Seat seat;
+    private LocalDateTime purchaseDateTime;
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Ticket(Showtime showtime, Theatre theatre, Seat seat, int ticketID) {
+    public Ticket(Showtime showtime, LocalDateTime purchaseDateTime, Seat seat, int ticketID) {
         this.ticketID = ticketID;
         this.showtime = showtime;
-        this.theatre = theatre;
+        this.purchaseDateTime = purchaseDateTime;
         this.seat = seat;
     }
 
     //---------------------//
     //  Getters + Setters  //
     //---------------------//
-    public int getTicketID() { return ticketID; }
-    public void setTicketID(int ticketID) { this.ticketID = ticketID; }
 
-    public Showtime getShowtime() { return showtime; }
-    public void setShowtime(Showtime showtime) { this.showtime = showtime; }
+    public int getTicketID() {
+        return ticketID;
+    }
 
-    public Theatre getTheatre() { return theatre; }
-    public void setTheatre(Theatre theatre) { this.theatre = theatre; }
+    public Showtime getShowtime() {
+        return showtime;
+    }
 
-    public Seat getSeat() { return seat; }
-    public void setSeat(Seat seat) { this.seat = seat; }
+    public Seat getSeat() {
+        return seat;
+    }
 
+    public LocalDateTime getPurchaseDateTime() {
+        return purchaseDateTime;
+    }
 
     //-------------//
     //   Methods   //
     //-------------//
+
 }

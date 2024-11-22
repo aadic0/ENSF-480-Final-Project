@@ -6,38 +6,42 @@ public class Theatre {
     //---------------//
     //   Variables   //
     //---------------//
-    private String name;
-    private HashMap<Showtime, SeatMap> mapShowtimeSeating;
+
+    private int theatreID;
+    private String theatreName;
+    private String streetAddress;
+
     //---------------//
     //  Constructor  //
     //---------------//
-    public Theatre(String name) {
-        this.name = name;
-        this.mapShowtimeSeating = new HashMap<>();
-    }
-
-    public Theatre(String name, HashMap<Showtime, SeatMap> mapShowtimeSeating) {
-        this.name = name;
-        this.mapShowtimeSeating = mapShowtimeSeating;
+    public Theatre(int theatreID, String theatreName, String streetAddress) {
+        this.theatreID = theatreID;
+        this.theatreName = theatreName;
+        this.streetAddress = streetAddress;
     }
 
     //---------------------//
     //  Getters + Setters  //
     //---------------------//
-    public String getName() {
-        return name;
+
+    public int getTheatreID() {
+        return theatreID;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getTheatreName() {
+        return theatreName;
     }
 
-    public HashMap<Showtime, SeatMap> getMapShowtimeSeating() {
-        return mapShowtimeSeating;
+    public void setTheatreName(String theatreName) {
+        this.theatreName = theatreName;
     }
 
-    public void setMapShowtimeSeating(HashMap<Showtime, SeatMap> mapShowtimeSeating) {
-        this.mapShowtimeSeating = mapShowtimeSeating;
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
     //-------------//

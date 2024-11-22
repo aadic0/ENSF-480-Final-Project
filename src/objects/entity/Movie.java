@@ -1,30 +1,38 @@
 package objects.entity;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Movie {
     //---------------//
     //   Variables   //
     //---------------//
+    private int movieID;
     private String name;
     private String genre;
     private String rating;
-    private ArrayList<String> actors;
+    private LocalTime runtime;
 
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Movie(String name, String genre, String rating, ArrayList<String> actors) {
+    public Movie(int movieID, String name, String genre, String rating, LocalTime runtime) {
+        this.movieID = movieID;
         this.name = name;
         this.genre = genre;
         this.rating = rating;
-        this.actors = actors;
+        this.runtime = runtime;
     }
 
     //---------------------//
     //  Getters + Setters  //
     //---------------------//
+    
+    public int getMovieID() {
+        return movieID;
+    }
+    
     public String getName() {
         return name;
     }
@@ -49,6 +57,14 @@ public class Movie {
         this.rating = rating;
     }
 
+    public LocalTime getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(LocalTime runtime) {
+        this.runtime = runtime;
+    }
+
 
 
 
@@ -56,11 +72,5 @@ public class Movie {
     //   Methods   //
     //-------------//
 
-    public void addActor(String actor) {
-        this.actors.add(actor);
-    }
 
-    public void removeActor(String actor) {
-        this.actors.remove(actor);
-    }
 }
