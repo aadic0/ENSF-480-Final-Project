@@ -3,7 +3,6 @@ package objects.control;
 // import objects.entity.PaymentInfo;
 // import objects.entity.RegisteredUser;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -80,28 +79,30 @@ public class RegisteredUserController {
             try (PreparedStatement psPaymentInfo  = connection.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS)) {
                 PaymentInfo paymentInfo = registeredUser.getPaymentInfo();
 
+                // SEt paramaters for the statement
                 psPaymentInfo.setLong(1, (long) paymentInfo.getCardNumber());
                 psPaymentInfo.setString(2, paymentInfo.getExpiration());
                 psPaymentInfo.setInt(3, paymentInfo.getCV());
                 psPaymentInfo.setString(4, registeredUser.getEmail());
                 int rowsAffectedPI = psPaymentInfo.executeUpdate();
 
+                // Check if rows have been added
                 if (rowsAffectedPI > 0) { System.out.println("Successfully added PaymentInfo"); } 
                 else { System.out.println("Failed to add PaymentInfo"); }
 
-                // Get PaymentID key from table
+                // Get PaymentID key that was generated
                 try (ResultSet generatedKeys = psPaymentInfo.getGeneratedKeys()) {
                     if (generatedKeys.next()) { paymentId = generatedKeys.getInt(1); } 
                     else { throw new SQLException("Failed to retrieve PaymentID."); }
 
                 } catch (Exception e) { e.printStackTrace(); }
+
             } catch (Exception e) { e.printStackTrace(); }
 
             // Insert into REGISTERED_USER
             try (PreparedStatement psRegisteredUser = connection.prepareStatement(query2)) {
-                if (paymentId < 0) {
-                    throw new Exception("PaymentID was not set");
-                }
+                
+                // SEt paramaters for the statement
                 psRegisteredUser.setString(1, registeredUser.getEmail());
                 psRegisteredUser.setString(2, pwd);
                 psRegisteredUser.setString(3, registeredUser.getFName());
@@ -119,9 +120,12 @@ public class RegisteredUserController {
                     emailID = registeredUser.getEmail();
                 } 
                 else { System.out.println("Failed to register user"); }
+                // End testing, delete up to here
 
             } catch (Exception e) { e.printStackTrace(); }
 
+            // Make sure paymentID was actually set before committing 
+            if (paymentId < 0) { throw new Exception("PaymentID was not set"); }
             connection.commit(); // Commit the changes to the DB
 
         } catch (Exception e) { e.printStackTrace(); }
