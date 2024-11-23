@@ -5,17 +5,17 @@ public class PaymentInfo {
     //---------------//
     private double cardNumber;
     private String expiration;
-    private int cv;
-    private String fullName;
+    private int cvv;
+    // private String fullName;
     
     //---------------//
     //  Constructor  //
     //---------------//
-    public PaymentInfo(double cardNumber, String expiration, int cv, String fullName) {
+    public PaymentInfo(double cardNumber, String expiration, int cvv, String fullName) {
         this.cardNumber = cardNumber;
         this.expiration = expiration;
-        this.cv = cv;
-        this.fullName = fullName;
+        this.cvv = cvv;
+        // this.fullName = fullName;
     }
 
     //---------------------//
@@ -40,21 +40,21 @@ public class PaymentInfo {
     }
 
     public int getCV() {
-        return cv;
+        return cvv;
     }
 
-    public void setCV(int cv) {
-        assert(cv >= 100 && cv <= 999);
-        this.cv = cv;
+    public void setCVV(int cvv) {
+        assert(cvv >= 100 && cvv <= 999);
+        this.cvv = cvv;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
+    // public String getFullName() {
+    //     return fullName;
+    // }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    // public void setFullName(String fullName) {
+    //     this.fullName = fullName;
+    // }
     //-------------//
     //   Methods   //
     //-------------//
