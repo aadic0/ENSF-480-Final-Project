@@ -10,7 +10,7 @@ public class PaymentController {
      * @param paymentInfo
      * @param price
      */
-    public void pay(PaymentInfo paymentInfo, float price) {
-        
+    public boolean pay(PaymentInfo paymentInfo, float price) {
+        return true; // Payment is successful
     }
 }

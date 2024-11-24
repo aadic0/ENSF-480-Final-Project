@@ -1,7 +1,6 @@
 package objects.entity;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.sql.Time;
 
 public class Movie {
     //---------------//
@@ -11,13 +10,13 @@ public class Movie {
     private String name;
     private String genre;
     private String rating;
-    private LocalTime runtime;
+    private Time runtime;
 
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Movie(int movieID, String name, String genre, String rating, LocalTime runtime) {
+    public Movie(int movieID, String name, String genre, String rating, Time runtime) {
         this.movieID = movieID;
         this.name = name;
         this.genre = genre;
@@ -57,11 +56,11 @@ public class Movie {
         this.rating = rating;
     }
 
-    public LocalTime getRuntime() {
+    public Time getRuntime() {
         return runtime;
     }
 
-    public void setRuntime(LocalTime runtime) {
+    public void setRuntime(Time runtime) {
         this.runtime = runtime;
     }
 

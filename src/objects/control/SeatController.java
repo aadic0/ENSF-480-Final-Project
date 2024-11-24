@@ -3,15 +3,19 @@ package objects.control;
 import objects.entity.Seat;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 
 public class SeatController {
-    public SeatController(){} 
+    private int showtimeID;
+    private int seatID;
+    
+    public SeatController(){
+        this.showtimeID = -1;
+        this.seatID = -1;
+    } 
 
     /**
      * Check to see if a ticket exists for a seat and showtime
@@ -25,16 +29,19 @@ public class SeatController {
      * @param movieID
      * @return
      */
-    public boolean isSeatAvailable(Seat seat, int theatreRoomID, Date showDateTime, int movieID) {
+    public boolean isSeatAvailable(Seat seat, int theatreRoomID, Timestamp showDateTime, int movieID) {
 
+        // Reset values
+        this.showtimeID = -1;
+        this.seatID = -1;
+
+        // Queries
         String query0 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?"; // Put the implementation for this between query 1 and 2
-
         String query1 = "SELECT ShowtimeID FROM SHOWTIME WHERE TheatreRoomID = ? AND ShowDateTime = ? AND MovieID = ?";
         String query2 = "SELECT SeatID FROM SEAT WHERE SeatRow = ? AND SeatNumber = ? AND TheatreRoomID = ?";
         String query3 = "SELECT TicketID FROM TICKET WHERE SeatID = ? AND ShowtimeID = ?";
 
-        int showtimeID = -1;
-        int seatID = -1;
+        
 
 
         try (Connection connection = DatabaseController.createConnection()) {
@@ -45,13 +52,13 @@ public class SeatController {
                 
                 // Set query parameters
                 psQuery1.setInt(1, theatreRoomID);
-                psQuery1.setTimestamp(2, new Timestamp(showDateTime.getTime())); 
+                psQuery1.setTimestamp(2, showDateTime); 
                 psQuery1.setInt(3, movieID);
 
                 // Find showtime ID
                 try (ResultSet rs1 = psQuery1.executeQuery()) {
                     if (rs1.next()) {
-                        showtimeID = rs1.getInt("ShowtimeID");
+                        this.showtimeID = rs1.getInt("ShowtimeID");
                     } 
                     // Return false if no showtime is found
                     else {
@@ -87,7 +94,7 @@ public class SeatController {
             // Query 3: Find out if TicketID exists
             try (PreparedStatement psQuery3 = connection.prepareStatement(query3)) {
                 psQuery3.setInt(1, seatID);
-                psQuery3.setInt(2, showtimeID);
+                psQuery3.setInt(2, this.showtimeID);
 
                 // If ticketID exists then return true
                 try (ResultSet rs3 = psQuery3.executeQuery()) {
@@ -102,4 +109,21 @@ public class SeatController {
 
         return true;
     }
+
+    /**
+     * get showtimeID
+     * @return showtimeID
+     */
+    public int getShowtimeID() {
+        return showtimeID;
+    }
+
+    /**
+     * get seatID
+     * @return seatID
+     */
+    public int getSeatID() {
+        return seatID;
+    }
+
 } 

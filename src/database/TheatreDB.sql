@@ -102,7 +102,7 @@ CREATE TABLE SHOWTIME (
 -- Ticket table
 DROP TABLE IF EXISTS TICKET;
 CREATE TABLE TICKET (
-    TicketID            INT NOT NULL,
+    TicketID            INT AUTO_INCREMENT,
     ShowtimeID          INT NOT NULL,
     SeatID              INT NOT NULL,
     PurchaseDateTime    DATETIME NOT NULL,
@@ -115,8 +115,8 @@ CREATE TABLE TICKET (
     UNIQUE (ShowtimeID, SeatID), -- Ensure a seat can't be double-booked
 
     PRIMARY KEY (TicketID),
-    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID) ON UPDATE CASCADE,
-    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID) ON UPDATE CASCADE
+    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID),
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID)
     
 );
 
@@ -277,6 +277,7 @@ SELECT * FROM THEATREROOM;
 SELECT * FROM SEAT;
 SELECT * FROM MOVIE;
 SELECT * FROM SHOWTIME;
+SELECT * FROM TICKET;
 
 -- @block
 -- DELETE --
@@ -290,6 +291,7 @@ DELETE FROM MOVIE;
 DELETE FROM SHOWTIME;
 DELETE FROM THEATREROOM;
 DELETE FROM THEATRE;
+DELETE FROM TICKET;
 
 SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
 
