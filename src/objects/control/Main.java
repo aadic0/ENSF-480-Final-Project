@@ -39,7 +39,8 @@ public class Main {
         // 1. Create test data
         String testEmail = "testuser@gmail.com";
         String testPassword = "password123";
-        PaymentInfo testPaymentInfo = new PaymentInfo(1234567812345678L, "2025-12-31", 123, "John Doe");
+        // Need to add L or it gets upset
+        PaymentInfo testPaymentInfo = new PaymentInfo(1234567812345678L, "2025-12-31", 123);
         RegisteredUser testUser = new RegisteredUser(
             "John", "Doe",                         // First and last name
             "123 Fake Street", "Calgary", "AB",    // Address
