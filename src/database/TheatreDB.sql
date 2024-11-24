@@ -68,7 +68,7 @@ CREATE TABLE SEAT (
     SeatRow         INT NOT NULL,
     SeatNumber      INT NOT NULL,  
 
-    UNIQUE (TheatreRoomID, SeatRow, SeatNumber),
+    UNIQUE (TheatreRoomID, SeatRow, SeatNumber), -- These three values combined must be unique
 
     PRIMARY KEY (SeatID),
     FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE
