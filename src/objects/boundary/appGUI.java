@@ -6,6 +6,8 @@ public class appGUI{
         Login loginPage;
         
         loginPage = new Login();
+
+        loginPage.displayLoginGUI();
         
     }
 }
