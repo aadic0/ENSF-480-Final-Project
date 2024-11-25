@@ -27,6 +27,9 @@ public class TicketController {
      * @param price
      */
     public void purchaseTicket(String email, Seat seat, Showtime showtime, PaymentInfo paymentInfo, float price){
+        // FUNCTIONALITY MISSING:
+        //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
+        
         // Create controllers
         SeatController seatController = new SeatController();
         PaymentController paymentController = new PaymentController();
@@ -81,24 +84,54 @@ public class TicketController {
     }
 
     /**
-     * Refund a ticket to a User
+     * Refund a ticket to an email (NOTE: THIS METHOD IS UNTESTED)
      * @param t
      * @param user
      * @param paymentInfo
      */
-    public void refundTicket(Ticket t, User user, PaymentInfo paymentInfo) {
+    public void refundTicket(Ticket ticket, String email, PaymentInfo paymentInfo) {
+        String query1 = "SELECT Email FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
+        String query2 = "SELECT COUNT(Email) FROM REGISTERED_USER WHERE Email = ?"; // Check if email is in Reg User table
 
+        boolean regUserFlag = false;
+
+        PaymentController paymentController = new PaymentController();
+
+        try (Connection connection = DatabaseController.createConnection()) {
+            
+            // Query 1 - Check if ticket exists
+            try (PreparedStatement preparedStatement1 = connection.prepareStatement(query1)) {
+                preparedStatement1.setInt(1, ticket.getTicketID());
+
+                int rowsAffected = preparedStatement1.executeUpdate();
+
+                // Check if ticket is in DB
+                if (rowsAffected > 0) {
+                    System.out.println("Ticket in DB");
+                } else {
+                    System.out.println("Ticket not in DB");
+                    return;
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+
+            // Query 2 - Check if email is associated with a RegisteredUser
+            try (PreparedStatement preparedStatement2 = connection.prepareStatement(query2)) {
+                preparedStatement2.setString(1, email);
+
+                int rowsAffected = preparedStatement2.executeUpdate();
+
+                if (rowsAffected > 0) 
+                    regUserFlag = true;
+                
+            } catch (Exception e) { e.printStackTrace(); }
+
+            // Refund user
+            // Temp refund price of $0 until we decide on what functionality is
+            paymentController.refund(paymentInfo, 0, regUserFlag);
+
+        } catch (Exception e) { e.printStackTrace(); }
     }
-
-    /**
-     * Refund a ticket to a RegisteredUser
-     * @param t
-     * @param registeredUser
-     */
-    public void refundTicket(Ticket t, RegisteredUser registeredUser) {
-
-    }
-
     
      
 
