@@ -5,6 +5,7 @@ import objects.entity.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 import objects.entity.PaymentInfo;
@@ -84,14 +85,15 @@ public class TicketController {
     }
 
     /**
-     * Refund a ticket to an email (NOTE: THIS METHOD IS UNTESTED)
+     * Refund a ticket to an email
      * @param t
      * @param user
      * @param paymentInfo
      */
-    public void refundTicket(Ticket ticket, String email, PaymentInfo paymentInfo) {
+    public void refundTicket(int ticketID, String email, PaymentInfo paymentInfo) {
         String query1 = "SELECT Email FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
         String query2 = "SELECT COUNT(Email) FROM REGISTERED_USER WHERE Email = ?"; // Check if email is in Reg User table
+        String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
 
         boolean regUserFlag = false;
 
@@ -101,12 +103,12 @@ public class TicketController {
             
             // Query 1 - Check if ticket exists
             try (PreparedStatement preparedStatement1 = connection.prepareStatement(query1)) {
-                preparedStatement1.setInt(1, ticket.getTicketID());
+                preparedStatement1.setInt(1, ticketID);
 
-                int rowsAffected = preparedStatement1.executeUpdate();
+                ResultSet rs1 = preparedStatement1.executeQuery();
 
                 // Check if ticket is in DB
-                if (rowsAffected > 0) {
+                if (rs1.next()) {
                     System.out.println("Ticket in DB");
                 } else {
                     System.out.println("Ticket not in DB");
@@ -119,10 +121,11 @@ public class TicketController {
             try (PreparedStatement preparedStatement2 = connection.prepareStatement(query2)) {
                 preparedStatement2.setString(1, email);
 
-                int rowsAffected = preparedStatement2.executeUpdate();
+                ResultSet rs2 = preparedStatement2.executeQuery();
 
-                if (rowsAffected > 0) 
+                if (rs2.next()) 
                     regUserFlag = true;
+                    System.out.println("email associated with RegUser");
                 
             } catch (Exception e) { e.printStackTrace(); }
 
@@ -130,6 +133,18 @@ public class TicketController {
             // Temp refund price of $0 until we decide on what functionality is
             paymentController.refund(paymentInfo, 0, regUserFlag);
 
+            // Query 3 - Remove ticket from DB
+            try (PreparedStatement preparedStatement3 = connection.prepareStatement(query3)) {
+                preparedStatement3.setInt(1, ticketID);
+
+                int rowsAffected = preparedStatement3.executeUpdate();
+
+                if (rowsAffected > 0) 
+                    System.out.println("Removed Ticket with TicketID " + ticketID + " from DB");
+                else
+                    System.out.println("Failed to remove ticket");
+                
+            } catch (Exception e) { e.printStackTrace(); }
         } catch (Exception e) { e.printStackTrace(); }
     }
     

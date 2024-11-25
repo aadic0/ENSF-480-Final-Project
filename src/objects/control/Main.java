@@ -101,6 +101,11 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static void refundTicketTest() {
+        TicketController tc = new TicketController();
+        tc.refundTicket(7, "testuser@gmail.com", null);
+    }
     
 
 
@@ -219,14 +224,20 @@ public class Main {
     // ------------------------------//
     //   RegisteredUserController    //
     // ------------------------------//
-    Main.registerUserTest();
+    // Main.registerUserTest();
 
 
     // --------------------//
     //   SeatController    //
     // --------------------//
     // seatBookingTest();
+
+    //-------------------------//
+    //     TicketController    //
+    //-------------------------//
+
     // buyTicketTest();
+    // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
 
     //------------------------//
     //   ShowtimeController   //
@@ -239,6 +250,8 @@ public class Main {
     //------------------------//
     // MovieController movieController = new MovieController();
     // movieController.getAllMovies();
+
+    
 
 
     }
