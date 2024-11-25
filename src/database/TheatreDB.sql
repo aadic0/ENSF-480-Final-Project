@@ -6,30 +6,43 @@ CREATE DATABASE THEATRE_DB;
 USE THEATRE_DB;
 
 -- RegisteredIser table
+
+DROP TABLE IF EXISTS USER_PAYMENT_INFO;
+CREATE TABLE USER_PAYMENT_INFO (
+    PaymentID       INT AUTO_INCREMENT,
+    NumberCC        BIGINT NOT NULL,
+    ExpirationDate  DATE NOT NULL,
+    CVV             INT NOT NULL,
+
+    Email           VARCHAR(255) NOT NULL, -- This will double store RegisteredUsers payment info but we need to keep track of default user payments 
+
+    PRIMARY KEY (PaymentID)
+);
+
 DROP TABLE IF EXISTS REGISTERED_USER;
 CREATE TABLE REGISTERED_USER (
-    Email          VARCHAR(255) NOT NULL,
-    Pwd            VARCHAR(255) NOT NULL,
+    Email           VARCHAR(255) NOT NULL,
+    Pwd             VARCHAR(255) NOT NULL,
 
-    FirstName      VARCHAR(50) NOT NULL,
-    LastName       VARCHAR(50) NOT NULL,
-    
-    StreetAddress  VARCHAR(255) NOT NULL,
-    City           VARCHAR(100) NOT NULL,
-    Province       VARCHAR(100) NOT NULL,
-    PostalCode     VARCHAR(20) NOT NULL,
-    
-    -- Payment_Info   JSON,  -- Could turn into json but im commenting it out for now
-    
-    PRIMARY KEY (Email)
-    -- FOREIGN KEY (Email) REFERENCES DEFAULT_USER(Email) ON UPDATE CASCADE
+    FirstName       VARCHAR(50) NOT NULL,
+    LastName        VARCHAR(50) NOT NULL,
+
+    StreetAddress   VARCHAR(255) NOT NULL,
+    City            VARCHAR(100) NOT NULL,
+    Province        VARCHAR(100) NOT NULL,
+    PostalCode      VARCHAR(20) NOT NULL,
+
+    PaymentID       INT NOT NULL,
+
+    PRIMARY KEY (Email),
+    FOREIGN KEY (PaymentID) REFERENCES USER_PAYMENT_INFO(PaymentID) ON UPDATE CASCADE
 
 );
 
 -- Theatre table
 DROP TABLE IF EXISTS THEATRE;
 CREATE TABLE THEATRE (
-    TheatreID       INT,
+    TheatreID       INT NOT NULL,
     TheatreName     VARCHAR(100) NOT NULL,
     StreetAddress   VARCHAR(255) NOT NULL, -- This line is creating errors because of column name
 
@@ -39,23 +52,23 @@ CREATE TABLE THEATRE (
 -- TheatreRoom table
 DROP TABLE IF EXISTS THEATREROOM;
 CREATE TABLE THEATREROOM (
-    TheatreRoomID   INT,
+    TheatreRoomID   INT NOT NULL,
     TheatreID       INT NOT NULL,
     RoomName        VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (TheatreRoomID),
-    FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON UPDATE CASCADE
+    FOREIGN KEY (TheatreID)REFERENCES THEATRE(TheatreID) ON UPDATE CASCADE
 );
 
 -- Seat table (SeatMap)
 DROP TABLE IF EXISTS SEAT;
 CREATE TABLE SEAT (
-    SeatID          INT,
+    SeatID          INT NOT NULL,
     TheatreRoomID   INT NOT NULL,
     SeatRow         INT NOT NULL,
     SeatNumber      INT NOT NULL,  
 
-    UNIQUE (TheatreRoomID, SeatRow, SeatNumber),
+    UNIQUE (TheatreRoomID, SeatRow, SeatNumber), -- These three values combined must be unique
 
     PRIMARY KEY (SeatID),
     FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE
@@ -74,10 +87,10 @@ CREATE TABLE MOVIE (
 
 DROP TABLE IF EXISTS SHOWTIME;
 CREATE TABLE SHOWTIME (
-    ShowtimeID      INT,
+    ShowtimeID      INT NOT NULL,
     TheatreRoomID   INT NOT NULL,
     ShowDateTime    DATETIME NOT NULL,
-    MovieID         INT,
+    MovieID         INT NOT NULL,
 
     PRIMARY KEY (ShowtimeID),
     FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE,
@@ -89,7 +102,7 @@ CREATE TABLE SHOWTIME (
 -- Ticket table
 DROP TABLE IF EXISTS TICKET;
 CREATE TABLE TICKET (
-    TicketID            INT,
+    TicketID            INT AUTO_INCREMENT,
     ShowtimeID          INT NOT NULL,
     SeatID              INT NOT NULL,
     PurchaseDateTime    DATETIME NOT NULL,
@@ -102,8 +115,8 @@ CREATE TABLE TICKET (
     UNIQUE (ShowtimeID, SeatID), -- Ensure a seat can't be double-booked
 
     PRIMARY KEY (TicketID),
-    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID) ON UPDATE CASCADE,
-    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID) ON UPDATE CASCADE
+    FOREIGN KEY (ShowtimeID) REFERENCES Showtime(ShowtimeID),
+    FOREIGN KEY (SeatID) REFERENCES Seat(SeatID)
     
 );
 
@@ -112,9 +125,12 @@ CREATE TABLE TICKET (
 -- USER CREATION --
 -- ------------- --
 
-DROP USER IF EXISTS 'theatre_connect'@'localhost';
-CREATE USER 'theatre_connect'@'localhost' IDENTIFIED WITH 'caching_sha2_password' BY 'theatre';
-GRANT ALL ON THEATRE_DB.* TO 'theatre_connect'@'localhost';
+-- This stopped working for some reason so you have to do it in the MySQL CLI instead
+
+-- DROP USER IF EXISTS 'theatre_connect'@'localhost';
+-- CREATE USER 'theatre_connect'@'localhost' IDENTIFIED WITH 'caching_sha2_password' BY 'theatre';
+
+-- GRANT ALL ON THEATRE_DB.* TO 'theatre_connect'@'localhost';
 
 
 -- -------------- --
@@ -126,7 +142,7 @@ INSERT INTO THEATRE (TheatreID, TheatreName, StreetAddress)
 VALUES (1, 'ACMEplex Theatre', '123 Main Street, Calgary, AB');
 
 -- 3 theatre rooms
-INSERT INTO THEATREROOM (TheatreRoomID, TheatreID, RoomName)
+INSERT INTO THEATREROOM (TheatreRoomID, TheatreID, RoomName) 
 VALUES 
     (1, 1, 'Room A'),
     (2, 1, 'Room B'),
@@ -254,24 +270,28 @@ VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Pr
 -- @block
 -- SELECT --
 
+SELECT * FROM USER_PAYMENT_INFO;
 SELECT * FROM REGISTERED_USER;
 SELECT * FROM THEATRE;
 SELECT * FROM THEATREROOM;
 SELECT * FROM SEAT;
 SELECT * FROM MOVIE;
 SELECT * FROM SHOWTIME;
+SELECT * FROM TICKET;
 
 -- @block
 -- DELETE --
 
 SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checks
 
+DELETE FROM USER_PAYMENT_INFO;
 DELETE FROM REGISTERED_USER;
 DELETE FROM SEAT;
 DELETE FROM MOVIE;
 DELETE FROM SHOWTIME;
 DELETE FROM THEATREROOM;
 DELETE FROM THEATRE;
+DELETE FROM TICKET;
 
 SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
 

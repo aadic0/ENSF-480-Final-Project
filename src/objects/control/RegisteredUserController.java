@@ -3,9 +3,13 @@ package objects.control;
 // import objects.entity.PaymentInfo;
 // import objects.entity.RegisteredUser;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import objects.entity.PaymentInfo;
+import objects.entity.RegisteredUser;
 
 
 
@@ -19,17 +23,6 @@ public class RegisteredUserController {
     private String emailID;
 
     public RegisteredUserController() {}
-
-
-    /****************** 
-     * 
-     * NOTE FOR LAB MEMBERS:
-     * 
-     * SINCE REGISTERED USER USES DEFAULT USER AS A FOREIGN KEY, FOR ANY INSERTIONS YOU GOTTA UPDATE DEFAULT USER AS WELL
-     * 
-     * - AADI
-     * 
-     * ********************/
 
 
     /**
@@ -66,46 +59,80 @@ public class RegisteredUserController {
 
     /**
      * Register the user
-     * @param email
-     * @param pwd
-     * @param fname
-     * @param lname
-     * @param addr
-     * @param city
-     * @param province
-     * @param postalCode
+     * @param registeredUser RegisteredUser object we want to add to DB
+     * @param pwd password
      */
-    public void registerUser(String email, String pwd, String fname, String lname, String addr, String city, String province, String postalCode) {
-        String query = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode) " +
-                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public void registerUser(RegisteredUser registeredUser, String pwd) {
+        String query1 = "INSERT INTO USER_PAYMENT_INFO (NumberCC, ExpirationDate, CVV, Email) " +
+                        "VALUES (?, ?, ?, ?)";
+        String query2 = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode, PaymentID) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
+        int paymentId = -1; // Payment ID we get after adding info to USER_PAYMENT_INFO
+
         // Gotta setup default user first due to foreign key constraints
         try (Connection connection = DatabaseController.createConnection()) {
+
+            connection.setAutoCommit(false); // Set auto commit to false so inserts succeed or fail together
             
-            // Insert into REGISTERED_USER
-            try (PreparedStatement psRegisteredUser = connection.prepareStatement(query)) {
-                psRegisteredUser.setString(1, email);
-                psRegisteredUser.setString(2, pwd);
-                psRegisteredUser.setString(3, fname);
-                psRegisteredUser.setString(4, lname);
-                psRegisteredUser.setString(5, addr);
-                psRegisteredUser.setString(6, city);
-                psRegisteredUser.setString(7, province);
-                psRegisteredUser.setString(8, postalCode);
-                int rowsAffected = psRegisteredUser.executeUpdate();
+            // Insert into USER_PAYMENT_INFO
+            try (PreparedStatement psPaymentInfo  = connection.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS)) {
+                PaymentInfo paymentInfo = registeredUser.getPaymentInfo();
 
+                // SEt paramaters for the statement
+                psPaymentInfo.setLong(1, (long) paymentInfo.getCardNumber());
+                psPaymentInfo.setString(2, paymentInfo.getExpiration());
+                psPaymentInfo.setInt(3, paymentInfo.getCV());
+                psPaymentInfo.setString(4, registeredUser.getEmail());
+                int rowsAffectedPI = psPaymentInfo.executeUpdate();
 
-                // Just for testing, feel free to remove whenever
-                if (rowsAffected > 0) {
-                    System.out.println("User successfully registered!");
-                    emailID = email;
-                } else {
-                    System.out.println("Failed to register user.");
-                }
+                // Check if rows have been added
+                if (rowsAffectedPI > 0) { System.out.println("Successfully added PaymentInfo"); } 
+                else { System.out.println("Failed to add PaymentInfo"); }
+
+                // Get PaymentID key that was generated
+                try (ResultSet generatedKeys = psPaymentInfo.getGeneratedKeys()) {
+                    if (generatedKeys.next()) { paymentId = generatedKeys.getInt(1); } 
+                    else { throw new SQLException("Failed to retrieve PaymentID."); }
+
+                } catch (Exception e) { e.printStackTrace(); }
 
             } catch (Exception e) { e.printStackTrace(); }
+
+            // Insert into REGISTERED_USER
+            try (PreparedStatement psRegisteredUser = connection.prepareStatement(query2)) {
+                
+                // SEt paramaters for the statement
+                psRegisteredUser.setString(1, registeredUser.getEmail());
+                psRegisteredUser.setString(2, pwd);
+                psRegisteredUser.setString(3, registeredUser.getFName());
+                psRegisteredUser.setString(4, registeredUser.getLName());
+                psRegisteredUser.setString(5, registeredUser.getStreetAddress());
+                psRegisteredUser.setString(6, registeredUser.getCity());
+                psRegisteredUser.setString(7, registeredUser.getProvince());
+                psRegisteredUser.setString(8, registeredUser.getPostalCode());
+                psRegisteredUser.setInt(9, paymentId);
+                int rowsAffectedRU = psRegisteredUser.executeUpdate();
+
+                // Just for testing, feel free to remove whenever
+                if (rowsAffectedRU > 0) {
+                    System.out.println("User successfully registered");
+                    emailID = registeredUser.getEmail();
+                } 
+                else { System.out.println("Failed to register user"); }
+                // End testing, delete up to here
+
+            } catch (Exception e) { e.printStackTrace(); }
+
+            // Make sure paymentID was actually set before committing 
+            if (paymentId < 0) { throw new Exception("PaymentID was not set"); }
+            connection.commit(); // Commit the changes to the DB
+
         } catch (Exception e) { e.printStackTrace(); }
     }
+
+    
+    
 
 
     /**
