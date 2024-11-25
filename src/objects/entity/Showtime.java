@@ -1,6 +1,7 @@
 package objects.entity;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
 
 public class Showtime {
     //---------------//
@@ -10,12 +11,12 @@ public class Showtime {
     private int showtimeID;
     private Movie movie;
     private TheatreRoom theatreRoom;
-    private LocalDateTime showDateTime;
+    private Timestamp showDateTime;
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Showtime(int showtimeID, Movie movie, TheatreRoom theatreRoom, LocalDateTime showDateTime) {
+    public Showtime(int showtimeID, Movie movie, TheatreRoom theatreRoom, Timestamp showDateTime) {
         this.showtimeID = showtimeID;
         this.movie = movie;
         this.theatreRoom = theatreRoom;
@@ -38,7 +39,7 @@ public class Showtime {
         return theatreRoom;
     }
 
-    public LocalDateTime getShowDateTime() {
+    public Timestamp getShowTimestamp() {
         return showDateTime;
     }
 
