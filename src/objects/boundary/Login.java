@@ -22,12 +22,15 @@ public class Login extends JPanel {
     private JButton guestButton;
     private JButton adminButton;
 
+    private JFrame frame; //reference to parent frame
+
     //controllers
     private RegisteredUserController registeredUser;
 
 
     //ctor
-    public Login(){
+    public Login(JFrame frame){
+        this.frame = frame;
         registeredUser = new RegisteredUserController();
 
         /*panel setup */
@@ -119,20 +122,22 @@ public class Login extends JPanel {
                 //need to verify that login details are correct (control method)
                 String user = usernameField.getText().toLowerCase();
                 String pass = String.valueOf(passwordField.getPassword());
-                if(registeredUser.authenticateUser(user, pass) != false){
+                boolean auth_user = registeredUser.authenticateUser(user, pass);
+                if( auth_user != false){
                     //go to main page
+                    frame.dispose();
                     MainPage mainPage = new MainPage();
                     mainPage.displayMainPage();
                 }
                 else{
                     //display error message
-                    //GridBagConstraints constraints = new GridBagConstraints();
-
-                    JTextField authError = new JTextField("Incorrect Username or Password");
+                    JLabel authError = new JLabel("Incorrect Username or Password");
                     authError.setForeground(Color.RED);
                     constraints.gridx = 1;
-                    constraints.gridy = 4;
+                    constraints.gridy = 8;
                     add(authError, constraints);
+                    revalidate();
+                    repaint();
                     
                     
                 }
@@ -146,7 +151,7 @@ public class Login extends JPanel {
             public void actionPerformed(ActionEvent e){
                 //go to register page
                 Register registerPage = new Register();
-
+                frame.dispose();
                 registerPage.displayRegister();
                 
 
@@ -159,6 +164,7 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
+                frame.dispose();
                 MainPage mainPage = new MainPage();
                 mainPage.displayMainPage();
 
@@ -188,7 +194,7 @@ public class Login extends JPanel {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Login());
+        frame.add(new Login(frame));
         frame.setVisible(true);
 
     }
@@ -198,7 +204,7 @@ public class Login extends JPanel {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Login());
+        frame.add(new Login(frame));
         frame.setVisible(true);
 
     }

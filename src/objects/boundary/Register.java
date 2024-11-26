@@ -16,6 +16,7 @@ public class Register extends JPanel {
     private JLabel passwordLabel;
     private JPasswordField verifyPass;
     private JLabel verifyLabel;
+    private JFrame frame;
 
     //already have an account?
     //private JLabel loginHere;
@@ -28,6 +29,8 @@ public class Register extends JPanel {
     setLayout(new GridBagLayout()); //arrange components in grid-like structure
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.insets = new Insets(10,10,10,10);
+
+    //this.frame = frame;
    
     title = new JLabel("Movie Ticket-Booking App");
     title.setFont(new Font("Arial", Font.BOLD,18));
@@ -37,7 +40,7 @@ public class Register extends JPanel {
     add(title, constraints); //add to the panel
 
     /*username */
-    usernameLabel = new JLabel("Username:");
+    usernameLabel = new JLabel("Email:");
     usernameLabel.setFont(new Font("Arial",Font.PLAIN,10));
     constraints.gridx = 0;
     constraints.gridy = 1;
@@ -85,7 +88,7 @@ public class Register extends JPanel {
 
     verifyPass = new JPasswordField(20);
     constraints.gridx = 1;
-    constraints.gridy = 2;
+    constraints.gridy = 3;
     constraints.gridwidth = 1;
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.anchor = GridBagConstraints.WEST;
@@ -94,7 +97,7 @@ public class Register extends JPanel {
     //login button
     loginButton = new JButton("Login");
     constraints.gridx = 1;
-    constraints.gridy = 3;
+    constraints.gridy = 4;
     constraints.gridwidth = 1;
     constraints.anchor = GridBagConstraints.CENTER;
     add(loginButton, constraints);
@@ -113,7 +116,7 @@ public void displayRegister(){
     JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Login());
+        frame.add(new Register());
         frame.setVisible(true);
 
 }
