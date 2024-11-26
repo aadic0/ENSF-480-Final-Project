@@ -122,6 +122,19 @@ public class Login extends JPanel {
                 if(registeredUser.authenticateUser(user, pass) != false){
                     //go to main page
                     MainPage mainPage = new MainPage();
+                    mainPage.displayMainPage();
+                }
+                else{
+                    //display error message
+                    //GridBagConstraints constraints = new GridBagConstraints();
+
+                    JTextField authError = new JTextField("Incorrect Username or Password");
+                    authError.setForeground(Color.RED);
+                    constraints.gridx = 1;
+                    constraints.gridy = 4;
+                    add(authError, constraints);
+                    
+                    
                 }
 
 
@@ -134,6 +147,9 @@ public class Login extends JPanel {
                 //go to register page
                 Register registerPage = new Register();
 
+                registerPage.displayRegister();
+                
+
 
                 
             }
@@ -144,6 +160,7 @@ public class Login extends JPanel {
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
                 MainPage mainPage = new MainPage();
+                mainPage.displayMainPage();
 
             }
         });
