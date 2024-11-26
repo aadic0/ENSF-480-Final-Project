@@ -61,8 +61,8 @@ public class TicketController {
                         // I cannot overstate how much I hate this solution
                         // I added private seatID and showtimeID to the controller which is nasty but its such as simple solution
                         // -Damon Nov 23 
-                        preparedStatement.setInt(1, seatController.getSeatID());
-                        preparedStatement.setInt(2, seatController.getShowtimeID());
+                        preparedStatement.setInt(1, seatController.getShowtimeID());
+                        preparedStatement.setInt(2, seatController.getSeatID());
                         preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
                         preparedStatement.setString(4, email);
 
@@ -134,6 +134,7 @@ public class TicketController {
                     if (showDateTime == null) return;
 
                     LocalDateTime showTime = showDateTime.toLocalDateTime();
+                    System.out.println("showTime: " + showTime);
                     LocalDateTime nowTime = LocalDateTime.now();
                     
                     // Showtime is more than 72 hours away
