@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import objects.entity.PaymentInfo;
 import objects.entity.RegisteredUser;
@@ -91,7 +92,10 @@ public class TicketController {
      * @param paymentInfo
      */
     public void refundTicket(int ticketID, String email, PaymentInfo paymentInfo) {
-        String query1 = "SELECT Email FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
+        
+        String query1 = "SELECT Email, ShowtimeID FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
+        int showtimeID = -1;
+        String query22 = "SELECT ShowDateTime FROM SHOWTIME WHERE ShowtimeID = ?";
         String query2 = "SELECT COUNT(Email) FROM REGISTERED_USER WHERE Email = ?"; // Check if email is in Reg User table
         String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
 
@@ -109,12 +113,47 @@ public class TicketController {
 
                 // Check if ticket is in DB
                 if (rs1.next()) {
+                    showtimeID = rs1.getInt("ShowtimeID");
                     System.out.println("Ticket in DB");
                 } else {
                     System.out.println("Ticket not in DB");
                     return;
                 }
+            } catch (Exception e) { e.printStackTrace(); }
 
+            // Query 22 - Check if cancellation is at least 72 hours before show
+            try (PreparedStatement preparedStatement22 = connection.prepareStatement(query22)) {
+                preparedStatement22.setInt(1, showtimeID);
+
+                ResultSet rs22 = preparedStatement22.executeQuery();
+
+                if (rs22.next()) {
+                    // Get showDateTime and process
+                    Timestamp showDateTime = rs22.getTimestamp("ShowDateTime");
+
+                    if (showDateTime == null) return;
+
+                    LocalDateTime showTime = showDateTime.toLocalDateTime();
+                    LocalDateTime nowTime = LocalDateTime.now();
+                    
+                    // Showtime is more than 72 hours away
+                    if (nowTime.isBefore(showTime.minusHours(72))) {
+                        System.out.println("Cancellation valid: More than 72 hours before showtime.");
+                    } 
+                    // User is trying to cancel after showtime
+                    else if (nowTime.isAfter(showTime)) {
+                        System.out.println("Cancellation not valid: Showtime has already occured");
+                        return;
+                    }
+                    // Showtimes is less than 72 hours away
+                    else {
+                        System.out.println("Cancellation not valid: Less than 72 hours before showtime.");
+                        return;
+                    }
+                } else {
+                    System.out.println("No ShowtimeID");
+                    return;
+                }
             } catch (Exception e) { e.printStackTrace(); }
 
             // Query 2 - Check if email is associated with a RegisteredUser
