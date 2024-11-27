@@ -123,6 +123,9 @@ public class Login extends JPanel {
                 String user = usernameField.getText().toLowerCase();
                 String pass = String.valueOf(passwordField.getPassword());
                 boolean auth_user = registeredUser.authenticateUser(user, pass);
+                System.out.println(auth_user);
+                System.out.println(user);
+                System.out.println(pass);
                 if( auth_user != false){
                     //go to main page
                     frame.dispose();

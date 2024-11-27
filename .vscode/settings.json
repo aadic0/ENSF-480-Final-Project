@@ -9,7 +9,7 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "TheatreDB",
+            "name": "theatre_connect",
             "database": "THEATRE_DB",
             "username": "theatre_connect"
         }
