@@ -2,7 +2,8 @@ package objects.control;
 
 import objects.entity.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.sql.*;
 
 
@@ -12,52 +13,12 @@ import java.sql.*;
 // NOTE: I'm using this file to test out database communication, this will (probably) not be the actual main we use
 public class Main {
 
-    // public static void buyTicketTest() {
-    //     // Mock data for testing
-    //     String email = "testuser@example.com";
-        
-    //     // Create mock payment info
-    //     PaymentInfo paymentInfo = new PaymentInfo(
-    //             1234567812345678L,  // Credit Card Number
-    //             "2025-12-31",       // Expiration Date
-    //             123                        // CVV
-    //     );
+    public static void buyTicketTestOld() {
+        //NOTE:
+        // This test sucks. You need to manually change showtimeID values depending on what you want to test.
+        // If this test doesn't work, it's almost certainly because some showtime value is messed up in the DB
 
-    //     // Create a mock Seat object (for example, Row 2, Seat 5)
-    //     Seat seat = new Seat(2, 5);
 
-    //     // Create a mock Showtime object (for example, "The Dark Knight" at Room 1, 2024-11-23 18:30:00)
-    //     Movie movie = new Movie(1, "Glimbo's Revenge", "Sci-Fi", "PG-13", Time.valueOf("14:30:00"));
-    //     TheatreRoom theatreRoom = new TheatreRoom(2, new Theatre(1, "ACMEplex Theatre", "123 Main Street, Calgary, AB"), "Room B");
-    //     Showtime showtime = new Showtime(1, movie, theatreRoom, Timestamp.valueOf("2024-11-25 15:00:00"));
-
-    //     // Simulate the ticket purchase
-    //     TicketController ticketController = new TicketController();
-    //     ticketController.purchaseTicket(email, seat, showtime, paymentInfo, 15.99f);
-
-    //     // Verify if the ticket was added to the database
-    //     try (Connection connection = DatabaseController.createConnection()) {
-    //         String query = "SELECT * FROM TICKET WHERE ShowtimeID = ?";
-    //         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-    //             preparedStatement.setInt(1, showtime.getShowtimeID());
-
-    //             var resultSet = preparedStatement.executeQuery();
-    //             if (resultSet.next()) {
-    //                 System.out.println("Ticket purchase was successful!");
-    //                 System.out.println("Ticket Details:");
-    //                 System.out.println("TicketID: " + resultSet.getInt("TicketID"));
-    //                 System.out.println("SeatID: " + resultSet.getInt("SeatID"));
-    //                 System.out.println("PurchaseDateTime: " + resultSet.getTimestamp("PurchaseDateTime"));
-    //             } else {
-    //                 System.out.println("Ticket purchase failed.");
-    //             }
-    //         }
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    public static void buyTicketTest() {
         // Mock data for testing
         String email = "testuser@example.com";
     
@@ -74,40 +35,68 @@ public class Main {
         // Create a mock Showtime object (for example, "The Dark Knight" at Room 1, 2024-11-23 18:30:00)
         Movie movie = new Movie(10, "Devonian Park", "Adventure", "PG-13", Time.valueOf("2:01:00"));
         TheatreRoom theatreRoom = new TheatreRoom(1, new Theatre(1, "ACMEplex Theatre", "123 Main Street, Calgary, AB"), "Room A");
-        Showtime showtime = new Showtime(20, movie, theatreRoom, Timestamp.valueOf("2024-11-25 14:30:00"));
+        Showtime showtime = new Showtime(40, movie, theatreRoom, Timestamp.valueOf("2024-11-30 17:00:00"));
     
         // Simulate the ticket purchase
         TicketController ticketController = new TicketController();
         ticketController.purchaseTicket(email, seat, showtime, paymentInfo, 15.99f);
     
-        // Verify if the ticket was added to the database
-        try (Connection connection = DatabaseController.createConnection()) {
-            String query = "SELECT * FROM TICKET WHERE ShowtimeID = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setInt(1, 1);
-    
-                var resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
-                    System.out.println("Ticket purchase was successful!");
-                    System.out.println("Ticket Details:");
-                    System.out.println("TicketID: " + resultSet.getInt("TicketID"));
-                    System.out.println("SeatID: " + resultSet.getInt("SeatID"));
-                    System.out.println("PurchaseDateTime: " + resultSet.getTimestamp("PurchaseDateTime"));
-                } else {
-                    System.out.println("Ticket purchase failed.");
-                }
-            }
+    }
+
+    public static void buyTicketTestNew() {
+        // Mock data for testing
+        String email = "testuser@example.com"; // Registered user email
+        int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
+        float ticketPrice = 15.99f;           // Ticket price
+        
+        // Create mock payment info
+        PaymentInfo paymentInfo = new PaymentInfo(
+                1234567812345678L,  // Credit Card Number
+                "2025-12-31",       // Expiration Date
+                123                        // CVV
+        );
+        
+        // Create a mock Seat object (e.g., Row 2, Seat 5)
+        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
+        
+        // Create the TicketController object
+        TicketController ticketController = new TicketController();
+        
+        // Call the new purchaseTicket method
+        try {
+            ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    public static void refundTicketTest() {
-        TicketController tc = new TicketController();
-        tc.refundTicket(7, "testuser@gmail.com", null);
+
     }
     
+    public static void refundTicketTest() {
+        TicketController tc = new TicketController();
+        tc.refundTicket(1, "testuser@example.com", null);
+    }
+    
+    public static void seatMapTest(int showTimeID) {
 
+        DatabaseController db = new DatabaseController();
+        Connection con = db.createConnection();
+
+        TicketController ticketController = new TicketController();
+
+        HashMap<Integer, Boolean> seatAvailability = ticketController.retrieveAvailableSeats(con, showTimeID);
+
+        // Print results
+        if (seatAvailability != null) {
+            System.out.println("Seat availability for ShowtimeID " + showTimeID + ":");
+            for (Map.Entry<Integer, Boolean> entry : seatAvailability.entrySet()) {
+                System.out.println("SeatID: " + entry.getKey() + " | Available: " + entry.getValue());
+            }
+        } else {
+            System.out.println("Could not retrieve seat availability for ShowtimeID " + showTimeID);
+        }
+
+    }
 
     public static void registerUserTest(){
         RegisteredUserController regUserController = new RegisteredUserController();
@@ -201,6 +190,34 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static void testAnnouncements() {
+        AnnouncementController announcementController = new AnnouncementController();
+        announcementController.sendPrivateAnnouncement("Test Announcement");
+        announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
+        announcementController.sendPublicAnnouncement("Hello gang");
+    }
+
+    public static void privateBookingTest() {
+        TicketController ticketController = new TicketController();
+        String email = "testuser@gmail.com"; // Registered user email
+        
+        int showtimeID0 = 8; // Has public and private announcement
+        int showtimeID1 = 9; // Has only private announcement but showtime has passed (shouldnt affect anything in this test)
+        int showtimeID2 = 40; // Only has private announcement
+
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID0)); // False
+            System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID1)); // True
+            System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID2)); // True
+            System.out.println();
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID0, email)); // True
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID1, email)); // False assuming that the query where 4 tickets are made for showtimeID 9 is ran
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID2, email)); // True
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
     
     public static void main(String[] args) {
 
@@ -224,7 +241,7 @@ public class Main {
     // ------------------------------//
     //   RegisteredUserController    //
     // ------------------------------//
-    // Main.registerUserTest();
+    // registerUserTest();
 
 
     // --------------------//
@@ -236,8 +253,13 @@ public class Main {
     //     TicketController    //
     //-------------------------//
 
-    // buyTicketTest();
+    // buyTicketTestOld();
+    // buyTicketTestNew();
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
+    // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
+
+    // seatMapTest(9); // should return true for all seats except for seats 41-44
+    // seatMapTest(10);
 
     //------------------------//
     //   ShowtimeController   //
@@ -251,7 +273,10 @@ public class Main {
     // MovieController movieController = new MovieController();
     // movieController.getAllMovies();
 
-    
+    //---------------------------//
+    //  Announcement Controller  //
+    //---------------------------//
+    // testAnnouncements();
 
 
     }

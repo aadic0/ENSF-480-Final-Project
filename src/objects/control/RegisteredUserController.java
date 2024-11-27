@@ -12,7 +12,6 @@ import objects.entity.PaymentInfo;
 import objects.entity.RegisteredUser;
 
 
-
 public class RegisteredUserController {
 
 

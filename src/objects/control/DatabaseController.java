@@ -10,6 +10,8 @@ import java.sql.SQLException;
  * @author Damon Mazurek    
  * @version v1.0
  */
+
+
 public class DatabaseController {
     private static String USERNAME = "theatre_connect";
     private static String PASSWORD = "theatre";

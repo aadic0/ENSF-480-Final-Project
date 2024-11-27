@@ -5,8 +5,13 @@ import objects.entity.Seat;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
+// NOTE: THIS CLASS IS NOW OBSOLTETE AND THE FUNCTIONS WE NEED FROM IT HAVE BEEN ADDED TO TicketController
+// - Damon Nov 27
 
 public class SeatController {
     private int showtimeID;
@@ -34,9 +39,10 @@ public class SeatController {
         // Reset values
         this.showtimeID = -1;
         this.seatID = -1;
+        Time runtimeTime;
 
         // Queries
-        String query0 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?"; // Put the implementation for this between query 1 and 2
+        String query0 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?";
         String query1 = "SELECT ShowtimeID FROM SHOWTIME WHERE TheatreRoomID = ? AND ShowDateTime = ? AND MovieID = ?";
         String query2 = "SELECT SeatID FROM SEAT WHERE SeatRow = ? AND SeatNumber = ? AND TheatreRoomID = ?";
         String query3 = "SELECT TicketID FROM TICKET WHERE SeatID = ? AND ShowtimeID = ?";
@@ -47,6 +53,43 @@ public class SeatController {
         try (Connection connection = DatabaseController.createConnection()) {
 
 
+            // Query 0: Get the runtime from the movie (will use to make sure showtime has not passed)
+            try (PreparedStatement psQuery0 = connection.prepareStatement(query0)) {
+                
+                // Set query parameters
+                psQuery0.setInt(1, movieID);
+                
+                try (ResultSet rs1 = psQuery0.executeQuery()) {
+                    if (rs1.next()) {
+                        // get runtime
+                        runtimeTime = rs1.getTime("Runtime");
+
+                        // Get the runtime and add it to the showtime, then check if the current time is after the showtime+runtime
+                        LocalTime runtime = runtimeTime.toLocalTime();
+                        LocalDateTime showTime = showDateTime.toLocalDateTime();
+                        LocalDateTime nowTime = LocalDateTime.now();
+
+                        int runtimeHours = runtime.getHour();
+                        int runtimeMinutes = runtime.getMinute();
+
+                        LocalDateTime showtimePlusRuntime = showTime.plusHours(runtimeHours).plusMinutes(runtimeMinutes);
+
+                        if(nowTime.isAfter(showtimePlusRuntime)) {
+                            System.out.println("Cannot purchase, the showtime is finished");
+                            return false; // showtime is not avaiable
+                        }
+
+                    } 
+                    // Return false if no movie is found
+                    else {
+                        System.out.println("No movie found");
+                        return false; // No movie found
+                    }
+
+                } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) { e.printStackTrace(); }
+
+            
             // Query 1: check if the showtimes exists
             try (PreparedStatement psQuery1 = connection.prepareStatement(query1)) {
                 
