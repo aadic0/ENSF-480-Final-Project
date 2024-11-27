@@ -2,6 +2,7 @@ package objects.control;
 
 import objects.entity.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.sql.*;
@@ -243,7 +244,17 @@ public class Main {
         try (Connection connection = DatabaseController.createConnection()) {
 
             ShowtimeController showtimeController = new ShowtimeController();
-            showtimeController.retrieveAllShowtimes(connection);
+            HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.retrieveAllShowtimes(connection);
+
+
+            if (showtimeMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
+                    System.out.println("ShowtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else {
+                System.out.println("Could not retrieve showtimeMap");
+            }
+            
 
         } catch(Exception e) {e.printStackTrace();}
     }
@@ -257,7 +268,15 @@ public class Main {
         try (Connection connection = DatabaseController.createConnection()) {
 
             ShowtimeController showtimeController = new ShowtimeController();
-            showtimeController.retrieveAllMovies(connection);
+            HashMap<Integer, ArrayList<Object>> movieMap = showtimeController.retrieveAllMovies(connection);
+
+            if (movieMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else {
+                System.out.println("Could not retrieve movieMap");
+            }
 
         } catch(Exception e) {e.printStackTrace();}
         
@@ -337,8 +356,8 @@ public class Main {
     //------------------------//
     //   ShowtimeController   //
     //------------------------//
-    testAllShowtimeRetrieval(); // This doesn't work
-    // testAllMovieRetrieval(); // This works
+    // testAllShowtimeRetrieval(); 
+    testAllMovieRetrieval(); 
 
 
 
