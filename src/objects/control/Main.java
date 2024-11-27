@@ -57,6 +57,7 @@ public class Main {
     //     }
     // }
 
+
     // public static void buyTicketTest() {
     //     // Mock data for testing
     //     String email = "testuser@example.com";
@@ -71,6 +72,7 @@ public class Main {
     //     // Create a mock Seat object (for example, Row 2, Seat 5)
     //     Seat seat = new Seat(2, 5); // Ensure this seat exists in the database
     
+
     //     // Create a mock Showtime object (for example, "The Dark Knight" at Room 1, 2024-11-23 18:30:00)
     //     Movie movie = new Movie(10, "Devonian Park", "Adventure", "PG-13", Time.valueOf("2:01:00"));
     //     TheatreRoom theatreRoom = new TheatreRoom(1, new Theatre(1, "ACMEplex Theatre", "123 Main Street, Calgary, AB"), "Room A");
@@ -80,6 +82,7 @@ public class Main {
     //     TicketController ticketController = new TicketController();
     //     ticketController.purchaseTicket(email, seat, showtime, paymentInfo, 15.99f);
     
+
     //     // Verify if the ticket was added to the database
     //     try (Connection connection = DatabaseController.createConnection()) {
     //         String query = "SELECT * FROM TICKET WHERE ShowtimeID = ?";
@@ -243,7 +246,8 @@ public class Main {
     //     TicketController    //
     //-------------------------//
 
-    // buyTicketTest();
+    // buyTicketTestOld();
+    buyTicketTestNew();
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
 
     //------------------------//
