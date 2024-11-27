@@ -32,9 +32,9 @@ public class ShowtimeController {
         String query = "SELECT ShowtimeID, TheatreRoomID, ShowDateTime, MovieID FROM SHOWTIME;";
 
         // Query - Get all information from SHOWTIME table and add it to a Hashmap
-        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+        try (PreparedStatement psQuery = con.prepareStatement(query)) {
     
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = psQuery.executeQuery();
 
             while (resultSet.next()) {
 
@@ -73,9 +73,9 @@ public class ShowtimeController {
         String query = "SELECT MovieID, Title, Genre, Rating, Runtime FROM MOVIE;";
 
         // Query - Get all information from MOVIE table and add it to a Hashmap
-        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+        try (PreparedStatement psQuery = con.prepareStatement(query)) {
             // Execute Query
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = psQuery.executeQuery();
 
             // Get values, add them to ArrayList and then put them in HashMap
             while (resultSet.next()) {
@@ -97,38 +97,55 @@ public class ShowtimeController {
 
             }
         } catch (SQLException e) { System.out.println(e); }
-
+        
         return movieMap;
     }
 
     /**
-     * Search for a movie 
-     * @param movieName
+     * Search for a specific movie title
+     * @param con
+     * @param movieTitle
+     * @return If movie title exists, return a HashMap containing its information. Otherwise return null
      */
-    public void searchForMovie(Connection con, String movieName) {
+    public HashMap<Integer, ArrayList<Object>> searchForMovie(Connection con, String movieTitle) {
         // Try to connect to database
-        try (Connection connection = DatabaseController.createConnection()) {
 
-            // Prepare query
-            String query = "SELECT Title, Genre, Rating, Runtime FROM MOVIE;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        HashMap<Integer, ArrayList<Object>> movieMap = new HashMap<>();
+
+        String query = "SELECT MovieID, Title, Genre, Rating, Runtime FROM MOVIE WHERE Title = ?;";
+
+        try (PreparedStatement psQuery = con.prepareStatement(query);) {
+            psQuery.setString(1, movieTitle);
 
             // Execute Query
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = psQuery.executeQuery();
 
+            // Get values, add them to ArrayList and then put them in HashMap
             while (resultSet.next()) {
+
+                ArrayList<Object> valueArrayList = new ArrayList<>();
+
+                int movieID = resultSet.getInt("MovieID");
                 String title = resultSet.getString("Title");
                 String genre = resultSet.getString("Genre");
                 String rating = resultSet.getString("Rating");
                 Time runtime = resultSet.getTime("Runtime");
 
-                System.out.println("Movie Title: " + title);
-                System.out.println("Genre: " + genre);
-                System.out.println("Rating: " + rating);
-                System.out.println("Runtime: " + runtime);
-                System.out.println("-----------");
+                valueArrayList.add(title);   // [0]
+                valueArrayList.add(genre);   // [1]
+                valueArrayList.add(rating);  // [2]
+                valueArrayList.add(runtime); // [3]
+
+                movieMap.put(movieID, valueArrayList);
             }
+
         } catch (SQLException e) { System.out.println(e); }
+
+        // If there were values added to movieMap return movieMap, otherwise return null
+        if(!movieMap.isEmpty())
+            return movieMap;
+
+        return null;
     }
     
 }

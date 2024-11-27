@@ -251,9 +251,9 @@ public class Main {
                 for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
                     System.out.println("ShowtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
                 }
-            } else {
+            } else 
                 System.out.println("Could not retrieve showtimeMap");
-            }
+            
             
 
         } catch(Exception e) {e.printStackTrace();}
@@ -274,9 +274,9 @@ public class Main {
                 for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
                     System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
                 }
-            } else {
+            } else
                 System.out.println("Could not retrieve movieMap");
-            }
+            
 
         } catch(Exception e) {e.printStackTrace();}
         
@@ -288,7 +288,33 @@ public class Main {
     }
 
     public static void testMovieSearch() {
-        
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+
+        // This section should return with movie info for Finding Norman
+            HashMap<Integer, ArrayList<Object>> movieMap = showtimeController.searchForMovie(connection, "Toy Anecdote");
+
+            if (movieMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve movieMap");
+            
+
+        // This section should return null (prints "Could not retrieve movieMap")
+            HashMap<Integer, ArrayList<Object>> movieMap2 = showtimeController.searchForMovie(connection, "bah");
+
+            if (movieMap2 != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap2.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve movieMap2");
+            
+
+        } catch(Exception e) {e.printStackTrace();}
     }
 
 
@@ -357,7 +383,8 @@ public class Main {
     //   ShowtimeController   //
     //------------------------//
     // testAllShowtimeRetrieval(); 
-    testAllMovieRetrieval(); 
+    // testAllMovieRetrieval(); 
+    testMovieSearch();
 
 
 
