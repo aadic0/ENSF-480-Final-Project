@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import objects.entity.Announcement;
@@ -20,7 +20,7 @@ public class AnnouncementController{
      * @param announcement
      * @param registeredUsersList
      */
-    public void sendPrivateShowTimeAnnouncement(String message, String dateAnnounced, int showTimeID) {
+    public void sendPrivateShowTimeAnnouncement(String message, int showTimeID) {
 
         String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID) VALUES (?, ?, ?, ?)";
 
@@ -31,7 +31,7 @@ public class AnnouncementController{
             // preparedStatement.setInt(1, announcementID);
             preparedStatement.setBoolean(1, IS_PUBLIC);
             preparedStatement.setString(2, message);
-            preparedStatement.setDate(3, java.sql.Date.valueOf(dateAnnounced)); // Convert String to SQL Date
+            preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis())); // Convert String to SQL Date
             preparedStatement.setInt(4, (showTimeID));
 
             // Execute the insert query
@@ -56,8 +56,8 @@ public class AnnouncementController{
      */
     public void sendPublicAnnouncement(String message){
 
-        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage) "
-                                       + "VALUES (?, ?)";
+        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced) "
+                                       + "VALUES (?, ?, ?)";
         final boolean IS_PUBLIC = true;
 
         try (Connection connection = DatabaseController.createConnection(); PreparedStatement preparedStatement = connection.prepareStatement(insertAnnouncementQuery)){     
@@ -65,6 +65,7 @@ public class AnnouncementController{
             // preparedStatement.setInt(1, announcementID);
             preparedStatement.setBoolean(1, IS_PUBLIC);
             preparedStatement.setString(2, message);
+            preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
                         // Execute the insert query
             int rowsAffected = preparedStatement.executeUpdate();
@@ -81,8 +82,8 @@ public class AnnouncementController{
     
     public void sendPrivateAnnouncement(String message){
 
-        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage) "
-                                       + "VALUES (?, ?)";
+        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced) "
+                                       + "VALUES (?, ?, ?)";
         final boolean IS_PUBLIC = false;
 
         try (Connection connection = DatabaseController.createConnection(); PreparedStatement preparedStatement = connection.prepareStatement(insertAnnouncementQuery)){     
@@ -90,6 +91,7 @@ public class AnnouncementController{
             // preparedStatement.setInt(1, announcementID);
             preparedStatement.setBoolean(1, IS_PUBLIC);
             preparedStatement.setString(2, message);
+            preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
                         // Execute the insert query
             int rowsAffected = preparedStatement.executeUpdate();

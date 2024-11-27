@@ -106,7 +106,7 @@ CREATE TABLE ANNOUNCEMENT (
     AnnouncementID      INT AUTO_INCREMENT,
     IsPublic            BOOLEAN NOT NULL,
     AnnouncementMessage VARCHAR(255) NOT NULL,
-    DateAnnounced       DATE,
+    DateAnnounced       DATETIME NOT NULL,
     ShowtimeID          INT,
 
     PRIMARY KEY (AnnouncementID),
@@ -311,3 +311,8 @@ DELETE FROM THEATRE;
 DELETE FROM TICKET;
 
 SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
+
+-- @block
+DELETE FROM TICKET;
+-- @block
+DELETE FROM ANNOUNCEMENT;

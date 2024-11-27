@@ -269,7 +269,7 @@ public class Main {
     //------------------------//
     AnnouncementController announcementController = new AnnouncementController();
     announcementController.sendPrivateAnnouncement("Test Announcement");
-    announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", "2004-11-03", 1); // should only return an error because showtime isnt there
+    announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
     announcementController.sendPublicAnnouncement("Hello gang");
     
 
