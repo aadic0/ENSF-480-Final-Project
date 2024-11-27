@@ -13,9 +13,9 @@ import java.sql.SQLException;
 
 
 public class DatabaseController {
-    private static String USERNAME = "admin";
-    private static String PASSWORD = "admin";
-    private static String URL = "jdbc:mysql://localhost:3307/THEATRE_DB";
+    private static String USERNAME = "theatre_connect";
+    private static String PASSWORD = "theatre";
+    private static String URL = "jdbc:mysql://localhost/THEATRE_DB";
     private static Connection connection = null;
 
     /**
