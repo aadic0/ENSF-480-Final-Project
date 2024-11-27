@@ -39,6 +39,7 @@ CREATE TABLE REGISTERED_USER (
 
 );
 
+
 -- Theatre table
 DROP TABLE IF EXISTS THEATRE;
 CREATE TABLE THEATRE (
@@ -67,7 +68,6 @@ CREATE TABLE SEAT (
     TheatreRoomID   INT NOT NULL,
     SeatRow         INT NOT NULL,
     SeatNumber      INT NOT NULL,  
-
     UNIQUE (TheatreRoomID, SeatRow, SeatNumber), -- These three values combined must be unique
 
     PRIMARY KEY (SeatID),
@@ -98,6 +98,19 @@ CREATE TABLE SHOWTIME (
 );
 
 
+-- Announcement table
+DROP TABLE IF EXISTS ANNOUNCEMENT;
+CREATE TABLE ANNOUNCEMENT (
+    AnnouncementID      INT NOT NULL,
+    IsPublic            INT NOT NULL,
+    AnnouncementMessage VARCHAR(255) NOT NULL,
+    DateAnnounced       DATE,
+    ShowtimeID          INT,
+
+    PRIMARY KEY (AnnouncementID),
+    FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON UPDATE CASCADE
+
+);
 
 -- Ticket table
 DROP TABLE IF EXISTS TICKET;

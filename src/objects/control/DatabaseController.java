@@ -10,10 +10,12 @@ import java.sql.SQLException;
  * @author Damon Mazurek    
  * @version v1.0
  */
+
+
 public class DatabaseController {
-    private static String USERNAME = "theatre_connect";
-    private static String PASSWORD = "theatre";
-    private static String URL = "jdbc:mysql://localhost/THEATRE_DB";
+    private static String USERNAME = "admin";
+    private static String PASSWORD = "admin";
+    private static String URL = "jdbc:mysql://localhost:3307/THEATRE_DB";
     private static Connection connection = null;
 
     /**
