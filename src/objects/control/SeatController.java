@@ -40,7 +40,7 @@ public class SeatController {
         Time runtimeTime;
 
         // Queries
-        String query0 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?"; // Put the implementation for this between query 1 and 2
+        String query0 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?";
         String query1 = "SELECT ShowtimeID FROM SHOWTIME WHERE TheatreRoomID = ? AND ShowDateTime = ? AND MovieID = ?";
         String query2 = "SELECT SeatID FROM SEAT WHERE SeatRow = ? AND SeatNumber = ? AND TheatreRoomID = ?";
         String query3 = "SELECT TicketID FROM TICKET WHERE SeatID = ? AND ShowtimeID = ?";

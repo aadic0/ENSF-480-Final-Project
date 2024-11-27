@@ -57,7 +57,7 @@ public class Main {
     //     }
     // }
 
-    public static void buyTicketTest() {
+    public static void buyTicketTestOld() {
         //NOTE:
         // This test sucks. You need to manually change showtimeID values depending on what you want to test.
         // If this test doesn't work, it's almost certainly because some showtime value is messed up in the DB
@@ -87,11 +87,75 @@ public class Main {
     
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void buyTicketTestNew() {
+        // Mock data for testing
+        String email = "testuser@example.com"; // Registered user email
+        int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
+        float ticketPrice = 15.99f;           // Ticket price
+        
+        // Create mock payment info
+        PaymentInfo paymentInfo = new PaymentInfo(
+                1234567812345678L,  // Credit Card Number
+                "2025-12-31",       // Expiration Date
+                123                        // CVV
+        );
+        
+        // Create a mock Seat object (e.g., Row 2, Seat 5)
+        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
+        
+        // Create the TicketController object
+        TicketController ticketController = new TicketController();
+        
+        // Call the new purchaseTicket method
+        try {
+            ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    
+
+
     public static void refundTicketTest() {
         TicketController tc = new TicketController();
         tc.refundTicket(1, "testuser@example.com", null);
     }
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static void registerUserTest(){
@@ -221,7 +285,8 @@ public class Main {
     //     TicketController    //
     //-------------------------//
 
-    // buyTicketTest();
+    // buyTicketTestOld();
+    buyTicketTestNew();
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
 
     //------------------------//
