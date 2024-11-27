@@ -161,11 +161,11 @@ CREATE TABLE TICKET (
 -- INSERT QUERIES --
 -- -------------- --
 -- @block
--- 1 Theatre
+-- Theatre
 INSERT INTO THEATRE (TheatreID, TheatreName, StreetAddress)
 VALUES (1, 'ACMEplex Theatre', '123 Main Street, Calgary, AB');
 
--- 3 theatre rooms
+-- Theatre rooms
 INSERT INTO THEATREROOM (TheatreRoomID, TheatreID, RoomName) 
 VALUES 
     (1, 1, 'Room A'),
@@ -241,7 +241,7 @@ VALUES
     (5, 3, '2024-11-22 18:00:00', 5),
     (6, 3, '2024-11-22 20:00:00', 6),
     (7, 1, '2024-11-23 12:00:00', 7),
-    (8, 1, '2024-11-23 14:30:00', 8),
+    (8, 1, '2024-11-27 14:30:00', 8),
     (9, 2, '2024-11-23 15:00:00', 9),
     (10, 2, '2024-11-23 17:00:00', 10),
     (11, 3, '2024-11-23 18:00:00', 1),
@@ -275,6 +275,69 @@ VALUES
     (39, 2, '2024-11-28 15:00:00', 9),
     (40, 2, '2024-11-28 17:00:00', 10);
 
+-- Annoucements
+-- Public Announcements
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: Glimbo''s Revenge', '2024-11-20 18:00:00', 1);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: The Adventures of The Bag of Grain', '2024-11-20 18:00:00', 2);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: Smoochin'' on the Moon', '2024-11-20 18:00:00', 3);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: Endvengers: EndEndEndEndgame', '2024-11-20 18:00:00', 4);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: Toy Anecdote', '2024-11-20 18:00:00', 5);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: Finding Norman', '2024-11-20 18:00:00', 6);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: The Godmother', '2024-11-20 18:00:00', 7);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (TRUE, 'Public announcement: The Matrices', '2024-11-20 18:00:00', 8);
+
+-- INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+-- VALUES (TRUE, 'Public announcement: Scary Shark Movie', '2024-11-20 18:00:00', 9);
+
+-- INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+-- VALUES (TRUE, 'Public announcement: Devonian Park', '2024-11-20 18:00:00', 10);
+
+-- Private Announcements
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Glimbo''s Revenge', '2024-11-10 18:00:00', 1);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: The Adventures of The Bag of Grain', '2024-11-10 18:00:00', 2);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Smoochin'' on the Moon', '2024-11-10 18:00:00', 3);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Endvengers: EndEndEndEndgame', '2024-11-10 18:00:00', 4);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Toy Anecdote', '2024-11-10 18:00:00', 5);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Finding Norman', '2024-11-10 18:00:00', 6);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: The Godmother', '2024-11-10 18:00:00', 7);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: The Matrices', '2024-11-10 18:00:00', 8);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Scary Shark Movie', '2024-11-10 18:00:00', 9);
+
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID)
+VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 40);
+
 
 -- ------------ --
 -- TEST QUERIES --
@@ -285,6 +348,19 @@ VALUES
 INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode)
 VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
 
+-- @block
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
+VALUES (9, 41, '2024-11-10 17:30:00', 'user1@example.com');
+
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
+VALUES (9, 42, '2024-11-10 17:31:00', 'user2@example.com');
+
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
+VALUES (9, 43, '2024-11-10 17:32:00', 'user3@example.com');
+
+-- @block
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
+VALUES (9, 44, '2024-11-10 17:32:00', 'user4@example.com');
 
 -- @block
 -- SELECT --
@@ -300,6 +376,8 @@ SELECT * FROM MOVIE;
 SELECT * FROM SHOWTIME;
 SELECT * FROM TICKET;
 
+-- @block
+SELECT * FROM REGISTERED_USER;
 -- @block
 SELECT * FROM TICKET;
 
