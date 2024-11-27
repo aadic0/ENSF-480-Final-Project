@@ -5,8 +5,8 @@ DROP DATABASE IF EXISTS THEATRE_DB;
 CREATE DATABASE THEATRE_DB;
 USE THEATRE_DB;
 
--- RegisteredIser table
 
+-- User Payment Info Table
 DROP TABLE IF EXISTS USER_PAYMENT_INFO;
 CREATE TABLE USER_PAYMENT_INFO (
     PaymentID       INT AUTO_INCREMENT,
@@ -19,6 +19,7 @@ CREATE TABLE USER_PAYMENT_INFO (
     PRIMARY KEY (PaymentID)
 );
 
+-- RegisteredUser table
 DROP TABLE IF EXISTS REGISTERED_USER;
 CREATE TABLE REGISTERED_USER (
     Email           VARCHAR(255) NOT NULL,
@@ -74,6 +75,7 @@ CREATE TABLE SEAT (
     FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE
 );
 
+-- Movie table
 DROP TABLE IF EXISTS MOVIE;
 CREATE TABLE MOVIE (
     MovieID     INT AUTO_INCREMENT,
@@ -85,6 +87,7 @@ CREATE TABLE MOVIE (
     PRIMARY KEY (MovieID)
 );
 
+-- Showtime table
 DROP TABLE IF EXISTS SHOWTIME;
 CREATE TABLE SHOWTIME (
     ShowtimeID      INT NOT NULL,
@@ -96,7 +99,6 @@ CREATE TABLE SHOWTIME (
     FOREIGN KEY (TheatreRoomID) REFERENCES THEATREROOM(TheatreRoomID) ON UPDATE CASCADE,
     FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE
 );
-
 
 -- Announcement table
 DROP TABLE IF EXISTS ANNOUNCEMENT;
@@ -265,14 +267,9 @@ VALUES
     (40, 2, '2024-11-28 17:00:00', 10);
 
 
-
-
 -- ------------ --
 -- TEST QUERIES --
 -- ------------ --
-
-
-
 
 -- @block
 -- INSERT --
@@ -285,6 +282,7 @@ VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Pr
 
 SELECT * FROM USER_PAYMENT_INFO;
 SELECT * FROM REGISTERED_USER;
+SELECT * FROM ANNOUNCEMENT;
 SELECT * FROM THEATRE;
 SELECT * FROM THEATREROOM;
 SELECT * FROM SEAT;
@@ -299,6 +297,7 @@ SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checks
 
 DELETE FROM USER_PAYMENT_INFO;
 DELETE FROM REGISTERED_USER;
+DELETE FROM ANNOUNCEMENT;
 DELETE FROM SEAT;
 DELETE FROM MOVIE;
 DELETE FROM SHOWTIME;
@@ -307,67 +306,3 @@ DELETE FROM THEATRE;
 DELETE FROM TICKET;
 
 SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
-
-
--- @block
--- Nasty old DB (Will delete before we submit) Damon Nov 21
-
--- DROP TABLE IF EXISTS DEFAULT_USER;
--- CREATE TABLE DEFAULT_USER(
---     Email   VARCHAR(255) NOT NULL,
---     Pwd     VARCHAR(25) NOT NULL,
-
---     PRIMARY KEY (Email)
--- );
-
-
--- DROP TABLE IF EXISTS THEATRE;
--- CREATE TABLE THEATRE (
---     TheatreID INT AUTO_INCREMENT,
---     Name VARCHAR(255) NOT NULL,
-
---     PRIMARY KEY (TheatreID)
--- );
-
--- DROP TABLE IF EXISTS MOVIE;
--- CREATE TABLE MOVIE (
---     MovieID     INT AUTO_INCREMENT,
---     Title       VARCHAR(255) NOT NULL,
---     Genre       VARCHAR(255) NOT NULL,
---     Rating      VARCHAR(255) NOT NULL,
-
---     PRIMARY KEY (MovieID)
--- );
-
--- DROP TABLE IF EXISTS SHOWTIME;
--- CREATE TABLE SHOWTIME (
---     ShowtimeID      INT AUTO_INCREMENT,
---     MovieID         INT NOT NULL,
---     ShowingTime     DATETIME NOT NULL, 
-
---     PRIMARY KEY (ShowtimeID),
---     FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON DELETE CASCADE
--- );
-
--- DROP TABLE IF EXISTS SEATMAP;
--- CREATE TABLE SEATMAP (
---     SeatMapID   INT AUTO_INCREMENT,
---     ShowtimeID  INT NOT NULL, 
---     -- Seats JSON,   -- Need to add this comment otherwise Query bugs out
-
---     PRIMARY KEY (SeatMapID),
---     FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE
--- );
-
--- -- Table that links Theatre, Showtime, and SeatMap (HashMap from Theatre object)
--- DROP TABLE IF EXISTS THEATRE_SHOWTIME_SEATING;
--- CREATE TABLE THEATRE_SHOWTIME_SEATING (
---     TheatreID   INT NOT NULL,
---     ShowtimeID  INT NOT NULL,
---     SeatMapID   INT NOT NULL,
-
---     PRIMARY KEY (TheatreID, ShowtimeID),
---     FOREIGN KEY (TheatreID) REFERENCES THEATRE(TheatreID) ON DELETE CASCADE,
---     FOREIGN KEY (ShowtimeID) REFERENCES SHOWTIME(ShowtimeID) ON DELETE CASCADE,
---     FOREIGN KEY (SeatMapID) REFERENCES SEATMAP(SeatMapID) ON DELETE CASCADE
--- );
