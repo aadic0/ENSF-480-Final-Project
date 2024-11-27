@@ -2,6 +2,8 @@ package objects.control;
 
 import objects.entity.*;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.sql.*;
 
 
@@ -75,6 +77,27 @@ public class Main {
         tc.refundTicket(1, "testuser@example.com", null);
     }
     
+    public static void seatMapTest(int showTimeID) {
+
+        DatabaseController db = new DatabaseController();
+        Connection con = db.createConnection();
+
+        TicketController ticketController = new TicketController();
+
+        HashMap<Integer, Boolean> seatAvailability = ticketController.retrieveAvailableSeats(con, showTimeID);
+
+        // Print results
+        if (seatAvailability != null) {
+            System.out.println("Seat availability for ShowtimeID " + showTimeID + ":");
+            for (Map.Entry<Integer, Boolean> entry : seatAvailability.entrySet()) {
+                System.out.println("SeatID: " + entry.getKey() + " | Available: " + entry.getValue());
+            }
+        } else {
+            System.out.println("Could not retrieve seat availability for ShowtimeID " + showTimeID);
+        }
+
+    }
+
     public static void registerUserTest(){
         RegisteredUserController regUserController = new RegisteredUserController();
 
@@ -233,8 +256,10 @@ public class Main {
     // buyTicketTestOld();
     // buyTicketTestNew();
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
-    
     // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
+
+    // seatMapTest(9); // should return true for all seats except for seats 41-44
+    // seatMapTest(10);
 
     //------------------------//
     //   ShowtimeController   //
