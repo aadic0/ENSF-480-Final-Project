@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+// NOTE: THIS CLASS IS NOW OBSOLTETE AND THE FUNCTIONS WE NEED FROM IT HAVE BEEN ADDED TO TicketController
+// - Damon Nov 27
 
 public class SeatController {
     private int showtimeID;
