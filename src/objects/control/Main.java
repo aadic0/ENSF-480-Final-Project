@@ -189,9 +189,9 @@ public class Main {
             System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID1)); // True
             System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID2)); // True
             System.out.println();
-            System.out.println(ticketController.canPurchasePrivateTicket(connection, showtimeID0, email)); // True
-            System.out.println(ticketController.canPurchasePrivateTicket(connection, showtimeID1, email)); // False assuming that the query where 4 tickets are made for showtimeID 9 is ran
-            System.out.println(ticketController.canPurchasePrivateTicket(connection, showtimeID2, email)); // True
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID0, email)); // True
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID1, email)); // False assuming that the query where 4 tickets are made for showtimeID 9 is ran
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID2, email)); // True
 
         } catch(Exception e) {e.printStackTrace();}
     }
@@ -233,7 +233,8 @@ public class Main {
     // buyTicketTestOld();
     // buyTicketTestNew();
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
-    privateBookingTest();
+    
+    // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
 
     //------------------------//
     //   ShowtimeController   //

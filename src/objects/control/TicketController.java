@@ -265,7 +265,7 @@ public class TicketController {
 
             // If the announcement associated with a showtime is private and the user purchasing is not a RegUser, return false
             // if(isPrivateAnnouncementTicket(connection, showtimeID))
-            //     if(!canPurchasePrivateTicket(connection, showtimeID, email)) 
+            //     if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
             //         return false;
 
             // If the purchasable time has passed, return false
@@ -443,18 +443,34 @@ public class TicketController {
      * @return the showtime is still private (true) or has been announced publicly (false)
      */
     public boolean isPrivateAnnouncementTicket(Connection con, int showtimeID) {
-        String query = "SELECT COUNT(*) AS numPublic FROM ANNOUNCEMENT WHERE ShowtimeID = ? AND IsPublic = TRUE";
+        String query1 = "SELECT MovieID FROM SHOWTIME WHERE ShowtimeID = ?";
+        String query2 = "SELECT COUNT(*) AS numPublic FROM ANNOUNCEMENT WHERE MovieID = ? AND IsPublic = TRUE";
 
+        int movieID = -1;
         int numPublic = -1;
 
-        // Query - See if there are any public announcements associated with a ShowtimeID
-        try (PreparedStatement psQuery = con.prepareStatement(query)) {
-            psQuery.setInt(1, showtimeID);
+        // Query 1 - Find the MovieID from the Showtime associated with ShowtimeID
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+            psQuery1.setInt(1, showtimeID);
 
             // get number of public announcements associated with a ShowtimeID
-            try (ResultSet rs = psQuery.executeQuery()) {
-                if (rs.next()) 
-                    numPublic = rs.getInt("numPublic"); 
+            try (ResultSet rs1 = psQuery1.executeQuery()) {
+                if (rs1.next()) 
+                    movieID = rs1.getInt("MovieID"); 
+                else {
+                    return false; // Query couldn't get any results
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        // Query 2 - See if there are any public announcements associated with the MovieID
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
+            psQuery2.setInt(1, movieID);
+
+            // get number of public announcements associated with a ShowtimeID
+            try (ResultSet rs2 = psQuery2.executeQuery()) {
+                if (rs2.next()) 
+                    numPublic = rs2.getInt("numPublic"); 
                 else {
                     return false; // Query couldn't get any results
                 }
@@ -474,7 +490,7 @@ public class TicketController {
      * @param showtimeID
      * @return true if purchasable, false if not purchasable
      */
-    public boolean canPurchasePrivateTicket(Connection con, int showtimeID, String email) {
+    public boolean isBelowMaxPrivateTickets(Connection con, int showtimeID, String email) {
         String query0 = "SELECT COUNT(*) AS numEmail FROM REGISTERED_USER WHERE Email = ?";
         String query1 = "SELECT TheatreRoomID FROM Showtime WHERE ShowtimeID = ?";
         String query2 = "SELECT COUNT(*) AS numTickets FROM TICKET WHERE ShowtimeID = ?";
