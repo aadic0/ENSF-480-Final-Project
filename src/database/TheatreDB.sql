@@ -103,8 +103,8 @@ CREATE TABLE SHOWTIME (
 -- Announcement table
 DROP TABLE IF EXISTS ANNOUNCEMENT;
 CREATE TABLE ANNOUNCEMENT (
-    AnnouncementID      INT NOT NULL,
-    IsPublic            INT NOT NULL,
+    AnnouncementID      INT AUTO_INCREMENT,
+    IsPublic            BOOLEAN NOT NULL,
     AnnouncementMessage VARCHAR(255) NOT NULL,
     DateAnnounced       DATE,
     ShowtimeID          INT,
@@ -290,6 +290,11 @@ SELECT * FROM MOVIE;
 SELECT * FROM SHOWTIME;
 SELECT * FROM TICKET;
 
+-- @block
+SELECT * FROM TICKET;
+
+-- @block
+SELECT * FROM ANNOUNCEMENT;
 -- @block
 -- DELETE --
 
