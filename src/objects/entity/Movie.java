@@ -1,30 +1,37 @@
 package objects.entity;
 
-import java.util.ArrayList;
+import java.sql.Time;
 
 public class Movie {
     //---------------//
     //   Variables   //
     //---------------//
+    private int movieID;
     private String name;
     private String genre;
     private String rating;
-    private ArrayList<String> actors;
+    private Time runtime;
 
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Movie(String name, String genre, String rating, ArrayList<String> actors) {
+    public Movie(int movieID, String name, String genre, String rating, Time runtime) {
+        this.movieID = movieID;
         this.name = name;
         this.genre = genre;
         this.rating = rating;
-        this.actors = actors;
+        this.runtime = runtime;
     }
 
     //---------------------//
     //  Getters + Setters  //
     //---------------------//
+    
+    public int getMovieID() {
+        return movieID;
+    }
+    
     public String getName() {
         return name;
     }
@@ -49,6 +56,14 @@ public class Movie {
         this.rating = rating;
     }
 
+    public Time getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(Time runtime) {
+        this.runtime = runtime;
+    }
+
 
 
 
@@ -56,11 +71,5 @@ public class Movie {
     //   Methods   //
     //-------------//
 
-    public void addActor(String actor) {
-        this.actors.add(actor);
-    }
 
-    public void removeActor(String actor) {
-        this.actors.remove(actor);
-    }
 }

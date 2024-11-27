@@ -78,6 +78,14 @@ public class RegisteredUser extends User {
         this.lastName = lname;
     }
 
+    public PaymentInfo getPaymentInfo() {
+        return paymentInfo;
+    }
+
+    public void setPaymentInfo(PaymentInfo paymentInfo) {
+        this.paymentInfo = paymentInfo;
+    }
+
 
 
     //-------------//

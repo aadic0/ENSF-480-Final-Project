@@ -1,42 +1,50 @@
 package objects.entity;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
 
 public class Showtime {
     //---------------//
     //   Variables   //
     //---------------//
-    private Movie movie;
-    private LocalDateTime showingTime;
     
+    private int showtimeID;
+    private Movie movie;
+    private TheatreRoom theatreRoom;
+    private Timestamp showDateTime;
 
     //---------------//
     //  Constructor  //
     //---------------//
-    public Showtime(Movie movie, LocalDateTime showingTime) {
+    public Showtime(int showtimeID, Movie movie, TheatreRoom theatreRoom, Timestamp showDateTime) {
+        this.showtimeID = showtimeID;
         this.movie = movie;
-        this.showingTime = showingTime;
+        this.theatreRoom = theatreRoom;
+        this.showDateTime = showDateTime;
     }
 
     //---------------------//
     //  Getters + Setters  //
     //---------------------//
+
+    public int getShowtimeID() {
+        return showtimeID;
+    }
+
     public Movie getMovie() {
         return movie;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-    
-    public LocalDateTime getShowingTime() {
-        return showingTime;
+    public TheatreRoom getTheatreRoom() {
+        return theatreRoom;
     }
 
-    public void setShowingTime(LocalDateTime showingTime) {
-        this.showingTime = showingTime;
+    public Timestamp getShowTimestamp() {
+        return showDateTime;
     }
+
     //-------------//
     //   Methods   //
     //-------------//
+
 }
