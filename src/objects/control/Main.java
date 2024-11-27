@@ -213,6 +213,13 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static void testAnnouncements() {
+        AnnouncementController announcementController = new AnnouncementController();
+        announcementController.sendPrivateAnnouncement("Test Announcement");
+        announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
+        announcementController.sendPublicAnnouncement("Hello gang");
+    }
     
     public static void main(String[] args) {
 
@@ -264,14 +271,10 @@ public class Main {
     // MovieController movieController = new MovieController();
     // movieController.getAllMovies();
 
-    //------------------------//
-    //Announcement Controller //
-    //------------------------//
-    AnnouncementController announcementController = new AnnouncementController();
-    announcementController.sendPrivateAnnouncement("Test Announcement");
-    announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
-    announcementController.sendPublicAnnouncement("Hello gang");
-    
+    //---------------------------//
+    //  Announcement Controller  //
+    //---------------------------//
+    // testAnnouncements();
 
 
     }
