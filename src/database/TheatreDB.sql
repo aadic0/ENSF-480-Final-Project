@@ -345,9 +345,12 @@ VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 10)
 -- ------------ --
 
 -- @block
+INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
+VALUES ('test@test.com', 'test', 0.00);
+-- @block
 -- INSERT --
-INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode)
-VALUES ('test@test.com', 'jdoe', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
+INSERT INTO REGISTERED_USER (Email, FirstName, LastName, StreetAddress, City, Province, PostalCode)
+VALUES ('test@test.com', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
 
 -- @block
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
@@ -361,6 +364,8 @@ VALUES (9, 43, '2024-11-10 17:32:00', 'user3@example.com');
 
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
 VALUES (9, 44, '2024-11-10 17:32:00', 'user4@example.com');
+
+
 
 -- @block
 -- SELECT --
