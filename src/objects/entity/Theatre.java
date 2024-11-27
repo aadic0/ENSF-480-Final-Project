@@ -1,6 +1,5 @@
 package objects.entity;
 
-import java.util.HashMap;
 
 public class Theatre {
     //---------------//

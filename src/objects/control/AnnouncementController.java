@@ -1,15 +1,10 @@
 package objects.control;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
-import objects.entity.Announcement;
-import objects.entity.RegisteredUser;
-import objects.entity.User;
 
 public class AnnouncementController{
     
