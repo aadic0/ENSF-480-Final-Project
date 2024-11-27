@@ -66,26 +66,39 @@ public class ShowtimeController {
      * Get all movies from SQL database
      * @param con connection to database
      */
-    public void retrieveAllMovies(Connection con) {
-            // Prepare query
-            String query = "SELECT Title, Genre, Rating, Runtime FROM MOVIE;";
-            try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
-                // Execute Query
-                ResultSet resultSet = preparedStatement.executeQuery();
+    public HashMap<Integer, ArrayList<Object>> retrieveAllMovies(Connection con) {
 
-                while (resultSet.next()) {
-                    String title = resultSet.getString("Title");
-                    String genre = resultSet.getString("Genre");
-                    String rating = resultSet.getString("Rating");
-                    Time runtime = resultSet.getTime("Runtime");
+        HashMap<Integer, ArrayList<Object>> movieMap = new HashMap<>();
 
-                    System.out.println("Movie Title: " + title);
-                    System.out.println("Genre: " + genre);
-                    System.out.println("Rating: " + rating);
-                    System.out.println("Runtime: " + runtime);
-                    System.out.println("-----------");
-                }
+        String query = "SELECT MovieID, Title, Genre, Rating, Runtime FROM MOVIE;";
+
+        // Query - Get all information from MOVIE table and add it to a Hashmap
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            // Execute Query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Get values, add them to ArrayList and then put them in HashMap
+            while (resultSet.next()) {
+
+                ArrayList<Object> valueArrayList = new ArrayList<>();
+
+                int movieID = resultSet.getInt("MovieID");
+                String title = resultSet.getString("Title");
+                String genre = resultSet.getString("Genre");
+                String rating = resultSet.getString("Rating");
+                Time runtime = resultSet.getTime("Runtime");
+
+                valueArrayList.add(title);   // [0]
+                valueArrayList.add(genre);   // [1]
+                valueArrayList.add(rating);  // [2]
+                valueArrayList.add(runtime); // [3]
+
+                movieMap.put(movieID, valueArrayList);
+
+            }
         } catch (SQLException e) { System.out.println(e); }
+
+        return movieMap;
     }
 
     /**
