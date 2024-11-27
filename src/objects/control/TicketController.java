@@ -8,6 +8,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import objects.entity.PaymentInfo;
 import objects.entity.Seat;
@@ -17,6 +19,12 @@ import objects.entity.Showtime;
 public class TicketController {
     
     public TicketController(){}
+
+
+
+//-----------------------------------------------------------------//
+//                      TICKET PURCHASING                          //
+//-----------------------------------------------------------------//
 
     /**
      * Have a user buy a ticket for a seat in a showtime
@@ -248,6 +256,13 @@ public class TicketController {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+//-------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------//
+//                      CHECKER METHODS                            //
+//-----------------------------------------------------------------//
+
 
 
 
@@ -371,7 +386,6 @@ public class TicketController {
         // Query 1 - Get the TheatreRoomID from SHOWTIME table
         try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
                 
-            // Set query parameters
             psQuery1.setInt(1, showtimeID);
 
             // Find seat ID
@@ -390,7 +404,6 @@ public class TicketController {
         // Query 2 - Get the SeatID from the SEAT table
         try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
                 
-            // Set query parameters
             psQuery2.setInt(1, seat.getSeatRow());
             psQuery2.setInt(2, seat.getSeatNumber()); 
             psQuery2.setInt(3, theatreRoomID);
@@ -504,7 +517,6 @@ public class TicketController {
         // Query 0 - Check if the email is associated with a RegisteredUser
         try (PreparedStatement psQuery0 = con.prepareStatement(query0)) {
                 
-            // Set query parameters
             psQuery0.setString(1, email);
 
             // Find seat ID
@@ -527,7 +539,6 @@ public class TicketController {
         // Query 1 - Find the TheatreRoomID associated with a ShowtimeID
         try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
                 
-            // Set query parameters
             psQuery1.setInt(1, showtimeID);
 
             // Find TheareRoomID
@@ -555,7 +566,7 @@ public class TicketController {
                 }
 
             } catch (Exception e) { e.printStackTrace(); }
-        } catch (Exception e) { e.printStackTrace();  }
+        } catch (Exception e) { e.printStackTrace(); }
 
         // Query 3 - Find the number of Seats associated with TheatreRoomID
         try (PreparedStatement psQuery3 = con.prepareStatement(query3)) {
@@ -580,5 +591,86 @@ public class TicketController {
         
         return true;
     }
+
+
+//-----------------------------------------------------------------//
     
+//-----------------------------------------------------------------//
+//                            SEAT METHODS                         //
+//-----------------------------------------------------------------//
+
+    /**
+     * Finds out what seats for a showtime have been booked
+     * @param con
+     * @param showtimeID
+     * @return HashMap<Integer, Boolean> where Integer is SeatID, and Boolean is if it is avaiable (true) or not (false)
+     */
+    public HashMap<Integer, Boolean> retrieveAvailableSeats(Connection con, int showtimeID) {
+
+        String query1 = "SELECT TheatreRoomID FROM SHOWTIME WHERE ShowtimeID = ?";
+        String query2 = "SELECT SeatID FROM SEAT WHERE TheatreRoomID = ?";
+        String query3 = "SELECT SeatID FROM TICKET WHERE ShowtimeID = ?";
+
+        int theatreRoomID = -1;
+
+        HashMap<Integer, Boolean> seatMap = new HashMap<>(); // seatID : True/False
+                                                             //          seat is available(true) or not(false)
+        
+        // Query 1 - Find the TheatreRoomID associated with a ShowtimeID
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+                
+            psQuery1.setInt(1, showtimeID);
+
+            // Find TheareRoomID
+            try (ResultSet rs1 = psQuery1.executeQuery()) {
+                if (rs1.next())
+                    theatreRoomID = rs1.getInt("TheatreRoomID");
+                else {
+                    System.out.println("TheatreRoomID not found");
+                    return null; // TheatreRoomID not found
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+        
+        
+        // Query 2 - Get SeatIDs associated with TheatreRoomID and put them into hashmap
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
+            psQuery2.setInt(1, theatreRoomID);
+
+            try (ResultSet rs2 = psQuery2.executeQuery()) {
+                // Get all seats and put them in the hashmap
+                while (rs2.next()) {
+                    int seatID = rs2.getInt("SeatID");
+                    seatMap.put(seatID, true); 
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // Query 3 - Update the booked seats to be unavailable
+        try (PreparedStatement psQuery3 = con.prepareStatement(query3)) {
+            psQuery3.setInt(1, showtimeID);
+
+            try (ResultSet rs3 = psQuery3.executeQuery()) {
+                // Mark seats that are unavailable (false)
+                while (rs3.next()) {
+                    int bookedSeatID = rs3.getInt("SeatID");
+                    seatMap.put(bookedSeatID, false); // Seat is unavailable (false)
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return seatMap;
+    }
+
+
+
+
+
 }
