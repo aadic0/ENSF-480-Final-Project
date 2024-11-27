@@ -85,6 +85,7 @@ public class TicketController {
 
 
     /**
+     * buy a ticket for a seat for a showtime
      * Remade version of purchaseTicket so that you don't have to make a showtime object
      * @param seat
      * @param showtimeID
@@ -104,7 +105,7 @@ public class TicketController {
         boolean paymentValid;
         
         // Check if ticket is available
-        ticketAvailable = isPurchasable(seat, showtimeID);
+        ticketAvailable = isPurchasable(seat, showtimeID, email);
     
         if(ticketAvailable) {
             // Try to pay for ticket
@@ -256,20 +257,27 @@ public class TicketController {
      * @param showtimeID
      * @return if the seat is available (true) or not (false)
      */
-    public boolean isPurchasable(Seat seat, int showtimeID) {
+    public boolean isPurchasable(Seat seat, int showtimeID, String email) {
 
         int seatID = -1;
 
         try (Connection connection = DatabaseController.createConnection()) {
 
-            // Check if the showtime has passed (and also if showtimes even exists)
-            if (!this.isPurchasableTimeCheck(connection, showtimeID)) { return false; }
+            // If the announcement associated with a showtime is private and the user purchasing is not a RegUser, return false
+            // if(isPrivateAnnouncementTicket(connection, showtimeID))
+            //     if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
+            //         return false;
+
+            // If the purchasable time has passed, return false
+            if (!isPurchasableTimeCheck(connection, showtimeID)) 
+                return false; 
 
             // Find the seat ID to use in the next check
             seatID = retrieveSeatID(connection, seat, showtimeID);
 
-            // CHeck if the ticket is available for purchase
-            if (!this.isTicketAvailable(connection, seatID, showtimeID)) { return false; }
+            // If the seat for the showtime is not available for purchase, return false
+            if (!isTicketAvailable(connection, seatID, showtimeID))
+                return false; 
             
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -282,7 +290,7 @@ public class TicketController {
      * @param showtimeID
      * @return If the ticket is purchasable (true) or not (false)
      */
-    private boolean isPurchasableTimeCheck(Connection con, int showtimeID) {
+    public boolean isPurchasableTimeCheck(Connection con, int showtimeID) {
         
         String query1 = "SELECT MovieID, ShowDateTime FROM SHOWTIME WHERE ShowtimeID = ?";
         String query2 = "SELECT Runtime FROM MOVIE WHERE MovieID = ?";
@@ -352,7 +360,7 @@ public class TicketController {
      * @param showtimeID
      * @return the seatID for a showtime and seat
      */
-    private int retrieveSeatID(Connection con, Seat seat, int showtimeID) {
+    public int retrieveSeatID(Connection con, Seat seat, int showtimeID) {
         String query1 = "SELECT TheatreRoomID FROM SHOWTIME WHERE ShowtimeID = ?";
         String query2 = "SELECT SeatID FROM SEAT WHERE SeatRow = ? AND SeatNumber = ? AND TheatreRoomID = ?";
 
@@ -409,7 +417,7 @@ public class TicketController {
      * @param showtimeID
      * @return ticket is available for purchase (true) or not (false)
      */
-    private boolean isTicketAvailable(Connection con, int seatID, int showtimeID) {
+    public boolean isTicketAvailable(Connection con, int seatID, int showtimeID) {
         String query = "SELECT TicketID FROM TICKET WHERE SeatID = ? AND ShowtimeID = ?";
 
         // Query - Find out if ticket is aviable for purchase
@@ -418,15 +426,159 @@ public class TicketController {
             psQuery.setInt(2, showtimeID);
 
             // If ticketID exists then return false
-            try (ResultSet rs3 = psQuery.executeQuery()) {
-                if (rs3.next()) {
+            try (ResultSet rs = psQuery.executeQuery()) {
+                if (rs.next()) 
                     return false; // Seat is booked
-                }
-
+                
             } catch (Exception e) { e.printStackTrace(); }
         } catch (Exception e) { e.printStackTrace(); }
 
         return true; // Ticket is purchaseable
+    }
+
+    /**
+     * Check if the showtime is still private (true) or has been announced publicly (false)
+     * @param con
+     * @param showtimeID
+     * @return the showtime is still private (true) or has been announced publicly (false)
+     */
+    public boolean isPrivateAnnouncementTicket(Connection con, int showtimeID) {
+        String query1 = "SELECT MovieID FROM SHOWTIME WHERE ShowtimeID = ?";
+        String query2 = "SELECT COUNT(*) AS numPublic FROM ANNOUNCEMENT WHERE MovieID = ? AND IsPublic = TRUE";
+
+        int movieID = -1;
+        int numPublic = -1;
+
+        // Query 1 - Find the MovieID from the Showtime associated with ShowtimeID
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+            psQuery1.setInt(1, showtimeID);
+
+            // get number of public announcements associated with a ShowtimeID
+            try (ResultSet rs1 = psQuery1.executeQuery()) {
+                if (rs1.next()) 
+                    movieID = rs1.getInt("MovieID"); 
+                else {
+                    return false; // Query couldn't get any results
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        // Query 2 - See if there are any public announcements associated with the MovieID
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
+            psQuery2.setInt(1, movieID);
+
+            // get number of public announcements associated with a ShowtimeID
+            try (ResultSet rs2 = psQuery2.executeQuery()) {
+                if (rs2.next()) 
+                    numPublic = rs2.getInt("numPublic"); 
+                else {
+                    return false; // Query couldn't get any results
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        // If there are any public announcements, return false. Otherwise return true
+        if(numPublic >= 1) 
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Checks if there are few enough tickets for a privately announced showtime such that a RegUser can purchase one
+     * @param con
+     * @param showtimeID
+     * @return true if purchasable, false if not purchasable
+     */
+    public boolean isBelowMaxPrivateTickets(Connection con, int showtimeID, String email) {
+        String query0 = "SELECT COUNT(*) AS numEmail FROM REGISTERED_USER WHERE Email = ?";
+        String query1 = "SELECT TheatreRoomID FROM Showtime WHERE ShowtimeID = ?";
+        String query2 = "SELECT COUNT(*) AS numTickets FROM TICKET WHERE ShowtimeID = ?";
+        String query3 = "SELECT COUNT(*) AS numSeats FROM SEAT WHERE TheatreRoomID = ?";
+
+        int numEmail = -1;
+        int theatreRoomID = -1;
+        int numTickets = -1;
+        int numSeats = -1;
+
+        // Query 0 - Check if the email is associated with a RegisteredUser
+        try (PreparedStatement psQuery0 = con.prepareStatement(query0)) {
+                
+            // Set query parameters
+            psQuery0.setString(1, email);
+
+            // Find seat ID
+            try (ResultSet rs0 = psQuery0.executeQuery()) {
+                if (rs0.next())
+                    numEmail = rs0.getInt("numEmail");
+                else {
+                    System.out.println("Email column not found");
+                    return false; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // If there is no RegUser associated with that email, return false
+        if(numEmail < 1) {
+            return false;
+        }
+
+        // Query 1 - Find the TheatreRoomID associated with a ShowtimeID
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+                
+            // Set query parameters
+            psQuery1.setInt(1, showtimeID);
+
+            // Find TheareRoomID
+            try (ResultSet rs1 = psQuery1.executeQuery()) {
+                if (rs1.next())
+                    theatreRoomID = rs1.getInt("TheatreRoomID");
+                else {
+                    System.out.println("TheatreRoomID not found");
+                    return false; // TheatreRoomID not found
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // Query 2 - Find the number of tickets associated with ShowtimeID
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
+            psQuery2.setInt(1, showtimeID);
+
+            try (ResultSet rs2 = psQuery2.executeQuery()) {
+                if (rs2.next())
+                    numTickets = rs2.getInt("numTickets");
+                else {
+                    System.out.println("No tickets counted or some other error");
+                    return false; 
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // Query 3 - Find the number of Seats associated with TheatreRoomID
+        try (PreparedStatement psQuery3 = con.prepareStatement(query3)) {
+            psQuery3.setInt(1, theatreRoomID);
+
+            // Check how many seats have already been bought for this private showtime
+            try (ResultSet rs3 = psQuery3.executeQuery()) {
+                if (rs3.next())
+                    numSeats = rs3.getInt("numSeats");
+                else {
+                    System.out.println("No seats counted or some other error");
+                    return false; 
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // If number of tickets is more than 10% of total seats, return false. Otherwise return true
+        if(numTickets >= Math.floorDiv(numSeats, 10)) {
+            return false;
+        }
+        
+        return true;
     }
     
 }

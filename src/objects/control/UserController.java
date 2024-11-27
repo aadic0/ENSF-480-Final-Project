@@ -1,11 +1,5 @@
 package objects.control;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import objects.entity.User;
-
 /**
  * The controller for Users
  * Create and/or register users on the database 
