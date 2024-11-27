@@ -1,17 +1,20 @@
 package objects.boundary;
 
-//import objects.control.*;
+import objects.control.*;
+//import objects.entity.RegisteredUser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener; 
+
 
 
 public class Login extends JPanel {
     private JLabel title;
     private JTextField usernameField;
     private JLabel usernameLabel;
-    private JTextField passwordField;
+    private JPasswordField passwordField;
     private JLabel passwordLabel;
 
     private JButton loginButton;
@@ -19,12 +22,16 @@ public class Login extends JPanel {
     private JButton guestButton;
     private JButton adminButton;
 
+    private JFrame frame; //reference to parent frame
+
     //controllers
-    //private UserController usercontroller;
+    private RegisteredUserController registeredUser;
+
 
     //ctor
-    public Login(){
-        //usercontroller = new UserController();
+    public Login(JFrame frame){
+        this.frame = frame;
+        registeredUser = new RegisteredUserController();
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
@@ -67,7 +74,7 @@ public class Login extends JPanel {
         add(passwordLabel,constraints);
 
 
-        passwordField = new JTextField(20);
+        passwordField = new JPasswordField(20);
         constraints.gridx = 1;
         constraints.gridy = 2;
         constraints.gridwidth = 1;
@@ -113,6 +120,28 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //need to verify that login details are correct (control method)
+                String user = usernameField.getText().toLowerCase();
+                String pass = String.valueOf(passwordField.getPassword());
+                boolean auth_user = registeredUser.authenticateUser(user, pass);
+                if( auth_user != false){
+                    //go to main page
+                    frame.dispose();
+                    MainPage mainPage = new MainPage();
+                    mainPage.displayMainPage();
+                }
+                else{
+                    //display error message
+                    JLabel authError = new JLabel("Incorrect Username or Password");
+                    authError.setForeground(Color.RED);
+                    constraints.gridx = 1;
+                    constraints.gridy = 8;
+                    add(authError, constraints);
+                    revalidate();
+                    repaint();
+                    
+                    
+                }
+
 
             }
         });
@@ -121,7 +150,13 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to register page
+                Register registerPage = new Register();
+                frame.dispose();
+                registerPage.displayRegister();
+                
 
+
+                
             }
         });
 
@@ -129,6 +164,9 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
+                frame.dispose();
+                MainPage mainPage = new MainPage();
+                mainPage.displayMainPage();
 
             }
         });
@@ -152,12 +190,21 @@ public class Login extends JPanel {
 
     }
 
+    public void displayLoginGUI(){
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.add(new Login(frame));
+        frame.setVisible(true);
+
+    }
+
     //temporary main method for testing
     public static void main(String[] args){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Login());
+        frame.add(new Login(frame));
         frame.setVisible(true);
 
     }
