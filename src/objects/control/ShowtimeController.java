@@ -9,6 +9,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ShowtimeController {
     public ShowtimeController(){}
@@ -119,6 +120,41 @@ public class ShowtimeController {
 
         return showtimeMap;
                 
+    }
+
+    public HashMap<Integer, ArrayList<Object>> searchForShowtimeTheatre(Connection con, String movieTitle, int theatreID) {
+        
+        ArrayList<Integer> allowedTheatreRoomID = new ArrayList<>();
+        HashMap<Integer, ArrayList<Object>> showtimeMap = new HashMap<>();
+        HashMap<Integer, ArrayList<Object>> allShowtimeMap = new HashMap<>();
+
+        String query = "SELECT TheatreRoomID FROM THEATREROOM WHERE TheatreID = ?";
+
+        // Query - Find all theatreRoomIDs with TheatreID and add to allowedTheatreRoomID
+        try (PreparedStatement psQuery = con.prepareStatement(query)) {
+            psQuery.setInt(1, theatreID);
+            ResultSet rs = psQuery.executeQuery();
+
+            // Put all theatreRoomIDs wit TheatreID into allowedTheatreRoomID
+            while (rs.next()) {
+                int TheatreRoomID = rs.getInt("TheatreRoomID");
+                allowedTheatreRoomID.add(TheatreRoomID); // [0]
+            }
+        } catch (SQLException e) { System.out.println(e); }
+
+        // Get every showtime with the movie title
+        //                           int          int     Timestamp
+        // format: ShowtimeID: [TheatreRoomID, MovieID, showDateTime]
+        allShowtimeMap = searchForShowtime(con, movieTitle);
+
+        // Put all showtimes that are in theatreRooms that have TheatreID into showtimeMap
+        if (allShowtimeMap != null) 
+            for (int theatreRoomID : allowedTheatreRoomID) // Loop through every allowed TheatreRoomID
+                for (Map.Entry<Integer, ArrayList<Object>> entry : allShowtimeMap.entrySet()) // Loop through every array in allShowtimeMap values
+                    if (entry.getValue().contains(theatreRoomID))  // If the entry arraylist contains theatreRoomID, then add it to showtimeMap
+                        showtimeMap.put(entry.getKey(), entry.getValue());
+
+        return showtimeMap;
     }
 
 //-------------------------------------------------------------//
