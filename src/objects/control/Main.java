@@ -2,6 +2,7 @@ package objects.control;
 
 import objects.entity.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.sql.*;
@@ -12,6 +13,86 @@ import java.sql.*;
 
 // NOTE: I'm using this file to test out database communication, this will (probably) not be the actual main we use
 public class Main {
+
+//---------------------------------------------------------//
+//                 User and RegUser Tests                  //
+//---------------------------------------------------------//
+
+    public static void registerUserTest(){
+        RegisteredUserController regUserController = new RegisteredUserController();
+
+        // 1. Create test data
+        String testEmail = "testuser@gmail.com";
+        String testPassword = "password123";
+        // Need to add L or it gets upset
+        PaymentInfo testPaymentInfo = new PaymentInfo(1234567812345678L, "2025-12-31", 123);
+        RegisteredUser testUser = new RegisteredUser(
+            "John", "Doe",                         // First and last name
+            "123 Fake Street", "Calgary", "AB",    // Address
+            "T1X 1E4",                             // Postal code
+            testEmail,                             // Email
+            testPaymentInfo                        // Payment info
+        );
+
+        // 2. Run the registerUser method
+        try {
+            regUserController.registerUser(testUser, testPassword);
+            System.out.println("User registration completed successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred during user registration:");
+            e.printStackTrace();
+        }
+
+        // 3. Validate the data in the database
+        try (Connection connection = DatabaseController.createConnection()) {
+            // Verify data in USER_PAYMENT_INFO
+            String paymentQuery = "SELECT * FROM USER_PAYMENT_INFO WHERE Email = ?";
+            try (PreparedStatement psPayment = connection.prepareStatement(paymentQuery)) {
+                psPayment.setString(1, testEmail);
+                ResultSet rs = psPayment.executeQuery();
+
+                if (rs.next()) {
+                    System.out.println("Payment info verified:");
+                    System.out.println("PaymentID: " + rs.getInt("PaymentID"));
+                    System.out.println("NumberCC: " + rs.getLong("NumberCC"));
+                    System.out.println("ExpirationDate: " + rs.getDate("ExpirationDate"));
+                    System.out.println("CVV: " + rs.getInt("CVV"));
+                    System.out.println("Email: " + rs.getString("Email"));
+                } else {
+                    System.out.println("No payment info found for email: " + testEmail);
+                }
+            }
+
+            // Verify data in REGISTERED_USER
+            String userQuery = "SELECT * FROM REGISTERED_USER WHERE Email = ?";
+            try (PreparedStatement psUser = connection.prepareStatement(userQuery)) {
+                psUser.setString(1, testEmail);
+                ResultSet rs = psUser.executeQuery();
+
+                if (rs.next()) {
+                    System.out.println("Registered user info verified:");
+                    System.out.println("Email: " + rs.getString("Email"));
+                    System.out.println("FirstName: " + rs.getString("FirstName"));
+                    System.out.println("LastName: " + rs.getString("LastName"));
+                    System.out.println("StreetAddress: " + rs.getString("StreetAddress"));
+                    System.out.println("City: " + rs.getString("City"));
+                    System.out.println("Province: " + rs.getString("Province"));
+                    System.out.println("PostalCode: " + rs.getString("PostalCode"));
+                    System.out.println("PaymentID: " + rs.getInt("PaymentID"));
+                } else {
+                    System.out.println("No registered user found for email: " + testEmail);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred during validation:");
+            e.printStackTrace();
+        }
+    }
+
+
+//---------------------------------------------------------//
+//                 Ticket and Seat Tests                   //
+//---------------------------------------------------------//
 
     public static void buyTicketTestOld() {
         //NOTE:
@@ -98,77 +179,6 @@ public class Main {
 
     }
 
-    public static void registerUserTest(){
-        RegisteredUserController regUserController = new RegisteredUserController();
-
-        // 1. Create test data
-        String testEmail = "testuser@gmail.com";
-        String testPassword = "password123";
-        // Need to add L or it gets upset
-        PaymentInfo testPaymentInfo = new PaymentInfo(1234567812345678L, "2025-12-31", 123);
-        RegisteredUser testUser = new RegisteredUser(
-            "John", "Doe",                         // First and last name
-            "123 Fake Street", "Calgary", "AB",    // Address
-            "T1X 1E4",                             // Postal code
-            testEmail,                             // Email
-            testPaymentInfo                        // Payment info
-        );
-
-        // 2. Run the registerUser method
-        try {
-            regUserController.registerUser(testUser, testPassword);
-            System.out.println("User registration completed successfully.");
-        } catch (Exception e) {
-            System.out.println("An error occurred during user registration:");
-            e.printStackTrace();
-        }
-
-        // 3. Validate the data in the database
-        try (Connection connection = DatabaseController.createConnection()) {
-            // Verify data in USER_PAYMENT_INFO
-            String paymentQuery = "SELECT * FROM USER_PAYMENT_INFO WHERE Email = ?";
-            try (PreparedStatement psPayment = connection.prepareStatement(paymentQuery)) {
-                psPayment.setString(1, testEmail);
-                ResultSet rs = psPayment.executeQuery();
-
-                if (rs.next()) {
-                    System.out.println("Payment info verified:");
-                    System.out.println("PaymentID: " + rs.getInt("PaymentID"));
-                    System.out.println("NumberCC: " + rs.getLong("NumberCC"));
-                    System.out.println("ExpirationDate: " + rs.getDate("ExpirationDate"));
-                    System.out.println("CVV: " + rs.getInt("CVV"));
-                    System.out.println("Email: " + rs.getString("Email"));
-                } else {
-                    System.out.println("No payment info found for email: " + testEmail);
-                }
-            }
-
-            // Verify data in REGISTERED_USER
-            String userQuery = "SELECT * FROM REGISTERED_USER WHERE Email = ?";
-            try (PreparedStatement psUser = connection.prepareStatement(userQuery)) {
-                psUser.setString(1, testEmail);
-                ResultSet rs = psUser.executeQuery();
-
-                if (rs.next()) {
-                    System.out.println("Registered user info verified:");
-                    System.out.println("Email: " + rs.getString("Email"));
-                    System.out.println("FirstName: " + rs.getString("FirstName"));
-                    System.out.println("LastName: " + rs.getString("LastName"));
-                    System.out.println("StreetAddress: " + rs.getString("StreetAddress"));
-                    System.out.println("City: " + rs.getString("City"));
-                    System.out.println("Province: " + rs.getString("Province"));
-                    System.out.println("PostalCode: " + rs.getString("PostalCode"));
-                    System.out.println("PaymentID: " + rs.getInt("PaymentID"));
-                } else {
-                    System.out.println("No registered user found for email: " + testEmail);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("An error occurred during validation:");
-            e.printStackTrace();
-        }
-    }
-
     public static void seatBookingTest() {
         // Sample seat, movieID, theatreRoomID, and showtime details for the test
         Seat seat = new Seat(1, 1); // SeatRow 1, SeatNumber 1
@@ -191,13 +201,6 @@ public class Main {
         }
     }
 
-    public static void testAnnouncements() {
-        AnnouncementController announcementController = new AnnouncementController();
-        announcementController.sendPrivateAnnouncement("Test Announcement");
-        announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
-        announcementController.sendPublicAnnouncement("Hello gang");
-    }
-
     public static void privateBookingTest() {
         TicketController ticketController = new TicketController();
         String email = "testuser@gmail.com"; // Registered user email
@@ -218,7 +221,143 @@ public class Main {
 
         } catch(Exception e) {e.printStackTrace();}
     }
+
+//---------------------------------------------------------//
+//                  Announcement Tests                     //
+//---------------------------------------------------------//
+
+    public static void testAnnouncements() {
+        AnnouncementController announcementController = new AnnouncementController();
+        announcementController.sendPrivateAnnouncement("Test Announcement");
+        announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
+        announcementController.sendPublicAnnouncement("Hello gang");
+    }
+
     
+
+
+//---------------------------------------------------------//
+//               Movie and Showtime Tests                  //
+//---------------------------------------------------------//
+    
+    public static void testAllShowtimeRetrieval() {
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+            HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.retrieveAllShowtimes(connection);
+
+
+            if (showtimeMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
+                    System.out.println("ShowtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap");
+            
+            
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
+    public static void testTheatreShowtimeRetrieval() {
+
+        
+    }
+
+    public static void testShowtimeSearch() {
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+
+        // This section should return with movie info for Devonian Park
+            HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.searchForShowtime(connection, "Devonian Park");
+
+            if (showtimeMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
+                    System.out.println("showtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap");
+            
+
+        // This section should return null (prints "Could not retrieve movieMap")
+            HashMap<Integer, ArrayList<Object>> showtimeMap2 = showtimeController.searchForShowtime(connection, "bah");
+
+            if (showtimeMap2 != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap2.entrySet()) {
+                    System.out.println("showtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap2");
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
+    public static void testShowtimeTheatreSearch() {
+        try (Connection connection = DatabaseController.createConnection()) {
+            ShowtimeController showtimeController = new ShowtimeController();
+
+            HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.searchForShowtimeTheatre(connection, "Devonian Park", 1);
+
+            if (showtimeMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
+                    System.out.println("showtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap");
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
+    public static void testAllMovieRetrieval() {
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+            HashMap<Integer, ArrayList<Object>> movieMap = showtimeController.retrieveAllMovies(connection);
+
+            if (movieMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else
+                System.out.println("Could not retrieve movieMap");
+            
+
+        } catch(Exception e) {e.printStackTrace();}
+        
+    }
+
+    public static void testMovieSearch() {
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+
+        // This section should return with movie info for Finding Norman
+            HashMap<Integer, ArrayList<Object>> movieMap = showtimeController.searchForMovie(connection, "Toy Anecdote");
+
+            if (movieMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve movieMap");
+            
+
+        // This section should return null (prints "Could not retrieve movieMap")
+            HashMap<Integer, ArrayList<Object>> movieMap2 = showtimeController.searchForMovie(connection, "bah");
+
+            if (movieMap2 != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap2.entrySet()) {
+                    System.out.println("movieID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve movieMap2");
+            
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
+
     public static void main(String[] args) {
 
     //------------------------------//
@@ -277,6 +416,22 @@ public class Main {
     //  Announcement Controller  //
     //---------------------------//
     // testAnnouncements();
+
+
+    // Use these tests, I'm keeping the above ones temporarily for easier merging
+    //------------------------//
+    //   ShowtimeController   //
+    //------------------------//
+    // testAllShowtimeRetrieval(); 
+    // testShowtimeSearch();
+    // System.out.println("--------------");
+    // testShowtimeTheatreSearch();
+    // testAllMovieRetrieval(); 
+    // testMovieSearch();
+
+
+
+
 
 
     }
