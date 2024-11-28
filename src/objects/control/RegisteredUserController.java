@@ -12,7 +12,6 @@ import objects.entity.PaymentInfo;
 import objects.entity.RegisteredUser;
 
 
-
 public class RegisteredUserController {
 
 
@@ -33,7 +32,7 @@ public class RegisteredUserController {
      * @return true if a match is found, false otherwise.
      */
     public boolean authenticateUser(String email, String password) {
-        String query = "SELECT COUNT(*) FROM REGISTERED_USER WHERE Email = ? AND Pwd = ?";
+        String query = "SELECT COUNT(*) FROM REGULAR_USER WHERE Email = ? AND Pwd = ?";
         
 
         // For now i have it setup so that it connects to the DB on function call, might change later if we decide to just have one constant 

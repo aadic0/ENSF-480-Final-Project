@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
 
 public class MainPage extends JFrame {
 
+    JMenuBar menubar;
+    
+
     MainPage(){
 
         //setup frame
@@ -20,7 +23,7 @@ public class MainPage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
-       JMenuBar menubar = new JMenuBar();
+       menubar = new JMenuBar();
        
        //create menus
        JMenu homeBtn = new JMenu("Home");
