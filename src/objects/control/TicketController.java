@@ -26,70 +26,70 @@ public class TicketController {
 //                      TICKET PURCHASING                          //
 //-----------------------------------------------------------------//
 
-    /**
-     * Have a user buy a ticket for a seat in a showtime
-     * @param email
-     * @param seat
-     * @param showtime
-     * @param paymentInfo
-     * @param price
-     */
-    public void purchaseTicket(String email, Seat seat, Showtime showtime, PaymentInfo paymentInfo, float price){
-        // FUNCTIONALITY MISSING:
-        //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
+    // /**
+    //  * Have a user buy a ticket for a seat in a showtime
+    //  * @param email
+    //  * @param seat
+    //  * @param showtime
+    //  * @param paymentInfo
+    //  * @param price
+    //  */
+    // public void purchaseTicket(String email, Seat seat, Showtime showtime, PaymentInfo paymentInfo, float price){
+    //     // FUNCTIONALITY MISSING:
+    //     //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
         
-        // Create controllers
-        SeatController seatController = new SeatController();
-        PaymentController paymentController = new PaymentController();
+    //     // Create controllers
+    //     SeatController seatController = new SeatController();
+    //     PaymentController paymentController = new PaymentController();
 
-        // Create flags
-        boolean ticketAvailable;
-        boolean paymentValid;
+    //     // Create flags
+    //     boolean ticketAvailable;
+    //     boolean paymentValid;
         
-        // Check if ticket is available
-        ticketAvailable = seatController.isSeatAvailable(seat, 
-                                                         showtime.getTheatreRoom().getTheatreRoomID(), 
-                                                         showtime.getShowTimestamp(), 
-                                                         showtime.getMovie().getMovieID()
-                                                        );
+    //     // Check if ticket is available
+    //     ticketAvailable = seatController.isSeatAvailable(seat, 
+    //                                                      showtime.getTheatreRoom().getTheatreRoomID(), 
+    //                                                      showtime.getShowTimestamp(), 
+    //                                                      showtime.getMovie().getMovieID()
+    //                                                     );
         
-        if(ticketAvailable) {
-            // Try to pay for ticket
-            paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+    //     if(ticketAvailable) {
+    //         // Try to pay for ticket
+    //         paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
 
-            if(paymentValid) {
-                // Add ticket to database
-                try (Connection connection = DatabaseController.createConnection()) {
-                    String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
-                                   "VALUES (?, ?, ?, ?)";
+    //         if(paymentValid) {
+    //             // Add ticket to database
+    //             try (Connection connection = DatabaseController.createConnection()) {
+    //                 String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
+    //                                "VALUES (?, ?, ?, ?)";
 
-                    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                        // I cannot overstate how much I hate this solution
-                        // I added private seatID and showtimeID to the controller which is nasty but its such as simple solution
-                        // -Damon Nov 23 
-                        preparedStatement.setInt(1, seatController.getShowtimeID());
-                        preparedStatement.setInt(2, seatController.getSeatID());
-                        preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-                        preparedStatement.setString(4, email);
+    //                 try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    //                     // I cannot overstate how much I hate this solution
+    //                     // I added private seatID and showtimeID to the controller which is nasty but its such as simple solution
+    //                     // -Damon Nov 23 
+    //                     preparedStatement.setInt(1, seatController.getShowtimeID());
+    //                     preparedStatement.setInt(2, seatController.getSeatID());
+    //                     preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+    //                     preparedStatement.setString(4, email);
 
-                    int rowsAffected = preparedStatement.executeUpdate();
+    //                 int rowsAffected = preparedStatement.executeUpdate();
 
-                    // Testing to make sure ticket was added
-                    if (rowsAffected > 0) {
-                        System.out.println("Ticket added successfully!");
-                    } 
-                    else {
-                        System.out.println("Failed to add ticket.");
-                    }
+    //                 // Testing to make sure ticket was added
+    //                 if (rowsAffected > 0) {
+    //                     System.out.println("Ticket added successfully!");
+    //                 } 
+    //                 else {
+    //                     System.out.println("Failed to add ticket.");
+    //                 }
 
-                    } catch (Exception e) { e.printStackTrace(); }
-                } catch (Exception e) { e.printStackTrace(); }
-            }
+    //                 } catch (Exception e) { e.printStackTrace(); }
+    //             } catch (Exception e) { e.printStackTrace(); }
+    //         }
             
-        }
-        // Need to implement a reciept thing
-        // System.out.println("Sent user email and receipt");
-    }
+    //     }
+    //     // Need to implement a reciept thing
+    //     // System.out.println("Sent user email and receipt");
+    // }
 
 
     /**

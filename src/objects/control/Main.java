@@ -94,40 +94,43 @@ public class Main {
 //                 Ticket and Seat Tests                   //
 //---------------------------------------------------------//
 
-    public static void buyTicketTestOld() {
-        //NOTE:
-        // This test sucks. You need to manually change showtimeID values depending on what you want to test.
-        // If this test doesn't work, it's almost certainly because some showtime value is messed up in the DB
+    // public static void buyTicketTestOld() {
+    //     //NOTE:
+    //     // This test sucks. You need to manually change showtimeID values depending on what you want to test.
+    //     // If this test doesn't work, it's almost certainly because some showtime value is messed up in the DB
 
 
-        // Mock data for testing
-        String email = "testuser@example.com";
+    //     // Mock data for testing
+    //     String email = "testuser@example.com";
     
-        // Create mock payment info
-        PaymentInfo paymentInfo = new PaymentInfo(
-                1234567812345678L,  // Credit Card Number
-                "2025-12-31",       // Expiration Date
-                123                 // CVV
-        );
+    //     // Create mock payment info
+    //     PaymentInfo paymentInfo = new PaymentInfo(
+    //             1234567812345678L,  // Credit Card Number
+    //             "2025-12-31",       // Expiration Date
+    //             123                 // CVV
+    //     );
     
-        // Create a mock Seat object (for example, Row 2, Seat 5)
-        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database
+    //     // Create a mock Seat object (for example, Row 2, Seat 5)
+    //     Seat seat = new Seat(2, 5); // Ensure this seat exists in the database
     
-        // Create a mock Showtime object (for example, "The Dark Knight" at Room 1, 2024-11-23 18:30:00)
-        Movie movie = new Movie(10, "Devonian Park", "Adventure", "PG-13", Time.valueOf("2:01:00"));
-        TheatreRoom theatreRoom = new TheatreRoom(1, new Theatre(1, "ACMEplex Theatre", "123 Main Street, Calgary, AB"), "Room A");
-        Showtime showtime = new Showtime(40, movie, theatreRoom, Timestamp.valueOf("2024-11-30 17:00:00"));
+    //     // Create a mock Showtime object (for example, "The Dark Knight" at Room 1, 2024-11-23 18:30:00)
+    //     Movie movie = new Movie(10, "Devonian Park", "Adventure", "PG-13", Time.valueOf("2:01:00"));
+    //     TheatreRoom theatreRoom = new TheatreRoom(1, new Theatre(1, "ACMEplex Theatre", "123 Main Street, Calgary, AB"), "Room A");
+    //     Showtime showtime = new Showtime(40, movie, theatreRoom, Timestamp.valueOf("2024-11-30 17:00:00"));
     
-        // Simulate the ticket purchase
-        TicketController ticketController = new TicketController();
-        ticketController.purchaseTicket(email, seat, showtime, paymentInfo, 15.99f);
+    //     // Simulate the ticket purchase
+    //     TicketController ticketController = new TicketController();
+    //     ticketController.purchaseTicket(email, seat, showtime, paymentInfo, 15.99f);
     
-    }
+    // }
 
     public static void buyTicketTestNew() {
         // Mock data for testing
-        String email = "testuser@example.com"; // Registered user email
-        int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
+        String email1 = "user1@example.com"; // Registered user email
+        String email2 = "user5@example.com"; // Registered user email
+        int showtimeID1 = 88;     // 2024-12-09: Should always pass unless ticket is bought
+        int showtimeID2 = 94;      // 2024-11-24: Should always fail because user is not registed (showtime is privately announced)
+        int showtimeID3 = 3;      // 2024-11-24: Should always fail because showtimes has passed
         float ticketPrice = 15.99f;           // Ticket price
         
         // Create mock payment info
@@ -145,7 +148,11 @@ public class Main {
         
         // Call the new purchaseTicket method
         try {
-            ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
+            ticketController.purchaseTicket(seat, showtimeID1, paymentInfo, ticketPrice, email1); // Pass - Ticket not bought yet
+            ticketController.purchaseTicket(seat, showtimeID1, paymentInfo, ticketPrice, email1); // Fail - Ticket already bought
+            ticketController.purchaseTicket(seat, showtimeID2, paymentInfo, ticketPrice, email1); // Fail - User buying is not registeredUser
+            ticketController.purchaseTicket(seat, showtimeID2, paymentInfo, ticketPrice, email2); // Pass - User buying is registeredUser
+            ticketController.purchaseTicket(seat, showtimeID3, paymentInfo, ticketPrice, email1); // Fail - Trying to buy past showtime
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,34 +186,34 @@ public class Main {
 
     }
 
-    public static void seatBookingTest() {
-        // Sample seat, movieID, theatreRoomID, and showtime details for the test
-        Seat seat = new Seat(1, 1); // SeatRow 1, SeatNumber 1
-        int theatreRoomID = 1;
-        int movieID = 1; // Glimbo's Revenge
-        String showDateTimeStr = "2024-11-22 12:00:00";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // public static void seatBookingTest() {
+    //     // Sample seat, movieID, theatreRoomID, and showtime details for the test
+    //     Seat seat = new Seat(1, 1); // SeatRow 1, SeatNumber 1
+    //     int theatreRoomID = 1;
+    //     int movieID = 1; // Glimbo's Revenge
+    //     String showDateTimeStr = "2024-11-22 12:00:00";
+    //     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        try {
-            Timestamp showDateTime = new Timestamp(sdf.parse(showDateTimeStr).getTime()); // Convert showDateTime string to Date
+    //     try {
+    //         Timestamp showDateTime = new Timestamp(sdf.parse(showDateTimeStr).getTime()); // Convert showDateTime string to Date
             
-            // Create an instance of the SeatController class
-            SeatController seatController = new SeatController();
+    //         // Create an instance of the SeatController class
+    //         TicketController ticketController = new TicketController();
 
-            // Call the method to check if the seat is available
-            boolean isAvailable = seatController.isSeatAvailable(seat, theatreRoomID, showDateTime, movieID);
-            System.out.println("Is seat available? " + isAvailable);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //         // Call the method to check if the seat is available
+    //         boolean isAvailable = ticketController.isPurchasable(seat, theatreRoomID, showDateTime, movieID);
+    //         System.out.println("Is seat available? " + isAvailable);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     public static void privateBookingTest() {
         TicketController ticketController = new TicketController();
-        String email = "testuser@gmail.com"; // Registered user email
+        String email = "user5@example.com"; // Registered user email
         
         int showtimeID0 = 8; // Has public and private announcement
-        int showtimeID1 = 9; // Has only private announcement but showtime has passed (shouldnt affect anything in this test)
+        int showtimeID1 = 9; // Has only private announcement but showtime has passed 
         int showtimeID2 = 40; // Only has private announcement
 
         try (Connection connection = DatabaseController.createConnection()) {
@@ -393,7 +400,7 @@ public class Main {
     //-------------------------//
 
     // buyTicketTestOld();
-    // buyTicketTestNew();
+    buyTicketTestNew(); // Recreate database and rerun queries after running this test
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
     // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
 
