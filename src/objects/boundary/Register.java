@@ -99,16 +99,83 @@ public class Register extends JPanel {
     constraints.gridx = 1;
     constraints.gridy = 4;
     constraints.gridwidth = 1;
-    constraints.anchor = GridBagConstraints.CENTER;
+    constraints.anchor = GridBagConstraints.EAST;
     add(loginButton, constraints);
 
     //register button
     registerSubmit = new JButton("Register");
     constraints.gridx = 0;
     constraints.gridy = 4;
-    constraints.gridwidth = 2;
+    constraints.gridwidth = 1;
     constraints.anchor = GridBagConstraints.CENTER;
     add(registerSubmit, constraints);
+
+    /*action listeners */
+    //create new user in database
+    registerSubmit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e){
+    
+        String email = usernameField.getText().toLowerCase();
+        String pass = String.valueOf(passwordField.getPassword()); 
+        String passVerify = String.valueOf(verifyPass.getPassword());
+
+        if (email.isEmpty() || pass.isEmpty() || passVerify.isEmpty()) {
+            JLabel authError = new JLabel("Please fill in all fields.");
+            authError.setForeground(Color.RED);
+            constraints.gridx = 1;
+            constraints.gridy = 8;
+            add(authError, constraints);
+            revalidate();
+            repaint();
+            return; //exit the listener to prevent further checks
+        }
+
+        if( pass.equals(passVerify)){
+            //create user in database
+            UserController createUser = new UserController();
+            createUser.createUser(email,pass);
+            JLabel authError = new JLabel("User successfully created!");
+            authError.setForeground(Color.GREEN);
+            constraints.gridx = 1;
+            constraints.gridy = 8;
+            add(authError, constraints);
+            revalidate();
+            repaint();
+
+    
+        }else{
+        //display error message
+        JLabel authError = new JLabel("Passwords do not match");
+        authError.setForeground(Color.RED);
+        constraints.gridx = 1;
+        constraints.gridy = 8;
+        add(authError, constraints);
+        revalidate();
+        repaint();
+    }
+    if(usernameField.equals("")||pass.equals("")){
+        JLabel authError = new JLabel("Please fill in Username and Password");
+        authError.setForeground(Color.RED);
+        constraints.gridx = 1;
+        constraints.gridy = 8;
+        add(authError, constraints);
+        revalidate();
+        repaint();
+    }
+}
+});
+
+    loginButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e){
+            frame.dispose();
+            Login loginPage = new Login(frame);
+            loginPage.displayLoginGUI();
+        }
+    });
+
+
 
 }
 
