@@ -264,6 +264,35 @@ public class Main {
         
     }
 
+    public static void testShowtimeSearch() {
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            ShowtimeController showtimeController = new ShowtimeController();
+
+        // This section should return with movie info for Finding Norman
+            HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.searchForShowtime(connection, "Devonian Park");
+
+            if (showtimeMap != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap.entrySet()) {
+                    System.out.println("showtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap");
+            
+
+        // This section should return null (prints "Could not retrieve movieMap")
+            HashMap<Integer, ArrayList<Object>> showtimeMap2 = showtimeController.searchForShowtime(connection, "bah");
+
+            if (showtimeMap2 != null) {
+                for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeMap2.entrySet()) {
+                    System.out.println("showtimeID: " + entry.getKey() + " | Info: " + entry.getValue());
+                }
+            } else 
+                System.out.println("Could not retrieve showtimeMap2");
+
+        } catch(Exception e) {e.printStackTrace();}
+    }
+
     public static void testAllMovieRetrieval() {
         try (Connection connection = DatabaseController.createConnection()) {
 
@@ -383,8 +412,9 @@ public class Main {
     //   ShowtimeController   //
     //------------------------//
     // testAllShowtimeRetrieval(); 
+    testShowtimeSearch();
     // testAllMovieRetrieval(); 
-    testMovieSearch();
+    // testMovieSearch();
 
 
 

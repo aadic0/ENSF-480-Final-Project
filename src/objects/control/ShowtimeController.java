@@ -21,7 +21,7 @@ public class ShowtimeController {
 
 
     /**
-     * 
+     * Get all showtimes from the DB
      * @param con
      * @return A hasmap with ShowtimeID as key, and ArrayList with TheatreRoomID in [0], MovieID in [1], and ShowDateTime in [2] as value
      */
@@ -34,16 +34,78 @@ public class ShowtimeController {
         // Query - Get all information from SHOWTIME table and add it to a Hashmap
         try (PreparedStatement psQuery = con.prepareStatement(query)) {
     
-            ResultSet resultSet = psQuery.executeQuery();
+            ResultSet rs = psQuery.executeQuery();
 
-            while (resultSet.next()) {
-
+            // Get info from DB and add it to the hashmap
+            while (rs.next()) {
                 ArrayList<Object> valueArrayList = new ArrayList<>();
 
-                int showtimeID = resultSet.getInt("ShowtimeID");
-                int TheatreRoomID = resultSet.getInt("TheatreRoomID");
-                Timestamp showDateTime = resultSet.getTimestamp("ShowDateTime");
-                int movieID = resultSet.getInt("MovieID");
+                int showtimeID = rs.getInt("ShowtimeID");
+                int TheatreRoomID = rs.getInt("TheatreRoomID");
+                Timestamp showDateTime = rs.getTimestamp("ShowDateTime");
+                int movieID = rs.getInt("MovieID");
+
+                // Values in ArrayList
+                valueArrayList.add(TheatreRoomID); // [0]
+                valueArrayList.add(movieID);       // [1]
+                valueArrayList.add(showDateTime);  // [2]
+
+                // If showtime datetime has already passed, ignore it
+                if(showDateTime.before(new Timestamp(System.currentTimeMillis())))
+                    continue;
+                
+                showtimeMap.put(showtimeID, valueArrayList);
+            }
+        } catch (SQLException e) { System.out.println(e); }
+
+        return showtimeMap;
+    }
+
+    /**
+     * Search for a specific movie title
+     * @param con
+     * @param movieTitle
+     * @return If movie title exists, return a HashMap containing its information. Otherwise return null
+     */
+    public HashMap<Integer, ArrayList<Object>> searchForShowtime(Connection con, String movieTitle) {
+        // Try to connect to database
+
+        String query1 = "SELECT MovieID, Title, Genre, Rating, Runtime FROM MOVIE WHERE Title = ?";
+        String query2 = "SELECT ShowtimeID, TheatreRoomID, ShowDateTime FROM SHOWTIME WHERE MovieID = ?";
+
+        int movieID = -1;
+
+        // Query 1 - Find movieID given a movie title
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1);) {
+            psQuery1.setString(1, movieTitle);
+
+            ResultSet rs1 = psQuery1.executeQuery();
+
+            // get movieID if it exists
+            if (rs1.next()) 
+                movieID = rs1.getInt("MovieID");
+                
+        } catch (SQLException e) { System.out.println(e); }
+
+        HashMap<Integer, ArrayList<Object>> showtimeMap = new HashMap<>();
+
+        // Query 2 - Get information from all showtimes with a matching MovieID and the showDateTime has not passed and put it in a HashMap
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2);) {
+            psQuery2.setInt(1, movieID);
+
+            ResultSet rs2 = psQuery2.executeQuery();
+
+            // Get info from DB and add it to the hashmap
+            while (rs2.next()) {
+                ArrayList<Object> valueArrayList = new ArrayList<>();
+
+                int showtimeID = rs2.getInt("ShowtimeID");
+                int TheatreRoomID = rs2.getInt("TheatreRoomID");
+                Timestamp showDateTime = rs2.getTimestamp("ShowDateTime");
+
+                // If showtime datetime has already passed, ignore it
+                if(showDateTime.before(new Timestamp(System.currentTimeMillis())))
+                    continue;
 
                 // Values in ArrayList
                 valueArrayList.add(TheatreRoomID); // [0]
@@ -52,9 +114,11 @@ public class ShowtimeController {
                 
                 showtimeMap.put(showtimeID, valueArrayList);
             }
+
         } catch (SQLException e) { System.out.println(e); }
 
         return showtimeMap;
+                
     }
 
 //-------------------------------------------------------------//
@@ -75,18 +139,18 @@ public class ShowtimeController {
         // Query - Get all information from MOVIE table and add it to a Hashmap
         try (PreparedStatement psQuery = con.prepareStatement(query)) {
             // Execute Query
-            ResultSet resultSet = psQuery.executeQuery();
+            ResultSet rs = psQuery.executeQuery();
 
             // Get values, add them to ArrayList and then put them in HashMap
-            while (resultSet.next()) {
+            while (rs.next()) {
 
                 ArrayList<Object> valueArrayList = new ArrayList<>();
 
-                int movieID = resultSet.getInt("MovieID");
-                String title = resultSet.getString("Title");
-                String genre = resultSet.getString("Genre");
-                String rating = resultSet.getString("Rating");
-                Time runtime = resultSet.getTime("Runtime");
+                int movieID = rs.getInt("MovieID");
+                String title = rs.getString("Title");
+                String genre = rs.getString("Genre");
+                String rating = rs.getString("Rating");
+                Time runtime = rs.getTime("Runtime");
 
                 valueArrayList.add(title);   // [0]
                 valueArrayList.add(genre);   // [1]
@@ -118,18 +182,18 @@ public class ShowtimeController {
             psQuery.setString(1, movieTitle);
 
             // Execute Query
-            ResultSet resultSet = psQuery.executeQuery();
+            ResultSet rs = psQuery.executeQuery();
 
             // Get values, add them to ArrayList and then put them in HashMap
-            while (resultSet.next()) {
+            while (rs.next()) {
 
                 ArrayList<Object> valueArrayList = new ArrayList<>();
 
-                int movieID = resultSet.getInt("MovieID");
-                String title = resultSet.getString("Title");
-                String genre = resultSet.getString("Genre");
-                String rating = resultSet.getString("Rating");
-                Time runtime = resultSet.getTime("Runtime");
+                int movieID = rs.getInt("MovieID");
+                String title = rs.getString("Title");
+                String genre = rs.getString("Genre");
+                String rating = rs.getString("Rating");
+                Time runtime = rs.getTime("Runtime");
 
                 valueArrayList.add(title);   // [0]
                 valueArrayList.add(genre);   // [1]
