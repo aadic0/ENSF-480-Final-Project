@@ -342,6 +342,7 @@ INSERT INTO SHOWTIME (TheatreRoomID, ShowDateTime, MovieID)
 VALUES
     (1, '2024-11-24 15:00:00', 9),
     (1, '2024-11-25 15:00:00', 9),
+    (1, '2024-11-26 15:00:00', 1),
     (1, '2024-11-28 15:00:00', 9),
     (2, '2024-11-28 17:00:00', 10),
     (3, '2024-12-01 15:00:00', 1),
@@ -525,15 +526,9 @@ VALUES
     -- (9876543298765432, '2025-08-15', 456, 'user2@example.com'),
     -- (1122334455667788, '2027-05-20', 789, 'user3@example.com');
 
-
-
 INSERT INTO REGISTERED_USER (Email, FirstName, LastName, StreetAddress, City, Province, PostalCode, PaymentID)
 VALUES ('user5@example.com', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9', 1);
 
--- @block
--- INSERT --
-INSERT INTO REGISTERED_USER (Email, FirstName, LastName, StreetAddress, City, Province, PostalCode)
-VALUES ('test@test.com', 'John', 'Doe', 'Random Address', 'Calgary', 'Province', 'T2X2A9');
 
 -- @block
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
