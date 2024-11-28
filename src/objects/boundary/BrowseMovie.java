@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class BrowseMovie extends JPanel {
@@ -18,14 +22,14 @@ public class BrowseMovie extends JPanel {
     private JButton searchButton;
 
     //controller
-    private MovieController movieControl;
+    private ShowtimeController showControl;
 
     private JFrame frame; //reference to parent frame
 
     //ctor
     public BrowseMovie(JFrame frame){
         this.frame = frame;
-        this.movieControl = new MovieController();
+        this.showControl = new ShowtimeController();
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
@@ -38,6 +42,12 @@ public class BrowseMovie extends JPanel {
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.CENTER;
         add(title, constraints); //add to the panel
+
+        /*
+        //retreive movies?
+        HashMap<Integer, ArrayList<Object>> movieMap = showControl.retrieveAllMovies(Connection con); //how to get connection to pass?
+        */
+
     }
     
 
