@@ -129,7 +129,7 @@ public class Main {
         String email1 = "user1@example.com"; // Registered user email
         String email2 = "user5@example.com"; // Registered user email
         int showtimeID1 = 88;     // 2024-12-09: Should always pass unless ticket is bought
-        int showtimeID2 = 94;      // 2024-11-24: Should always fail because user is not registed (showtime is privately announced)
+        int showtimeID2 = 94;      // 2024-12-09: Should always fail because user is not registed (showtime is privately announced)
         int showtimeID3 = 3;      // 2024-11-24: Should always fail because showtimes has passed
         float ticketPrice = 15.99f;           // Ticket price
         
@@ -162,7 +162,7 @@ public class Main {
     
     public static void refundTicketTest() {
         TicketController tc = new TicketController();
-        tc.refundTicket(1, "testuser@example.com", null);
+        tc.refundTicket(1, "user1@example.com", null);
     }
     
     public static void seatMapTest(int showTimeID) {
@@ -213,8 +213,9 @@ public class Main {
         String email = "user5@example.com"; // Registered user email
         
         int showtimeID0 = 8; // Has public and private announcement
-        int showtimeID1 = 9; // Has only private announcement but showtime has passed 
-        int showtimeID2 = 40; // Only has private announcement
+        int showtimeID1 = 85; // Has only private announcement
+        int showtimeID2 = 1; // Only has private announcement and showtime has passed
+        int showtimeID3 = 9; // Has public and private announcement, but has 4 tickets booked assuming queries are run
 
         try (Connection connection = DatabaseController.createConnection()) {
 
@@ -223,7 +224,7 @@ public class Main {
             System.out.println(ticketController.isPrivateAnnouncementTicket(connection, showtimeID2)); // True
             System.out.println();
             System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID0, email)); // True
-            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID1, email)); // False assuming that the query where 4 tickets are made for showtimeID 9 is ran
+            System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID3, email)); // False assuming that the query where 4 tickets are made for showtimeID 9 is ran, even though it is public 10% of seats are booked (which is what this tests for)
             System.out.println(ticketController.isBelowMaxPrivateTickets(connection, showtimeID2, email)); // True
 
         } catch(Exception e) {e.printStackTrace();}
@@ -387,13 +388,7 @@ public class Main {
     // ------------------------------//
     //   RegisteredUserController    //
     // ------------------------------//
-    // registerUserTest();
-
-
-    // --------------------//
-    //   SeatController    //
-    // --------------------//
-    // seatBookingTest();
+    // registerUserTest(); // Haven't verified this test
 
     //-------------------------//
     //     TicketController    //
@@ -404,20 +399,8 @@ public class Main {
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
     // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
 
-    // seatMapTest(9); // should return true for all seats except for seats 41-44
+    // seatMapTest(9); // should return true for all seats except for seats 201-204
     // seatMapTest(10);
-
-    //------------------------//
-    //   ShowtimeController   //
-    //------------------------//
-    // ShowtimeController showtimeController = new ShowtimeController();
-    // showtimeController.getAllShowtimes();
-
-    //------------------------//
-    //     MovieController    //
-    //------------------------//
-    // MovieController movieController = new MovieController();
-    // movieController.getAllMovies();
 
     //---------------------------//
     //  Announcement Controller  //
@@ -435,11 +418,6 @@ public class Main {
     // testShowtimeTheatreSearch();
     // testAllMovieRetrieval(); 
     // testMovieSearch();
-
-
-
-
-
 
     }
 
