@@ -340,6 +340,8 @@ VALUES
 -- Showtimes
 INSERT INTO SHOWTIME (TheatreRoomID, ShowDateTime, MovieID)
 VALUES
+    (1, '2024-11-24 15:00:00', 9),
+    (1, '2024-11-25 15:00:00', 9),
     (1, '2024-11-28 15:00:00', 9),
     (2, '2024-11-28 17:00:00', 10),
     (3, '2024-12-01 15:00:00', 1),
