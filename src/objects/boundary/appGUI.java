@@ -5,9 +5,9 @@ public class appGUI{
     public static void main(String[] args){
         Login loginPage;
         
-        loginPage = new Login();
+        //loginPage = new Login();
 
-        loginPage.displayLoginGUI();
+        //loginPage.displayLoginGUI();
         
     }
 }
