@@ -129,8 +129,8 @@ public class Login extends JPanel {
                 if( auth_user != false){
                     //go to main page
                     frame.dispose();
-                    MainPage mainPage = new MainPage();
-                    mainPage.displayMainPage();
+                    new MainPage();
+                    //mainPage.displayMainPage();
                 }
                 else{
                     //display error message
@@ -168,8 +168,8 @@ public class Login extends JPanel {
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
                 frame.dispose();
-                MainPage mainPage = new MainPage();
-                mainPage.displayMainPage();
+                new MainPage();
+                //mainPage.displayMainPage();
 
             }
         });

@@ -119,6 +119,18 @@ public class Register extends JPanel {
         String email = usernameField.getText().toLowerCase();
         String pass = String.valueOf(passwordField.getPassword()); 
         String passVerify = String.valueOf(verifyPass.getPassword());
+
+        if (email.isEmpty() || pass.isEmpty() || passVerify.isEmpty()) {
+            JLabel authError = new JLabel("Please fill in all fields.");
+            authError.setForeground(Color.RED);
+            constraints.gridx = 1;
+            constraints.gridy = 8;
+            add(authError, constraints);
+            revalidate();
+            repaint();
+            return; //exit the listener to prevent further checks
+        }
+
         if( pass.equals(passVerify)){
             //create user in database
             UserController createUser = new UserController();
@@ -141,7 +153,16 @@ public class Register extends JPanel {
         add(authError, constraints);
         revalidate();
         repaint();
-}
+    }
+    if(usernameField.equals("")||pass.equals("")){
+        JLabel authError = new JLabel("Please fill in Username and Password");
+        authError.setForeground(Color.RED);
+        constraints.gridx = 1;
+        constraints.gridy = 8;
+        add(authError, constraints);
+        revalidate();
+        repaint();
+    }
 }
 });
 
