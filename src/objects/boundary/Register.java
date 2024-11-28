@@ -23,14 +23,14 @@ public class Register extends JPanel {
     private JButton loginButton;
     private JButton registerSubmit;
 
-    public Register(){
+    public Register(JFrame frame){
 
     /*panel setup */
     setLayout(new GridBagLayout()); //arrange components in grid-like structure
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.insets = new Insets(10,10,10,10);
 
-    //this.frame = frame;
+    this.frame = frame;
    
     title = new JLabel("Movie Ticket-Booking App");
     title.setFont(new Font("Arial", Font.BOLD,18));
@@ -154,15 +154,7 @@ public class Register extends JPanel {
         revalidate();
         repaint();
     }
-    if(usernameField.equals("")||pass.equals("")){
-        JLabel authError = new JLabel("Please fill in Username and Password");
-        authError.setForeground(Color.RED);
-        constraints.gridx = 1;
-        constraints.gridy = 8;
-        add(authError, constraints);
-        revalidate();
-        repaint();
-    }
+   
 }
 });
 
@@ -183,7 +175,7 @@ public void displayRegister(){
     JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Register());
+        frame.add(new Register(frame));
         frame.setVisible(true);
 
 }

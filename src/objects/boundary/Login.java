@@ -153,7 +153,7 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to register page
-                Register registerPage = new Register();
+                Register registerPage = new Register(frame);
                 frame.dispose();
                 registerPage.displayRegister();
                 
