@@ -279,9 +279,9 @@ public class TicketController {
         try (Connection connection = DatabaseController.createConnection()) {
 
             // If the announcement associated with a showtime is private and the user purchasing is not a RegUser, return false
-            // if(isPrivateAnnouncementTicket(connection, showtimeID))
-            //     if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
-            //         return false;
+            if(isPrivateAnnouncementTicket(connection, showtimeID))
+                if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
+                    return false;
 
             // If the purchasable time has passed, return false
             if (!isPurchasableTimeCheck(connection, showtimeID)) 
