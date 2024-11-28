@@ -424,7 +424,8 @@ public class Main {
     //------------------------//
     // testAllShowtimeRetrieval(); 
     // testShowtimeSearch();
-    testShowtimeTheatreSearch();
+    // System.out.println("--------------");
+    // testShowtimeTheatreSearch();
     // testAllMovieRetrieval(); 
     // testMovieSearch();
 
