@@ -154,6 +154,66 @@ public class TicketController {
     }
 
     /**
+     * buy a ticket for a seat for a showtime
+     * Remade version of purchaseTicket so that you don't have to make a showtime object
+     * @param seat
+     * @param showtimeID
+     * @param paymentInfo
+     * @param price
+     * @param email
+     */
+    public void purchaseTicket(int seatID, int showtimeID, String email){
+        // FUNCTIONALITY MISSING:
+        //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
+        
+        // Create controller
+        PaymentController paymentController = new PaymentController();
+
+        // Create flags
+        boolean ticketAvailable;
+        boolean paymentValid = true;
+        
+        // Check if ticket is available
+        ticketAvailable = isPurchasable(seatID, showtimeID, email);
+    
+        if(ticketAvailable) {
+            // Try to pay for ticket
+            // paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+
+
+            if(paymentValid) {
+                // Add ticket to database
+                try (Connection connection = DatabaseController.createConnection()) {
+                    String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
+                                   "VALUES (?, ?, ?, ?)";
+
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                        preparedStatement.setInt(1, showtimeID);
+                        preparedStatement.setInt(2, seatID);
+                        preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                        preparedStatement.setString(4, email);
+
+                    int rowsAffected = preparedStatement.executeUpdate();
+
+                    // Testing to make sure ticket was added
+                    if (rowsAffected > 0) {
+                        System.out.println("Ticket added successfully!");
+                    } 
+                    else {
+                        System.out.println("Failed to add ticket.");
+                    }
+
+                    } catch (Exception e) { e.printStackTrace(); }
+                } catch (Exception e) { e.printStackTrace(); }
+            }
+            
+        } else {
+            System.out.println("Ticket unavailable for purchase");
+            return;
+        }
+    }
+
+    /**
      * Refund a ticket to an email
      * @param t
      * @param user
@@ -289,6 +349,39 @@ public class TicketController {
 
             // Find the seat ID to use in the next check
             seatID = retrieveSeatID(connection, seat, showtimeID);
+
+            // If the seat for the showtime is not available for purchase, return false
+            if (!isTicketAvailable(connection, seatID, showtimeID))
+                return false; 
+            
+        } catch (Exception e) { e.printStackTrace(); }
+
+        return true;
+    }
+
+    /**
+     * Check if the seat the user is trying to book for a showtime is able to be booked
+     * @param seat
+     * @param showtimeID
+     * @return if the seat is available (true) or not (false)
+     */
+    public boolean isPurchasable(int seatID, int showtimeID, String email) {
+
+        // int seatID = -1;
+
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            // If the announcement associated with a showtime is private and the user purchasing is not a RegUser, return false
+            if(isPrivateAnnouncementTicket(connection, showtimeID))
+                if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
+                    return false;
+
+            // If the purchasable time has passed, return false
+            if (!isPurchasableTimeCheck(connection, showtimeID)) 
+                return false; 
+
+            // Find the seat ID to use in the next check
+            // seatID = retrieveSeatID(connection, seat, showtimeID);
 
             // If the seat for the showtime is not available for purchase, return false
             if (!isTicketAvailable(connection, seatID, showtimeID))

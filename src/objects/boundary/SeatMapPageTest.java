@@ -16,10 +16,27 @@ public class SeatMapPageTest {
     private JFrame frame;
     private JPanel currentSelectedSeat = null;  
 
+    // Will get these values from somewhere
+    private static int showtimeID;
+    private static String userEmail;
+
+
     public SeatMapPageTest(TreeMap<Integer, Boolean> seatMap) {
+
+        TicketController ticketController = new TicketController();
+
+        // ***************
+        // Will properly instantiate variables here when avaialable
+        // ****************
+        showtimeID = 9;
+        userEmail = "user1@example.com";
+        // ***************
+        // Will properly instantiate variables here when avaialable
+        // ****************
 
         frame = new JFrame("Seat Map");
         frame.setLayout(new BorderLayout()); 
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a screen panel at the top of the window
         JPanel screenPanel = new JPanel();
@@ -105,19 +122,26 @@ public class SeatMapPageTest {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                int seatID = -1;
                 
                 // Buy the currently selected seat
                 if (currentSelectedSeat != null) {
                     Component[] components = currentSelectedSeat.getComponents();
                     for (Component component : components) 
                         if (component instanceof JLabel) {
-                            String seatID = ((JLabel) component).getText();
+                            seatID = Integer.parseInt(((JLabel) component).getText());
+                            ticketController.purchaseTicket(seatID, showtimeID, userEmail);
                             System.out.println("BOUGHT seat: " + seatID);
                         }
                     
-                    // Reset seat colour after buying (WILL PROBABLY REMOVE THIS)
-                    currentSelectedSeat.setBackground(Color.GREEN);
+                    // Set the color to RED after buying
+                    currentSelectedSeat.setBackground(Color.RED);
                     currentSelectedSeat = null;
+
+                    // Close the window
+                    frame.dispose();
+                    
                 } else 
                     System.out.println("No seat selected.");
             }
@@ -144,10 +168,8 @@ public class SeatMapPageTest {
 
         // Create a connection to DB to get a map for the showtime
         try (Connection connection = DatabaseController.createConnection()) {
-            seatMap = ticketController.retrieveAvailableSeats(connection, 9);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            seatMap = ticketController.retrieveAvailableSeats(connection, showtimeID);
+        } catch (Exception e) { e.printStackTrace(); }
 
         // Sort the HashMap by turning it into a TreeMap
         TreeMap<Integer, Boolean> sortedSeatMap = new TreeMap<>(seatMap);
