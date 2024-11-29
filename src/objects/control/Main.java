@@ -17,6 +17,80 @@ public class Main {
 //---------------------------------------------------------//
 //                 User and RegUser Tests                  //
 //---------------------------------------------------------//
+    public static void refundStoreCredit(){
+
+        // Create an instance of TicketController
+        PaymentController pc = new PaymentController();
+
+        long cardNum = 1234567812345678L;
+        // Test data
+        PaymentInfo paymentInfo = new PaymentInfo(cardNum, "2026-11-30", 123);
+
+        float refundAmount = 50.00f; // Example refund amount
+        boolean isRegisteredUser = true;
+        int testTicketID = 5;
+        String email1 = "user4@example.com";
+
+        // Call the refund method
+        System.out.println("Initiating refund...");
+        pc.refund(paymentInfo, refundAmount, isRegisteredUser, testTicketID, email1);
+
+    }
+
+    public static void buyTicketTestNew() {
+        // Mock data for testing
+        String email = "testuser@example.com"; // Registered user email
+        int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
+        float ticketPrice = 15.99f;           // Ticket price
+        
+        // Create mock payment info
+        PaymentInfo paymentInfo = new PaymentInfo(
+                1234567812345678L,  // Credit Card Number
+                "2025-12-31",       // Expiration Date
+                123                        // CVV
+        );
+        
+        // Create a mock Seat object (e.g., Row 2, Seat 5)
+        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
+        
+        // Create the TicketController object
+        TicketController ticketController = new TicketController();
+        
+        // Call the new purchaseTicket method
+        try {
+            ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    
+    public static void refundTicketTest() {
+        TicketController tc = new TicketController();
+        tc.refundTicket(1, "testuser@example.com", null);
+    }
+    
+    public static void seatMapTest(int showTimeID) {
+
+        DatabaseController db = new DatabaseController();
+        Connection con = db.createConnection();
+
+        TicketController ticketController = new TicketController();
+
+        HashMap<Integer, Boolean> seatAvailability = ticketController.retrieveAvailableSeats(con, showTimeID);
+
+        // Print results
+        if (seatAvailability != null) {
+            System.out.println("Seat availability for ShowtimeID " + showTimeID + ":");
+            for (Map.Entry<Integer, Boolean> entry : seatAvailability.entrySet()) {
+                System.out.println("SeatID: " + entry.getKey() + " | Available: " + entry.getValue());
+            }
+        } else {
+            System.out.println("Could not retrieve seat availability for ShowtimeID " + showTimeID);
+        }
+
+    }
 
     public static void registerUserTest(){
         RegisteredUserController regUserController = new RegisteredUserController();
@@ -124,67 +198,7 @@ public class Main {
     
     // }
 
-    public static void buyTicketTestNew() {
-        // Mock data for testing
-        String email1 = "user1@example.com"; // Registered user email
-        String email2 = "user5@example.com"; // Registered user email
-        int showtimeID1 = 88;     // 2024-12-09: Should always pass unless ticket is bought
-        int showtimeID2 = 94;      // 2024-12-09: Should always fail because user is not registed (showtime is privately announced)
-        int showtimeID3 = 3;      // 2024-11-24: Should always fail because showtimes has passed
-        float ticketPrice = 15.99f;           // Ticket price
-        
-        // Create mock payment info
-        PaymentInfo paymentInfo = new PaymentInfo(
-                1234567812345678L,  // Credit Card Number
-                "2025-12-31",       // Expiration Date
-                123                        // CVV
-        );
-        
-        // Create a mock Seat object (e.g., Row 2, Seat 5)
-        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
-        
-        // Create the TicketController object
-        TicketController ticketController = new TicketController();
-        
-        // Call the new purchaseTicket method
-        try {
-            ticketController.purchaseTicket(seat, showtimeID1, paymentInfo, ticketPrice, email1); // Pass - Ticket not bought yet
-            ticketController.purchaseTicket(seat, showtimeID1, paymentInfo, ticketPrice, email1); // Fail - Ticket already bought
-            ticketController.purchaseTicket(seat, showtimeID2, paymentInfo, ticketPrice, email1); // Fail - User buying is not registeredUser
-            ticketController.purchaseTicket(seat, showtimeID2, paymentInfo, ticketPrice, email2); // Pass - User buying is registeredUser
-            ticketController.purchaseTicket(seat, showtimeID3, paymentInfo, ticketPrice, email1); // Fail - Trying to buy past showtime
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
     
-    public static void refundTicketTest() {
-        TicketController tc = new TicketController();
-        tc.refundTicket(1, "user1@example.com", null);
-    }
-    
-    public static void seatMapTest(int showTimeID) {
-
-        DatabaseController db = new DatabaseController();
-        Connection con = db.createConnection();
-
-        TicketController ticketController = new TicketController();
-
-        HashMap<Integer, Boolean> seatAvailability = ticketController.retrieveAvailableSeats(con, showTimeID);
-
-        // Print results
-        if (seatAvailability != null) {
-            System.out.println("Seat availability for ShowtimeID " + showTimeID + ":");
-            for (Map.Entry<Integer, Boolean> entry : seatAvailability.entrySet()) {
-                System.out.println("SeatID: " + entry.getKey() + " | Available: " + entry.getValue());
-            }
-        } else {
-            System.out.println("Could not retrieve seat availability for ShowtimeID " + showTimeID);
-        }
-
-    }
 
     // public static void seatBookingTest() {
     //     // Sample seat, movieID, theatreRoomID, and showtime details for the test
@@ -240,8 +254,6 @@ public class Main {
         announcementController.sendPrivateShowTimeAnnouncement("Black panter early access, get tix now", 1); // should only return an error because showtime isnt there
         announcementController.sendPublicAnnouncement("Hello gang");
     }
-
-    
 
 
 //---------------------------------------------------------//
@@ -407,6 +419,10 @@ public class Main {
     //---------------------------//
     // testAnnouncements();
 
+    //---------------------------//
+    //     Payment Controller    //
+    //---------------------------//
+    refundStoreCredit();
 
     // Use these tests, I'm keeping the above ones temporarily for easier merging
     //------------------------//

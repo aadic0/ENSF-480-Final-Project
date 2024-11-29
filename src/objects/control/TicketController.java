@@ -238,8 +238,8 @@ public class TicketController {
             } catch (Exception e) { e.printStackTrace(); }
 
             // Refund user
-            // Temp refund price of $0 until we decide on what functionality is
-            paymentController.refund(paymentInfo, 0, regUserFlag);
+            // DEFAULT ARGUMENTS, NEED TO CHANGE THIS
+            paymentController.refund(paymentInfo, 0, true, -1, "Fake email.com");
 
             // Query 3 - Remove ticket from DB
             try (PreparedStatement preparedStatement3 = connection.prepareStatement(query3)) {
