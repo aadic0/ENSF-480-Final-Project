@@ -196,6 +196,22 @@ public class Login extends JPanel {
 
     }
 
+    /* getters and setters */
+    public String getUser(){
+        return user;
+    }
+    public void setUser(String user){
+        this.user = user;
+    }
+
+    public String getPass(){
+        return pass;
+    }
+
+    public void setPass(String pass){
+        this.pass = pass;
+    }
+
     public void displayLoginGUI(){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -204,6 +220,7 @@ public class Login extends JPanel {
         frame.setVisible(true);
 
     }
+
 
     //temporary main method for testing
     public static void main(String[] args){

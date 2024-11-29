@@ -8,6 +8,10 @@ How to run:
 
 Compile: javac -cp "../../;../lib/mysql-connector-j-9.1.0.jar" login.java ../control/*.java ../entity/*.java
 
+Compile all files in Boundary:
+
+javac -cp "../../;../lib/mysql-connector-j-9.1.0.jar" *.java ../control/*.java ../entity/*.java
+
 
 
 run program (for now): 

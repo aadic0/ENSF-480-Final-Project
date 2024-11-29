@@ -19,16 +19,16 @@ import java.util.Map;
 public class MainPage extends JFrame implements ActionListener {
 
     ShowtimeController searchMovie;
-    JMenuBar menubar;
+    protected JMenuBar menubar;
 
-    JMenu navigateMenu;
-    JMenu accMenu;
+    protected JMenu navigateMenu;
+    protected JMenu accMenu;
 
-    JMenuItem registerAcc;
-    JMenuItem browseMovies;
-    JMenuItem viewCart;
-    JMenuItem logoutOption;
-    JMenuItem homeBtn;
+    protected JMenuItem registerAcc;
+    protected JMenuItem browseMovies;
+    protected JMenuItem viewCart;
+    protected JMenuItem logoutOption;
+    protected JMenuItem homeBtn;
 
     //logo
     ImageIcon logoIcon;
@@ -51,46 +51,9 @@ public class MainPage extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
-       menubar = new JMenuBar();
        
-       //create menus
-       navigateMenu = new JMenu("Navigate");
-       accMenu = new JMenu("Account");
-
-       //navigate menu
-       browseMovies = new JMenuItem("Movies");
-       homeBtn = new JMenuItem("Home");
-       //acount menu
-       viewCart = new JMenuItem("View Purchases");
-       logoutOption = new JMenuItem("Logout");
-       registerAcc = new JMenuItem("Register Account");
-
-       browseMovies.addActionListener(this);
-       homeBtn.addActionListener(this);
-       logoutOption.addActionListener(this);
-
-
-
-       navigateMenu.add(browseMovies);
-       navigateMenu.add(homeBtn);
-
-       accMenu.add(viewCart);
-       accMenu.add(registerAcc);
-       accMenu.add(logoutOption);
-       
-       //add menus to menubar
-       //menubar.add(menubar);
-       //menubar.add(homeBtn);
-       //menubar.add(registerUser);
-       menubar.add(navigateMenu);
-       menubar.add(accMenu);
-      // menubar.add(logoutOption);
-
-
-       //attach menubar to frame
-       setJMenuBar(menubar);
-       setVisible(true);
-
+        //menubar
+        menuBar(this);
        //mainPanel
 
        mainPanel = new JPanel();
@@ -182,6 +145,14 @@ public class MainPage extends JFrame implements ActionListener {
             loginPage.displayLoginGUI();
 
         }
+        if(e.getSource() == registerAcc){
+            //dispose();
+            setVisible(false);
+            JFrame frame = new JFrame();
+            RegisterUser register = new RegisterUser(frame);
+            register.displayRegisterAcc();
+
+        }
        
 
     }
@@ -253,6 +224,50 @@ public class MainPage extends JFrame implements ActionListener {
         }
         
 
+
+    }
+
+    public void menuBar(ActionListener listener){
+        menubar = new JMenuBar();
+       
+       //create menus
+       navigateMenu = new JMenu("Navigate");
+       accMenu = new JMenu("Account");
+
+       //navigate menu
+       browseMovies = new JMenuItem("Movies");
+       homeBtn = new JMenuItem("Home");
+       //acount menu
+       viewCart = new JMenuItem("View Purchases");
+       logoutOption = new JMenuItem("Logout");
+       registerAcc = new JMenuItem("Register Account");
+
+       browseMovies.addActionListener(this);
+       homeBtn.addActionListener(this);
+       logoutOption.addActionListener(this);
+       registerAcc.addActionListener(this);
+
+
+
+       navigateMenu.add(browseMovies);
+       navigateMenu.add(homeBtn);
+
+       accMenu.add(viewCart);
+       accMenu.add(registerAcc);
+       accMenu.add(logoutOption);
+       
+       //add menus to menubar
+       //menubar.add(menubar);
+       //menubar.add(homeBtn);
+       //menubar.add(registerUser);
+       menubar.add(navigateMenu);
+       menubar.add(accMenu);
+      // menubar.add(logoutOption);
+
+
+       //attach menubar to frame
+       setJMenuBar(menubar);
+       setVisible(true);
 
     }
 
