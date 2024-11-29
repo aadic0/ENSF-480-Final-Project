@@ -17,6 +17,26 @@ public class Main {
 //---------------------------------------------------------//
 //                 User and RegUser Tests                  //
 //---------------------------------------------------------//
+    public static void testPay(){
+        // Create necessary objects
+        PaymentInfo paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
+        TicketController ticketController = new TicketController();
+        int seatID = 206;
+        int showtimeID = 9; 
+        String email = "user6@example.com"; 
+        float price = 20.00f; // Ticket price
+        boolean isRegUser = true; // Regular user flag
+        int ticketId = 6;
+        String timeDate = "2024-11-11 17:33:00";
+
+        // Create an instance of the pay function class (replace with your class name if different)
+        PaymentController pc = new PaymentController();
+
+        pc.pay(paymentInfo, price, isRegUser, ticketId, email, ticketController, seatID, showtimeID, timeDate);
+    }
+
+
+
     public static void refundStoreCredit(){
 
         // Create an instance of TicketController
@@ -407,7 +427,7 @@ public class Main {
     //-------------------------//
 
     // buyTicketTestOld();
-    buyTicketTestNew(); // Recreate database and rerun queries after running this test
+    // buyTicketTestNew(); // Recreate database and rerun queries after running this test
     // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
     // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
 
@@ -422,8 +442,8 @@ public class Main {
     //---------------------------//
     //     Payment Controller    //
     //---------------------------//
-    refundStoreCredit();
-
+    // refundStoreCredit();
+    testPay();
     // Use these tests, I'm keeping the above ones temporarily for easier merging
     //------------------------//
     //   ShowtimeController   //

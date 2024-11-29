@@ -1,8 +1,11 @@
 package objects.control;
 
 import objects.entity.PaymentInfo;
+import objects.entity.Seat;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PaymentController {
@@ -75,5 +78,75 @@ public class PaymentController {
     }
 
     }
+
+    public void pay(PaymentInfo paymentInfo, float price, boolean isRegUser, int ticketID, String email, TicketController ticket, int seatID, int showtimeID, String time){
+
+        // check if they have store credit, use that first:
+        String query = "SELECT StoreCredit FROM REGULAR_USER WHERE Email = ?";
+        int storeCredit;
+
+        try (Connection connection = DatabaseController.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+                preparedStatement.setString(1, email);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()){
+                    storeCredit = resultSet.getInt("StoreCredit");
+                    System.out.println("Store credit: " + storeCredit); // just for debugging purposes
+                }
+                else{
+                    return;
+                }
+                
+                // CASE FOR WE HAVE STORE CREDIT
+                if (storeCredit >= 0){
+                    float temp = storeCredit;
+                    storeCredit -= price;
+                    if (storeCredit < 0){
+                        storeCredit = 0;
+                    }
+                    price = price - temp;
+                }
+
+                // CASE FOR WE DONT HAVE STORE CREDIT
+                else{
+                    // do nothing
+                    storeCredit+= price;
+                    storeCredit-= price;
+                }
+
+                // add ticket to database
+                String insertQuery = "INSERT INTO TICKET (TicketID, ShowtimeID, SeatID, PurchaseDateTime, TicketPrice, Email) "
+                                   + "VALUES (?, ?, ?, ?, ?, ?)";
+                PreparedStatement preparedInsertStatement = connection.prepareStatement(insertQuery);
+                preparedInsertStatement.setInt(1, ticketID);
+                preparedInsertStatement.setInt(2, showtimeID);
+                preparedInsertStatement.setInt(3, seatID);
+                preparedInsertStatement.setString(4, time);
+                preparedInsertStatement.setFloat(5, price);
+                preparedInsertStatement.setString(6, email);
+
+                preparedInsertStatement.execute();
+
+                // uupdate storecredit in regular user
+                String updateQuery = "UPDATE REGULAR_USER "
+                                   + "SET StoreCredit = ? "
+                                   + "WHERE Email = ?";
+
+                PreparedStatement preparedUpdateStatement = connection.prepareStatement(updateQuery);
+                preparedUpdateStatement.setFloat(1, storeCredit);
+                preparedUpdateStatement.setString(2, email);
+
+                preparedUpdateStatement.execute();
+                
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
 
 }
