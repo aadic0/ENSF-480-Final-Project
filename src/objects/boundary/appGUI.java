@@ -1,50 +1,65 @@
 //putting the gui together
 package objects.boundary;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.CardLayout;
 
-import objects.entity.User;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener; 
 
 public class appGUI extends JFrame{
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    JFrame frame;
 
-    //persistent variables
-    private User user;  //store user
-    private Boolean isLoggedIn = null; //is logged in or not
 
-    public static void main(String[] args){
-        //cardLayout = new CardLayout();
-        //mainPanel = new JPanel(cardLayout);
-        //user = new User("Charlie", true);
+    public appGUI(JFrame frame){
 
-        // Create the main frame
-        JFrame frame = new JFrame("APP GUI --> CardLayout Tester");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        setTitle("Movie App");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 800);
 
-        // Create a panel with CardLayout
-        JPanel cardPanel = new JPanel(new CardLayout());
+        // Initialize the CardLayout and main panel
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-        //pages
-        Login loginPage = new Login(frame);
-        cardPanel.add(loginPage, "Page 1");
-        //MainPage mainPage = new MainPage(frame);
-        //cardPanel.add(mainPage, "Page 2");
+        // Add different GUI classes to the CardLayout
+        mainPanel.add(new Login(this), "Login");
+        mainPanel.add(new MainPage(this), "Home");
+        mainPanel.add(new RegisterUser(this), "RegisterUser");
+        mainPanel.add(new CreateUser(this), "Create Account");
 
-        // Add the card panel to the frame
-        frame.add(cardPanel);
+        // Add the main panel to the frame
+        add(mainPanel);
 
-        //CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
-        //cardLayout.show(cardPanel, "Page 1");
+        // Show the Login page initially
+        showCard("Login");
 
-        // Make the frame visible
-        frame.setVisible(true);
+        setVisible(true); // Make the frame visible
+    }
+
+    // Method to switch cards
+        public void showCard(String cardName) {
+        cardLayout.show(mainPanel, cardName);
 
         
+
     }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+        new appGUI(frame);
+    }
+    // public static void main(String[] args){
+    //     Login loginPage;
+        
+    //     loginPage = new Login();
+
+    //     loginPage.displayLoginGUI();
+        
+    // }
 }
 
 
