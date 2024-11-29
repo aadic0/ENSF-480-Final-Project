@@ -24,10 +24,10 @@ public class Login extends JPanel {
 
     private JFrame frame; //reference to parent frame
 
+    private appGUI parent;
+
     String user;
     String pass;
-
-    private appGUI parent;
 
     //controllers
     private RegisteredUserController registeredUser;
@@ -134,9 +134,9 @@ public class Login extends JPanel {
                 if( auth_user != false){
                     //go to main page
                     // frame.dispose();
-                    // new MainPage();
-                    //mainPage.displayMainPage();
-                    parent.showCard("Home");
+                    // MainPage mainPage = new MainPage(frame);
+                    // mainPage.displayMainPage();
+                    
                 }
                 else{
                     //display error message
@@ -162,8 +162,7 @@ public class Login extends JPanel {
                 // CreateUser registerPage = new CreateUser(frame);
                 // frame.dispose();
                 // registerPage.displayRegister();
-
-                
+                parent.showCard("Create");
 
 
                 
@@ -174,11 +173,10 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
-                //frame.dispose();
-                //new MainPage(frame);
+                // frame.dispose();
+                // new MainPage();
                 //mainPage.displayMainPage();
                 parent.showCard("Home");
-                
 
             }
         });
@@ -202,43 +200,24 @@ public class Login extends JPanel {
 
     }
 
-    /* getters and setters */
-    public String getUser(){
-        return user;
-    }
-    public void setUser(String user){
-        this.user = user;
-    }
-
-    public String getPass(){
-        return pass;
-    }
-
-    public void setPass(String pass){
-        this.pass = pass;
-    }
-
     public void displayLoginGUI(){
-
-        parent.showCard("Login");
-        // JFrame frame = new JFrame();
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // frame.setSize(400, 300);
-        // frame.add(new Login(frame));
-        // frame.setVisible(true);
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.add(new Login(frame));
+        frame.setVisible(true);
 
     }
-
 
     //temporary main method for testing
-    // public static void main(String[] args){
-    //     JFrame frame = new JFrame();
-    //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //     frame.setSize(600, 600);
-    //     frame.add(new Login(frame));
-    //     frame.setVisible(true);
+    public static void main(String[] args){
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 600);
+        frame.add(new Login(frame));
+        frame.setVisible(true);
 
-    // }
+    }
 
 
 
