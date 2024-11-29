@@ -206,7 +206,7 @@ public class Login extends JPanel {
     public static void main(String[] args){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(600, 600);
         frame.add(new Login(frame));
         frame.setVisible(true);
 

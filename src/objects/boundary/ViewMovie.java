@@ -1,5 +1,7 @@
 //boundary, where when the user clicks on a movie, takes them to a page with the movie +full description
 
+//purchase ticket, display seatmpa/browse available seats, view showtimes
+
 package objects.boundary;
 
 import objects.control.*;
@@ -16,19 +18,22 @@ import java.util.Map;
 
 public class ViewMovie extends JPanel {
     //components
-    private JLabel title;
-    //private JTextField searchMovie;
-    //private JButton searchButton;
+    private JLabel movietitle;
+    private JLabel genreLabel;
+    private JLabel ratingLabel;
+    private JLabel runtimeLabel;
 
-    //controller
-    //private ShowtimeController showControl;
-
+    private JButton showTimes;
+    private JButton seatMap;
+    private JButton purchaseTicket;
+    
+    
     private JFrame frame; //reference to parent frame
 
     //ctor
-    public ViewMovie(JFrame frame){
-        this.frame = frame;
-        //this.showControl = new ShowtimeController(); //add required control obj
+    public ViewMovie(JFrame mainFrame){
+        this.frame = mainFrame;
+        
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
@@ -42,6 +47,10 @@ public class ViewMovie extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
         add(title, constraints); //add to the panel
 
+
+    }
+
+    public void viewMovie(String movieName){
 
     }
     

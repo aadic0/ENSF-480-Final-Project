@@ -6,9 +6,8 @@ import javax.swing.*;
 import objects.control.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.*;
-import java.awt.event.ActionListener; 
+import java.awt.event.MouseListener.*;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class MainPage extends JFrame implements ActionListener {
 
         //setup frame
         setTitle("Movie App");
-        setSize(500, 500);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
@@ -181,6 +180,7 @@ public class MainPage extends JFrame implements ActionListener {
             loginPage.displayLoginGUI();
 
         }
+       
 
     }
 
@@ -219,6 +219,16 @@ public class MainPage extends JFrame implements ActionListener {
 
                 resultsPanel.add(moviePanel);
 
+                moviePanel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e){
+                        //OnMovieClick();
+
+
+
+                    }
+                });
+
 
 
                 }
@@ -240,6 +250,15 @@ public class MainPage extends JFrame implements ActionListener {
 
 
     }
+
+    public void viewAnnouncement(){}
+
+    // public void viewMovie(String movieTitle){
+    //     JPanel moviePage = new JPanel();
+    //     JLabel test = new JLabel("hi");
+    //     moviePage.add(test);
+    //     moviePage.setVisible(true);
+    // }
 
     // public void displayMainPage(){
     //     //MainPage mainPage = new MainPage();
