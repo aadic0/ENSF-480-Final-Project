@@ -16,21 +16,23 @@ public class CreateUser extends JPanel {
     private JLabel passwordLabel;
     private JPasswordField verifyPass;
     private JLabel verifyLabel;
-    private JFrame frame;
+    //private JFrame frame;
+
+    private appGUI parent;
 
     //already have an account?
     //private JLabel loginHere;
     private JButton loginButton;
     private JButton registerSubmit;
 
-    public CreateUser(JFrame frame){
+    public CreateUser(appGUI parent){
 
     /*panel setup */
     setLayout(new GridBagLayout()); //arrange components in grid-like structure
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.insets = new Insets(10,10,10,10);
 
-    this.frame = frame;
+    this.parent = parent;
    
     title = new JLabel("Movie Ticket-Booking App");
     title.setFont(new Font("Arial", Font.BOLD,18));
@@ -161,9 +163,10 @@ public class CreateUser extends JPanel {
     loginButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e){
-            frame.dispose();
-            Login loginPage = new Login(frame);
-            loginPage.displayLoginGUI();
+            // frame.dispose();
+            // Login loginPage = new Login(frame);
+            // loginPage.displayLoginGUI();
+            parent.showCard("Login");
         }
     });
 
@@ -172,16 +175,18 @@ public class CreateUser extends JPanel {
 }
 
 public void displayRegister(){
-    JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.add(new CreateUser(frame));
-        frame.setVisible(true);
+    // JFrame frame = new JFrame();
+    //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    //     frame.setSize(400, 300);
+    //     frame.add(new CreateUser(frame));
+    //     frame.setVisible(true);
+
+    parent.showCard("Create Account");
 
 }
 
-public void becomeRegisteredUser(){
-    JLabel username;
-}
+// public void becomeRegisteredUser(){
+//     JLabel username;
+// }
     
 }
