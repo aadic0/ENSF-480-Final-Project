@@ -3,19 +3,23 @@ package objects.boundary;
 
 import javax.swing.*;
 
-import objects.control.MovieController;
+import objects.control.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.*;
 import java.awt.event.ActionListener; 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
 
 public class MainPage extends JFrame implements ActionListener {
 
-    MovieController searchMovie;
+    ShowtimeController searchMovie;
     JMenuBar menubar;
 
     JMenu navigateMenu;
@@ -30,6 +34,12 @@ public class MainPage extends JFrame implements ActionListener {
     //logo
     ImageIcon logoIcon;
     JLabel logoLabel;
+
+    JPanel searchPanel;
+    //JTextField searchField;
+
+    JPanel resultsPanel;
+    JPanel mainPanel;
     
 
     MainPage(){
@@ -80,10 +90,16 @@ public class MainPage extends JFrame implements ActionListener {
        setJMenuBar(menubar);
        setVisible(true);
 
+       //mainPanel
+
+       mainPanel = new JPanel();
+       mainPanel.setLayout(new BorderLayout());
+    
+
       
 
        //wrapper panel to center everything
-       JPanel wrapperPanel = new JPanel(new GridBagLayout());
+       JPanel searchwrapperPanel = new JPanel(new GridBagLayout());
        GridBagConstraints gbc = new GridBagConstraints();
        gbc.insets = new Insets(10,10,10,10); //padding
        gbc.gridx = 0;//center horizontally
@@ -95,7 +111,7 @@ public class MainPage extends JFrame implements ActionListener {
        Image scaledLogo = logoIcon.getImage().getScaledInstance(300,300, Image.SCALE_SMOOTH);
        gbc.gridy = 0;
        logoLabel.setIcon(new ImageIcon(scaledLogo));
-       wrapperPanel.add(logoLabel,gbc);
+       searchwrapperPanel.add(logoLabel,gbc);
 
     /*search bar setup*/
 
@@ -111,8 +127,17 @@ public class MainPage extends JFrame implements ActionListener {
        gbc.gridy =1;
        gbc.fill = GridBagConstraints.HORIZONTAL;
        //wrapper
-       wrapperPanel.add(searchPanel, gbc);
-       add(wrapperPanel, BorderLayout.CENTER);
+       searchwrapperPanel.add(searchPanel, gbc);
+       mainPanel.add(searchwrapperPanel, BorderLayout.NORTH);
+
+       /*panel for results after search */
+       resultsPanel = new JPanel();
+       resultsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
+       JScrollPane scrollPane = new JScrollPane(resultsPanel);
+       mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+       add(mainPanel);
+       
 
 
 
@@ -125,16 +150,16 @@ public class MainPage extends JFrame implements ActionListener {
         searchButton.setIcon(new ImageIcon(scaledImage));
         searchPanel.add(searchButton, BorderLayout.EAST);
 
+        
+
         /*actionlistener for searchbtn */
 
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
                 String movieSearch = searchField.getText();
-                MovieController searchMovie = new MovieController();
-                searchMovie.searchForMovie(movieSearch);
-                //dispose();
-                displaySearchedMovies(movieSearch);
+                performSearch(movieSearch);
+               
             }
         });
 
@@ -159,11 +184,58 @@ public class MainPage extends JFrame implements ActionListener {
 
     }
 
-    public void displaySearchedMovies(String movieSearched){
+    public void performSearch(String movieName){
         //clear the mainpage so that it displays the movies searched
+        
+        try(Connection connection = DatabaseController.createConnection()){
+            ShowtimeController controller = new ShowtimeController();
+            HashMap<Integer, ArrayList<Object>> movieMap = controller.searchForMovie(connection, movieName);
 
-        // searchMovie = new MovieController();
-        // searchMovie.searchForMovie(movieSearched);
+            //clear results panel
+            resultsPanel.removeAll();
+            if (movieMap!=null && !movieMap.isEmpty()){
+                for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+                //in future add code so that movies match with respected covers
+                ArrayList<Object> movieDetails = entry.getValue();
+                String title = (String) movieDetails.get(0);
+                String coverPath = "Images/cover.png";
+
+                //create panel for each movie
+                JPanel moviePanel = new JPanel();
+                moviePanel.setLayout(new BorderLayout());
+                moviePanel.setPreferredSize(new Dimension(150,200));
+
+                //add movie cover
+                JLabel coverLabel = new JLabel();
+                ImageIcon coverIcon = new ImageIcon(coverPath);
+                Image scaledCover = coverIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                coverLabel.setIcon(new ImageIcon(scaledCover));
+                moviePanel.add(coverLabel, BorderLayout.CENTER);
+
+                //show movie title associated with cover
+                JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
+                titleLabel.setPreferredSize(new Dimension(150, 30));
+                moviePanel.add(titleLabel, BorderLayout.SOUTH);
+
+                resultsPanel.add(moviePanel);
+
+
+
+                }
+
+
+
+            } else{
+                JLabel notFound = new JLabel("No movies found for:"+movieName);
+                resultsPanel.add(notFound);
+            }
+            resultsPanel.revalidate();
+            resultsPanel.repaint();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error searching for movies.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
         
 
 
