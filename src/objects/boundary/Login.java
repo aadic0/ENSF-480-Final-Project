@@ -132,8 +132,8 @@ public class Login extends JPanel {
                 if( auth_user != false){
                     //go to main page
                     frame.dispose();
-                    new MainPage();
-                    //mainPage.displayMainPage();
+                    MainPage mainPage = new MainPage(frame);
+                    mainPage.displayMainPage();
                 }
                 else{
                     //display error message

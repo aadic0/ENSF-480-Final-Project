@@ -43,7 +43,7 @@ public class MainPage extends JFrame implements ActionListener {
     JFrame frame;
     
 
-    MainPage(){
+    MainPage(JFrame frame){
 
         //setup frame
         setTitle("Movie App");
