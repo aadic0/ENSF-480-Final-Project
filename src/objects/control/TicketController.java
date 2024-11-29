@@ -517,6 +517,35 @@ public class TicketController {
     }
 
     /**
+     * Get the Seat Row and Number associated with SeatID
+     * @param con
+     * @param seatID
+     * @return
+     */
+    public ArrayList<Integer> retrieveSeatNums(Connection con, int seatID) {
+
+        String query = "SELECT SeatRow, SeatNumber FROM SEAT WHERE SeatID = ?";
+
+        ArrayList<Integer> seatNums = new ArrayList<>();
+
+        // Query - Get SeatRow and SeatNumber with SeatID
+        try (PreparedStatement psQuery = con.prepareStatement(query)) {
+            psQuery.setInt(1, seatID);
+
+            // Put the SeatRow and SeatNumber into the arraylist
+            try (ResultSet rs = psQuery.executeQuery()) {
+                if(rs.next()) {
+                    seatNums.add(rs.getInt("SeatRow"));
+                    seatNums.add(rs.getInt("SeatNumber"));
+                }
+
+            } catch (Exception e) { e.printStackTrace();  }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        return seatNums;
+    }
+
+    /**
      * Return if the ticket is available for purchase (true) or not (false)
      * @param con
      * @param seatID
