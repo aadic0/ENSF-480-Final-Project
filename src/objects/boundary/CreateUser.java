@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; 
 
-public class Register extends JPanel {
+public class CreateUser extends JPanel {
 
     private JLabel title;
     private JTextField usernameField;
@@ -23,7 +23,7 @@ public class Register extends JPanel {
     private JButton loginButton;
     private JButton registerSubmit;
 
-    public Register(JFrame frame){
+    public CreateUser(JFrame frame){
 
     /*panel setup */
     setLayout(new GridBagLayout()); //arrange components in grid-like structure
@@ -175,9 +175,13 @@ public void displayRegister(){
     JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.add(new Register(frame));
+        frame.add(new CreateUser(frame));
         frame.setVisible(true);
 
+}
+
+public void becomeRegisteredUser(){
+    JLabel username;
 }
     
 }

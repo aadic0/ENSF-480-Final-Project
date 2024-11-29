@@ -22,6 +22,7 @@ public class ViewMovie extends JPanel {
     private JLabel genreLabel;
     private JLabel ratingLabel;
     private JLabel runtimeLabel;
+    private JLabel movieCover;
 
     private JButton showTimes;
     private JButton seatMap;
@@ -33,27 +34,21 @@ public class ViewMovie extends JPanel {
     //ctor
     public ViewMovie(JFrame mainFrame){
         this.frame = mainFrame;
-        
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10,10,10,10);
+
+
        
-        title = new JLabel("Movie Ticket-Booking App");
-        title.setFont(new Font("Arial", Font.BOLD,18));
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        add(title, constraints); //add to the panel
-
+       
 
     }
 
-    public void viewMovie(String movieName){
-
+    public void displayViewMovie(){
+        
     }
-    
 
     //temporary main method for testing
     public static void main(String[] args){

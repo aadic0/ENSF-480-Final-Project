@@ -39,6 +39,8 @@ public class MainPage extends JFrame implements ActionListener {
 
     JPanel resultsPanel;
     JPanel mainPanel;
+
+    JFrame frame;
     
 
     MainPage(){
@@ -222,6 +224,9 @@ public class MainPage extends JFrame implements ActionListener {
                 moviePanel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e){
+
+                        ViewMovie viewMovie = new ViewMovie(frame);
+                        viewMovie.displayViewMovie();
                         //OnMovieClick();
 
 

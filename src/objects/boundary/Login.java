@@ -24,6 +24,9 @@ public class Login extends JPanel {
 
     private JFrame frame; //reference to parent frame
 
+    String user;
+    String pass;
+
     //controllers
     private RegisteredUserController registeredUser;
 
@@ -120,8 +123,8 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //need to verify that login details are correct (control method)
-                String user = usernameField.getText().toLowerCase();
-                String pass = String.valueOf(passwordField.getPassword());
+                user = usernameField.getText().toLowerCase();
+                pass = String.valueOf(passwordField.getPassword());
                 boolean auth_user = registeredUser.authenticateUser(user, pass);
                 System.out.println(auth_user);
                 System.out.println(user);
@@ -153,7 +156,7 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to register page
-                Register registerPage = new Register(frame);
+                CreateUser registerPage = new CreateUser(frame);
                 frame.dispose();
                 registerPage.displayRegister();
                 
