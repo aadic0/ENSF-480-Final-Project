@@ -119,7 +119,6 @@ public class MainPage extends JPanel implements ActionListener {
         searchPanel.add(searchButton, BorderLayout.EAST);
 
         
-
         /*actionlistener for searchbtn */
 
         searchButton.addActionListener(new ActionListener() {
@@ -132,6 +131,7 @@ public class MainPage extends JPanel implements ActionListener {
         });
 
         //add(searchPanel, BorderLayout.NORTH);
+
 
 
 
@@ -197,7 +197,7 @@ public class MainPage extends JPanel implements ActionListener {
                     @Override
                     public void mouseClicked(MouseEvent e){
 
-                        ViewMovie viewMovie = new ViewMovie(frame);
+                        ViewMovie viewMovie = new ViewMovie(parent);
                         viewMovie.displayViewMovie();
                         //OnMovieClick();
 

@@ -24,6 +24,7 @@ public class BrowseMovie extends JPanel {
     private JLabel title;
     private JTextField searchMovie;
     private JButton searchButton;
+    private appGUI parent;
 
     //controller
     private ShowtimeController showControl;
@@ -31,8 +32,8 @@ public class BrowseMovie extends JPanel {
     private JFrame frame; //reference to parent frame
 
     //ctor
-    public BrowseMovie(JFrame frame){
-        this.frame = frame;
+    public BrowseMovie(appGUI parent){
+        this.parent = parent;
         this.showControl = new ShowtimeController();
 
         /*panel setup */
@@ -105,7 +106,7 @@ public class BrowseMovie extends JPanel {
         constraints.weighty = 1.0; // Allow vertical resizing
         add(scrollPane, constraints);
 
-        frame.setSize(800, 600); // Larger frame for testing
+        //frame.setSize(800, 600); // Larger frame for testing
 
         //button stuff  
 
@@ -143,6 +144,8 @@ public class BrowseMovie extends JPanel {
 
 
     //temporary main method for testing
+
+    /*
     public static void main(String[] args){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,5 +154,6 @@ public class BrowseMovie extends JPanel {
         frame.setVisible(true);
     
     }
+    */
 
 }

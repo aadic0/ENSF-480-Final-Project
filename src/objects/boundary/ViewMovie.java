@@ -31,9 +31,11 @@ public class ViewMovie extends JPanel {
     
     private JFrame frame; //reference to parent frame
 
+    private appGUI parent;
+
     //ctor
-    public ViewMovie(JFrame mainFrame){
-        this.frame = mainFrame;
+    public ViewMovie(appGUI parent){
+        this.parent = parent;
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
@@ -51,6 +53,8 @@ public class ViewMovie extends JPanel {
     }
 
     //temporary main method for testing
+
+    /*
     public static void main(String[] args){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,5 +63,6 @@ public class ViewMovie extends JPanel {
         frame.setVisible(true);
     
     }
+    */
 
 }

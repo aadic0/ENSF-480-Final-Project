@@ -30,6 +30,8 @@ public class appGUI extends JFrame{
         mainPanel.add(new MainPage(this), "Home");
         mainPanel.add(new RegisterUser(this), "RegisterUser");
         mainPanel.add(new CreateUser(this), "Create Account");
+        mainPanel.add(new BrowseMovie(this), "BrowseMovie");
+        mainPanel.add(new ViewMovie(this), "ViewMovie");
 
         // Add the main panel to the frame
         add(mainPanel);
