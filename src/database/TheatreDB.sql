@@ -542,7 +542,7 @@ VALUES ('user5@example.com', 'John', 'Doe', 'Random Address', 'Calgary', 'Provin
 
 -- @block
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
-VALUES (9, 201, '2024-11-10 17:30:00', 'user1@example.com', 20);
+VALUES (82, 201, '2024-11-10 17:30:00', 'user1@example.com', 20);
 
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
 VALUES (9, 202, '2024-11-10 17:31:00', 'user2@example.com', 20);
@@ -554,7 +554,7 @@ INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
 VALUES (9, 204, '2024-11-10 17:32:00', 'user4@example.com', 20);
 
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
-VALUES (9, 205, '2024-11-10 17:32:00', 'user5@example.com', 20);
+VALUES (82, 205, '2024-11-10 17:32:00', 'user5@example.com', 20);
 
 -- @block
 -- SELECT --
