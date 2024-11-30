@@ -31,6 +31,7 @@ public class MainPage extends JPanel implements ActionListener {
     protected JMenuItem viewCart;
     protected JMenuItem logoutOption;
     protected JMenuItem homeBtn;
+    protected JMenuItem announce;
 
     //logo
     ImageIcon logoIcon;
@@ -252,6 +253,7 @@ public class MainPage extends JPanel implements ActionListener {
        //navigate menu
        browseMovies = new JMenuItem("Movies");
        homeBtn = new JMenuItem("Home");
+       announce = new JMenuItem("Announcements");
        //acount menu
        viewCart = new JMenuItem("View Purchases");
        logoutOption = new JMenuItem("Logout");
@@ -259,13 +261,15 @@ public class MainPage extends JPanel implements ActionListener {
 
        browseMovies.addActionListener(this);
        homeBtn.addActionListener(this);
+       announce.addActionListener(this);
+       //viewCart.addActionListener(this);
        logoutOption.addActionListener(this);
        registerAcc.addActionListener(this);
 
 
-
        navigateMenu.add(browseMovies);
        navigateMenu.add(homeBtn);
+       navigateMenu.add(announce);
 
        accMenu.add(viewCart);
        accMenu.add(registerAcc);
