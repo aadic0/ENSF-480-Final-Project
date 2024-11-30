@@ -11,21 +11,25 @@ public class PaymentInfo {
     private long cardNumber;
     private String expiration;
     private int cvv;
+    private boolean validInfo;
     // private String fullName;
     
     //---------------//
     //  Constructor  //
     //---------------//
     public PaymentInfo(long cardNumber, String expiration, int cvv) {
+
+        validInfo = true;
         
         validateCardNumber(cardNumber);
         validateExpirationDate(expiration);
         validateCVV(cvv);
 
-        this.cardNumber = cardNumber;
-        this.expiration = expiration;
-        this.cvv = cvv;
-        // this.fullName = fullName;
+        if(validInfo) {
+            this.cardNumber = cardNumber;
+            this.expiration = expiration;
+            this.cvv = cvv;
+        }
     }
 
     //---------------------//
@@ -58,13 +62,10 @@ public class PaymentInfo {
         this.cvv = cvv;
     }
 
-    // public String getFullName() {
-    //     return fullName;
-    // }
+    public boolean getValidInfo() {
+        return validInfo;
+    }
 
-    // public void setFullName(String fullName) {
-    //     this.fullName = fullName;
-    // }
 
     //-------------//
     //   Methods   //
@@ -79,7 +80,8 @@ public class PaymentInfo {
         String cardNumberStr = String.valueOf(cardNumber); 
 
         if (cardNumberStr.length() != 16) {
-            throw new IllegalArgumentException("Card number must be 16 digits.");
+            System.out.println("Card number must be 16 digits.");
+            validInfo = false; 
         }
     }
 
@@ -94,12 +96,14 @@ public class PaymentInfo {
             
             // Check if date is previous to right now
             if (expirationDate.isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("Expiration date must be in the future.");
+                System.out.println("Expiration date must be in the future.");
+                validInfo = false; 
             }
 
             // Check if expiry date is set to the last day of the month it expires
             else if (!expirationDate.equals(expirationDate.withDayOfMonth(expirationDate.lengthOfMonth()))) {
-                throw new IllegalArgumentException("Expiration date must be the last day of the month.");
+                System.out.println("Expiration date must be the last day of the month.");
+                validInfo = false; 
             }
         } 
         // Check if date is valid
@@ -114,7 +118,8 @@ public class PaymentInfo {
      */
     private void validateCVV(int cvv) {
         if (cvv < 100 || cvv > 999) { 
-            throw new IllegalArgumentException("CVV must be a 3-digit number."); 
+            System.out.println("CVV must be a 3 digit number.");
+            validInfo = false; 
         }
     }
     
