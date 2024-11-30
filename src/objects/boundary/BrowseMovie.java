@@ -9,10 +9,13 @@ import objects.entity.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import org.w3c.dom.events.MouseEvent;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -130,8 +133,39 @@ public class BrowseMovie extends JPanel {
         selectButton.addActionListener(e -> {
             int selectedRow = movieTable.getSelectedRow();
             if (selectedRow >= 0) {
-                String selectedMovieTitle = (String) movieTable.getValueAt(selectedRow, 0);
-                JOptionPane.showMessageDialog(this, "You selected: " + selectedMovieTitle);
+
+                HashMap<Integer, ArrayList<Object>> movieInfo = showControl.searchForMovie(connection, movieData[selectedRow][0]); 
+
+                if (movieInfo!=null && !movieInfo.isEmpty()){
+                    for (Map.Entry<Integer, ArrayList<Object>> entry : movieInfo.entrySet()) {
+                    //in future add code so that movies match with respected covers
+                    ArrayList<Object> movieDetails = entry.getValue();
+
+                    //movie details
+                    int movieID = entry.getKey();
+                    String title = (String) movieDetails.get(0);
+                    String genre = (String) movieDetails.get(1);
+                    String rating = (String) movieDetails.get(2);
+                    Time runtime = (Time) movieDetails.get(3);
+                    String coverPath = "Images/cover.png";
+
+                    Movie movie = new Movie(movieID, title, genre, rating, runtime);
+
+                    ViewMovie viewMovie = parent.getViewMovie();
+                    viewMovie.setMovieDetails(movie);
+                    
+                    parent.showCard("ViewMovie");
+                    }}
+                
+
+                /*
+                Movie movie = new Movie(movieData[selectedRow][0], movieData[selectedRow][1], movieData[selectedRow][2], movieData[selectedRow][3]);
+                ViewMovie viewMovie = parent.getViewMovie();
+                viewMovie.setMovieDetails(movie);
+                parent.showCard("ViewMovie");
+                */
+                
+
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a movie from the list.");
             }
