@@ -17,8 +17,8 @@ public class SeatMapPageTest {
     private JPanel currentSelectedSeat = null;  
 
     // Will get these values from somewhere
-    private static int showtimeID;
-    private static String userEmail;
+    private static int    showtimeID = 44;
+    private static String userEmail = "user5@example.com";
 
 
     public SeatMapPageTest(TreeMap<Integer, Boolean> seatMap) {
@@ -28,8 +28,8 @@ public class SeatMapPageTest {
         // ***************
         // Will properly instantiate variables here when avaialable
         // ****************
-        showtimeID = 9;
-        userEmail = "user1@example.com";
+        // showtimeID = 44;
+        // userEmail = "user5@example.com";
         // ***************
         // Will properly instantiate variables here when avaialable
         // ****************
@@ -124,9 +124,13 @@ public class SeatMapPageTest {
             public void actionPerformed(ActionEvent e) {
 
                 int seatID = -1;
-                
+
+                if(!ticketController.isPurchasable(seatID, showtimeID, userEmail)) {
+                    System.out.println("not purchasable");
+                }
+
                 // Buy the currently selected seat
-                if (currentSelectedSeat != null) {
+                else if (currentSelectedSeat != null) {
                     Component[] components = currentSelectedSeat.getComponents();
                     for (Component component : components) 
                         if (component instanceof JLabel) {
@@ -165,6 +169,15 @@ public class SeatMapPageTest {
     public static void main(String[] args) {
         TicketController ticketController = new TicketController();
         HashMap<Integer, Boolean> seatMap = new HashMap<>();
+
+        // ***************
+        // Will properly instantiate variables here when avaialable
+        // ****************
+        // showtimeID = 44;
+        // userEmail = "user1@example.com";
+        // ***************
+        // Will properly instantiate variables here when avaialable
+        // ****************
 
         // Create a connection to DB to get a map for the showtime
         try (Connection connection = DatabaseController.createConnection()) {
