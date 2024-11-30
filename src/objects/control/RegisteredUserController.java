@@ -130,6 +130,42 @@ public class RegisteredUserController {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+    /**
+     * Update the name in SQL database
+     * @param firstName
+     * @param lastName
+     */
+    public boolean isRegisteredUser(String email) {
+
+        String query = "SELECT COUNT(*) AS numEmail FROM REGISTERED_USER WHERE Email = ?";
+        int numEmail = -1;
+
+        try (Connection connection = DatabaseController.createConnection()) {
+            // Query - Check if the email is associated with a RegisteredUser
+            try (PreparedStatement psQuery0 = connection.prepareStatement(query)) {
+
+                psQuery0.setString(1, email);
+
+                // Find seat ID
+                try (ResultSet rs0 = psQuery0.executeQuery()) {
+                    if (rs0.next())
+                        numEmail = rs0.getInt("numEmail");
+                    else {
+                        System.out.println("Email column not found");
+                        return false; // Couldn't get num of emails
+                    }
+
+                } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) { e.printStackTrace();  }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        // If there is no RegUser associated with that email, return false
+        if(numEmail < 1) 
+            return false;
+        else    
+            return true;
+    }
+
     
     
 
@@ -190,6 +226,8 @@ public class RegisteredUserController {
         }
 
     }
+
+
 
     /**
      * Update email information in SQL database

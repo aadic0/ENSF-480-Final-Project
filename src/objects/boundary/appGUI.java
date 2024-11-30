@@ -14,6 +14,8 @@ public class appGUI extends JFrame{
     private JPanel mainPanel;
     JFrame frame;
 
+    private ViewMovie viewMovie;
+
 
     public appGUI(JFrame frame){
 
@@ -25,13 +27,17 @@ public class appGUI extends JFrame{
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+
         // Add different GUI classes to the CardLayout
+
+        viewMovie = new ViewMovie(this);
+        
         mainPanel.add(new Login(this), "Login");
         mainPanel.add(new MainPage(this), "Home");
         mainPanel.add(new RegisterUser(this), "RegisterUser");
         mainPanel.add(new CreateUser(this), "Create Account");
         mainPanel.add(new BrowseMovie(this), "BrowseMovie");
-        mainPanel.add(new ViewMovie(this), "ViewMovie");
+        mainPanel.add(viewMovie, "ViewMovie");
 
         // Add the main panel to the frame
         add(mainPanel);
@@ -59,6 +65,10 @@ public class appGUI extends JFrame{
 
         
 
+    }
+
+    public ViewMovie getViewMovie() {
+        return viewMovie;
     }
 
     public static void main(String[] args) {

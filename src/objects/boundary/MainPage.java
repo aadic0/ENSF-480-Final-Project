@@ -4,12 +4,13 @@ package objects.boundary;
 import javax.swing.*;
 
 import objects.control.*;
-
+import objects.entity.Movie;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.MouseListener.*;
 import java.sql.Connection;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -174,8 +175,16 @@ public class MainPage extends JPanel implements ActionListener {
                 for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
                 //in future add code so that movies match with respected covers
                 ArrayList<Object> movieDetails = entry.getValue();
+
+                //movie details
+                int movieID = entry.getKey();
                 String title = (String) movieDetails.get(0);
+                String genre = (String) movieDetails.get(1);
+                String rating = (String) movieDetails.get(2);
+                Time runtime = (Time) movieDetails.get(3);
                 String coverPath = "Images/cover.png";
+
+                Movie movie = new Movie(movieID, title, genre, rating, runtime);
 
                 //create panel for each movie
                 JPanel moviePanel = new JPanel();
@@ -200,8 +209,10 @@ public class MainPage extends JPanel implements ActionListener {
                     @Override
                     public void mouseClicked(MouseEvent e){
 
-                        ViewMovie viewMovie = new ViewMovie(parent);
-                        viewMovie.displayViewMovie();
+                        ViewMovie viewMovie = parent.getViewMovie();
+                        viewMovie.setMovieDetails(movie);
+                        //viewMovie.displayViewMovie();
+                        parent.showCard("ViewMovie");
                         //OnMovieClick();
 
 
