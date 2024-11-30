@@ -144,11 +144,11 @@ public class PaymentController {
      * @param isRegUser
      * @param email
      */
-    public void pay(PaymentInfo paymentInfo, float price, String email){
+    public boolean pay(PaymentInfo paymentInfo, float price, String email){
 
         if(!paymentInfo.getValidInfo()) {
             System.out.println("Invalid payment info");
-            return;
+            return false;
         }
 
         // check if they have store credit, use that first:
@@ -166,7 +166,7 @@ public class PaymentController {
                     System.out.println("Store credit: " + storeCredit); // just for debugging purposes
                 }
                 else 
-                    return;
+                    return false;
                  
                 // CASE FOR WE HAVE STORE CREDIT
                 if (storeCredit >= 0.00f){
@@ -188,10 +188,9 @@ public class PaymentController {
                 preparedUpdateStatement.setString(2, email);
 
                 preparedUpdateStatement.execute();         
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        } catch (Exception e){ e.printStackTrace();}
+
+        return true;
     }
 
     /**

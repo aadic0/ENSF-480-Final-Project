@@ -17,6 +17,8 @@ import objects.entity.Showtime;
 
 
 public class TicketController {
+
+    final float TICKET_PRICE = 20.00f;
     
     public TicketController(){}
 
@@ -163,7 +165,7 @@ public class TicketController {
      * @param price
      * @param email
      */
-    public void purchaseTicket(int seatID, int showtimeID, String email){
+    public void purchaseTicket(PaymentInfo paymentInfo, int seatID, int showtimeID, String email){
         // FUNCTIONALITY MISSING:
         //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
         
@@ -179,20 +181,21 @@ public class TicketController {
     
         if(ticketAvailable) {
             // Try to pay for ticket
-            // paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+            paymentValid = paymentController.pay(paymentInfo, TICKET_PRICE, email); // This will always return true, but stimulates paying
 
 
             if(paymentValid) {
                 // Add ticket to database
                 try (Connection connection = DatabaseController.createConnection()) {
-                    String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
-                                   "VALUES (?, ?, ?, ?)";
+                    String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)" + 
+                                   "VALUES (?, ?, ?, ?, ?)";
 
                     try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                         preparedStatement.setInt(1, showtimeID);
                         preparedStatement.setInt(2, seatID);
                         preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
                         preparedStatement.setString(4, email);
+                        preparedStatement.setFloat(5, TICKET_PRICE);
 
                     int rowsAffected = preparedStatement.executeUpdate();
 
@@ -226,8 +229,6 @@ public class TicketController {
         int showtimeID = -1;
         String query2 = "SELECT ShowDateTime FROM SHOWTIME WHERE ShowtimeID = ?";
         String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
-
-        boolean regUserFlag = false;
 
         PaymentController paymentController = new PaymentController();
 
