@@ -117,12 +117,14 @@ DROP TABLE IF EXISTS ANNOUNCEMENT;
 CREATE TABLE ANNOUNCEMENT (
     AnnouncementID      INT AUTO_INCREMENT,
     IsPublic            BOOLEAN NOT NULL,
-    AnnouncementMessage VARCHAR(255) NOT NULL,
+    AnnouncementMessage VARCHAR(1000) NOT NULL,
     DateAnnounced       DATETIME NOT NULL,
     MovieID             INT,
+    Email               VARCHAR(255),
 
     PRIMARY KEY (AnnouncementID),
-    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE
+    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE,
+    FOREIGN KEY (Email) REFERENCES REGULAR_USER(Email) ON UPDATE CASCADE
 
 );
 
@@ -504,6 +506,8 @@ INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, MovieID)
 VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 10);
 
 
+
+
 -- ------------ --
 -- TEST QUERIES --
 -- ------------ --
@@ -555,6 +559,11 @@ VALUES (9, 204, '2024-11-10 17:32:00', 'user4@example.com', 20);
 
 INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
 VALUES (82, 205, '2024-11-10 17:32:00', 'user5@example.com', 20);
+
+
+-- @block
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, Email)
+VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 'user1@example.com');
 
 -- @block
 -- SELECT --
