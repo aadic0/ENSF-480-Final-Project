@@ -11,13 +11,13 @@ public class AnnouncementController{
     AnnouncementController() {}
 
     /**
-     * email an announcement to a list of registered users about early access showtimes
-     * @param announcement
-     * @param registeredUsersList
+     * 
+     * @param message
+     * @param movieID
      */
-    public void sendPrivateShowTimeAnnouncement(String message, int showTimeID) {
+    public void sendPrivateShowTimeAnnouncement(String message, int movieID) {
 
-        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID) VALUES (?, ?, ?, ?)";
+        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, movieID) VALUES (?, ?, ?, ?)";
 
         final boolean IS_PUBLIC = false;
 
@@ -27,7 +27,7 @@ public class AnnouncementController{
             preparedStatement.setBoolean(1, IS_PUBLIC);
             preparedStatement.setString(2, message);
             preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis())); 
-            preparedStatement.setInt(4, (showTimeID));
+            preparedStatement.setInt(4, (movieID));
 
             // Execute the insert query
             int rowsAffected = preparedStatement.executeUpdate();
@@ -43,13 +43,13 @@ public class AnnouncementController{
     }
 
     /**
-     * email an announcement to a list of registered users about early access showtimes
-     * @param announcement
-     * @param registeredUsersList
+     * 
+     * @param message
+     * @param movieID
      */
-    public void sendPublicShowTimeAnnouncement(String message, int showTimeID) {
+    public void sendPublicShowTimeAnnouncement(String message, int movieID) {
 
-        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, ShowtimeID) VALUES (?, ?, ?, ?)";
+        String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, movieID) VALUES (?, ?, ?, ?)";
 
         final boolean IS_PUBLIC = true;
 
@@ -59,7 +59,7 @@ public class AnnouncementController{
             preparedStatement.setBoolean(1, IS_PUBLIC);
             preparedStatement.setString(2, message);
             preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis())); 
-            preparedStatement.setInt(4, (showTimeID));
+            preparedStatement.setInt(4, (movieID));
 
             // Execute the insert query
             int rowsAffected = preparedStatement.executeUpdate();
@@ -76,10 +76,8 @@ public class AnnouncementController{
 
 
     /**
-     * Sends an announcement to all users
+     * 
      * @param message
-     * 
-     * 
      */
     public void sendPublicAnnouncement(String message){
 
@@ -107,6 +105,10 @@ public class AnnouncementController{
         }
     }
     
+    /**
+     * 
+     * @param message
+     */
     public void sendPrivateAnnouncement(String message){
 
         String insertAnnouncementQuery = "INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced) "
