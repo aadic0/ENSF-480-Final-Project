@@ -509,8 +509,8 @@ VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 10)
 -- ------------ --
 
 -- @block
-INSERT INTO REGULAR_USER (Email, Pwd)
-VALUES('user1@example.com', 'password');
+INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
+VALUES('user1@example.com', 'password', 20);
 
 INSERT INTO REGULAR_USER (Email, Pwd)
 VALUES('user2@example.com', 'password');
