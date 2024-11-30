@@ -92,6 +92,68 @@ public class TicketController {
     // }
 
 
+    // /**
+    //  * buy a ticket for a seat for a showtime
+    //  * Remade version of purchaseTicket so that you don't have to make a showtime object
+    //  * @param seat
+    //  * @param showtimeID
+    //  * @param paymentInfo
+    //  * @param price
+    //  * @param email
+    //  */
+    // public void purchaseTicket(Seat seat, int showtimeID, PaymentInfo paymentInfo, float price, String email){
+    //     // FUNCTIONALITY MISSING:
+    //     //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
+        
+    //     // Create controller
+    //     PaymentController paymentController = new PaymentController();
+
+    //     // Create flags
+    //     boolean ticketAvailable;
+    //     boolean paymentValid;
+        
+    //     // Check if ticket is available
+    //     ticketAvailable = isPurchasable(seat, showtimeID, email);
+    
+    //     if(ticketAvailable) {
+    //         // Try to pay for ticket
+    //         paymentValid = true;
+    //         // paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+
+    //         if(paymentValid) {
+    //             // Add ticket to database
+    //             try (Connection connection = DatabaseController.createConnection()) {
+    //                 String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
+    //                                "VALUES (?, ?, ?, ?)";
+
+    //                 int seatID = this.retrieveSeatID(connection, seat, showtimeID);
+
+    //                 try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    //                     preparedStatement.setInt(1, showtimeID);
+    //                     preparedStatement.setInt(2, seatID);
+    //                     preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+    //                     preparedStatement.setString(4, email);
+
+    //                 int rowsAffected = preparedStatement.executeUpdate();
+
+    //                 // Testing to make sure ticket was added
+    //                 if (rowsAffected > 0) {
+    //                     System.out.println("Ticket added successfully!");
+    //                 } 
+    //                 else {
+    //                     System.out.println("Failed to add ticket.");
+    //                 }
+
+    //                 } catch (Exception e) { e.printStackTrace(); }
+    //             } catch (Exception e) { e.printStackTrace(); }
+    //         }
+            
+    //     } else {
+    //         System.out.println("Ticket unavailable for purchase");
+    //         return;
+    //     }
+    // }
+
     /**
      * buy a ticket for a seat for a showtime
      * Remade version of purchaseTicket so that you don't have to make a showtime object
@@ -101,7 +163,7 @@ public class TicketController {
      * @param price
      * @param email
      */
-    public void purchaseTicket(Seat seat, int showtimeID, PaymentInfo paymentInfo, float price, String email){
+    public void purchaseTicket(int seatID, int showtimeID, String email){
         // FUNCTIONALITY MISSING:
         //  - Doesn't check for announcement date, so RUs cannot book 10% of seats early
         
@@ -110,22 +172,21 @@ public class TicketController {
 
         // Create flags
         boolean ticketAvailable;
-        boolean paymentValid;
+        boolean paymentValid = true;
         
         // Check if ticket is available
-        ticketAvailable = isPurchasable(seat, showtimeID, email);
+        ticketAvailable = isPurchasable(seatID, showtimeID, email);
     
         if(ticketAvailable) {
             // Try to pay for ticket
-            paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+            // paymentValid = paymentController.pay(paymentInfo, price); // This will always return true, but stimulates paying
+
 
             if(paymentValid) {
                 // Add ticket to database
                 try (Connection connection = DatabaseController.createConnection()) {
                     String query = "INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)" + 
                                    "VALUES (?, ?, ?, ?)";
-
-                    int seatID = this.retrieveSeatID(connection, seat, showtimeID);
 
                     try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                         preparedStatement.setInt(1, showtimeID);
@@ -163,8 +224,7 @@ public class TicketController {
         
         String query1 = "SELECT Email, ShowtimeID FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
         int showtimeID = -1;
-        String query22 = "SELECT ShowDateTime FROM SHOWTIME WHERE ShowtimeID = ?";
-        String query2 = "SELECT COUNT(Email) FROM REGISTERED_USER WHERE Email = ?"; // Check if email is in Reg User table
+        String query2 = "SELECT ShowDateTime FROM SHOWTIME WHERE ShowtimeID = ?";
         String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
 
         boolean regUserFlag = false;
@@ -190,14 +250,14 @@ public class TicketController {
             } catch (Exception e) { e.printStackTrace(); }
 
             // Query 22 - Check if cancellation is at least 72 hours before show
-            try (PreparedStatement preparedStatement22 = connection.prepareStatement(query22)) {
-                preparedStatement22.setInt(1, showtimeID);
+            try (PreparedStatement preparedStatement2 = connection.prepareStatement(query2)) {
+                preparedStatement2.setInt(1, showtimeID);
 
-                ResultSet rs22 = preparedStatement22.executeQuery();
+                ResultSet rs2 = preparedStatement2.executeQuery();
 
-                if (rs22.next()) {
+                if (rs2.next()) {
                     // Get showDateTime and process
-                    Timestamp showDateTime = rs22.getTimestamp("ShowDateTime");
+                    Timestamp showDateTime = rs2.getTimestamp("ShowDateTime");
 
                     if (showDateTime == null) return;
 
@@ -225,21 +285,8 @@ public class TicketController {
                 }
             } catch (Exception e) { e.printStackTrace(); }
 
-            // Query 2 - Check if email is associated with a RegisteredUser
-            try (PreparedStatement preparedStatement2 = connection.prepareStatement(query2)) {
-                preparedStatement2.setString(1, email);
-
-                ResultSet rs2 = preparedStatement2.executeQuery();
-
-                if (rs2.next()) 
-                    regUserFlag = true;
-                    System.out.println("email associated with RegUser");
-                
-            } catch (Exception e) { e.printStackTrace(); }
-
-            // Refund user
-            // DEFAULT ARGUMENTS, NEED TO CHANGE THIS
-            paymentController.refund(paymentInfo, 0, true, -1, "Fake email.com");
+            // Refund user after all checks
+            paymentController.refund(ticketID, email);
 
             // Query 3 - Remove ticket from DB
             try (PreparedStatement preparedStatement3 = connection.prepareStatement(query3)) {
@@ -289,6 +336,39 @@ public class TicketController {
 
             // Find the seat ID to use in the next check
             seatID = retrieveSeatID(connection, seat, showtimeID);
+
+            // If the seat for the showtime is not available for purchase, return false
+            if (!isTicketAvailable(connection, seatID, showtimeID))
+                return false; 
+            
+        } catch (Exception e) { e.printStackTrace(); }
+
+        return true;
+    }
+
+    /**
+     * Check if the seat the user is trying to book for a showtime is able to be booked
+     * @param seat
+     * @param showtimeID
+     * @return if the seat is available (true) or not (false)
+     */
+    public boolean isPurchasable(int seatID, int showtimeID, String email) {
+
+        // int seatID = -1;
+
+        try (Connection connection = DatabaseController.createConnection()) {
+
+            // If the announcement associated with a showtime is private and the user purchasing is not a RegUser, return false
+            if(isPrivateAnnouncementTicket(connection, showtimeID))
+                if(!isBelowMaxPrivateTickets(connection, showtimeID, email)) 
+                    return false;
+
+            // If the purchasable time has passed, return false
+            if (!isPurchasableTimeCheck(connection, showtimeID)) 
+                return false; 
+
+            // Find the seat ID to use in the next check
+            // seatID = retrieveSeatID(connection, seat, showtimeID);
 
             // If the seat for the showtime is not available for purchase, return false
             if (!isTicketAvailable(connection, seatID, showtimeID))

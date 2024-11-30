@@ -17,78 +17,103 @@ public class Main {
 //---------------------------------------------------------//
 //                 User and RegUser Tests                  //
 //---------------------------------------------------------//
-    public static void testPay(){
+    // public static void testPay(){
+    //     // Create necessary objects
+    //     PaymentInfo paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
+    //     TicketController ticketController = new TicketController();
+    //     int seatID = 206;
+    //     int showtimeID = 9; 
+    //     String email = "user6@example.com"; 
+    //     float price = 20.00f; // Ticket price
+    //     boolean isRegUser = true; // Regular user flag
+    //     int ticketId = 6;
+    //     String timeDate = "2024-11-11 17:33:00";
+
+    //     // Create an instance of the pay function class (replace with your class name if different)
+    //     PaymentController pc = new PaymentController();
+
+    //     pc.pay(paymentInfo, price, isRegUser, ticketId, email, ticketController, seatID, showtimeID, timeDate);
+    // }
+
+    public static void testPayNew(){
         // Create necessary objects
         PaymentInfo paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
-        TicketController ticketController = new TicketController();
-        int seatID = 206;
-        int showtimeID = 9; 
-        String email = "user6@example.com"; 
+        String email = "user1@example.com"; 
         float price = 20.00f; // Ticket price
-        boolean isRegUser = true; // Regular user flag
-        int ticketId = 6;
-        String timeDate = "2024-11-11 17:33:00";
-
         // Create an instance of the pay function class (replace with your class name if different)
         PaymentController pc = new PaymentController();
 
-        pc.pay(paymentInfo, price, isRegUser, ticketId, email, ticketController, seatID, showtimeID, timeDate);
+        pc.pay(paymentInfo, price, email);
     }
 
-
-
-    public static void refundStoreCredit(){
-
-        // Create an instance of TicketController
+    public static void testRefundNew(){
+        // Create necessary objects
+        int ticketID = 1; 
+        String email = "user1@example.com"; 
+        
         PaymentController pc = new PaymentController();
 
-        long cardNum = 1234567812345678L;
-        // Test data
-        PaymentInfo paymentInfo = new PaymentInfo(cardNum, "2026-11-30", 123);
+        pc.refund(ticketID, email);
 
-        float refundAmount = 50.00f; // Example refund amount
-        boolean isRegisteredUser = true;
-        int testTicketID = 5;
-        String email1 = "user4@example.com";
-
-        // Call the refund method
-        System.out.println("Initiating refund...");
-        pc.refund(paymentInfo, refundAmount, isRegisteredUser, testTicketID, email1);
-
+        // email = "user5@example.com"; 
+        
+        // pc.refund(ticketID, email);
     }
 
-    public static void buyTicketTestNew() {
-        // Mock data for testing
-        String email = "testuser@example.com"; // Registered user email
-        int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
-        float ticketPrice = 15.99f;           // Ticket price
-        
-        // Create mock payment info
-        PaymentInfo paymentInfo = new PaymentInfo(
-                1234567812345678L,  // Credit Card Number
-                "2025-12-31",       // Expiration Date
-                123                        // CVV
-        );
-        
-        // Create a mock Seat object (e.g., Row 2, Seat 5)
-        Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
-        
-        // Create the TicketController object
-        TicketController ticketController = new TicketController();
-        
-        // Call the new purchaseTicket method
-        try {
-            ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
-    }
+    // public static void refundStoreCredit(){
+
+    //     // Create an instance of TicketController
+    //     PaymentController pc = new PaymentController();
+
+    //     long cardNum = 1234567812345678L;
+    //     // Test data
+    //     PaymentInfo paymentInfo = new PaymentInfo(cardNum, "2026-11-30", 123);
+
+    //     float refundAmount = 50.00f; // Example refund amount
+    //     boolean isRegisteredUser = true;
+    //     int testTicketID = 5;
+    //     String email1 = "user4@example.com";
+
+    //     // Call the refund method
+    //     System.out.println("Initiating refund...");
+    //     pc.refund(paymentInfo, refundAmount, isRegisteredUser, testTicketID, email1);
+
+    // }
+
+    // public static void buyTicketTestNew() {
+    //     // Mock data for testing
+    //     String email = "testuser@example.com"; // Registered user email
+    //     int showtimeID = 27;                  // Replace with an existing ShowtimeID in your DB
+    //     float ticketPrice = 15.99f;           // Ticket price
+        
+    //     // Create mock payment info
+    //     PaymentInfo paymentInfo = new PaymentInfo(
+    //             1234567812345678L,  // Credit Card Number
+    //             "2025-12-31",       // Expiration Date
+    //             123                        // CVV
+    //     );
+        
+    //     // Create a mock Seat object (e.g., Row 2, Seat 5)
+    //     Seat seat = new Seat(2, 5); // Ensure this seat exists in the database for the given ShowtimeID
+        
+    //     // Create the TicketController object
+    //     TicketController ticketController = new TicketController();
+        
+    //     // Call the new purchaseTicket method
+    //     try {
+    //         ticketController.purchaseTicket(seat, showtimeID, paymentInfo, ticketPrice, email);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+
+
+    // }
     
     public static void refundTicketTest() {
         TicketController tc = new TicketController();
-        tc.refundTicket(1, "testuser@example.com", null);
+        tc.refundTicket(5, "user5@example.com", null);
     }
     
     public static void seatMapTest(int showTimeID) {
@@ -428,7 +453,7 @@ public class Main {
 
     // buyTicketTestOld();
     // buyTicketTestNew(); // Recreate database and rerun queries after running this test
-    // refundTicketTest(); // Need to change ticketID manually everytime or this wont work
+    refundTicketTest(); // Need to change ticketID manually everytime or this wont work
     // privateBookingTest(); // Make sure a RegUser exists or last 3 tests will always be false
 
     // seatMapTest(9); // should return true for all seats except for seats 201-204
@@ -443,7 +468,9 @@ public class Main {
     //     Payment Controller    //
     //---------------------------//
     // refundStoreCredit();
-    testPay();
+    // testPay();
+    // testPayNew();
+    // testRefundNew();
     // Use these tests, I'm keeping the above ones temporarily for easier merging
     //------------------------//
     //   ShowtimeController   //
