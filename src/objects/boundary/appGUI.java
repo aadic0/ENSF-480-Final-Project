@@ -16,6 +16,9 @@ public class appGUI extends JFrame{
 
     private ViewMovie viewMovie;
 
+    private String loggedinEmail;
+    private String loggedinPass;
+
 
     public appGUI(JFrame frame){
 
@@ -23,12 +26,12 @@ public class appGUI extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 800);
 
-        // Initialize the CardLayout and main panel
+        
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
 
-        // Add different GUI classes to the CardLayout
+       //add the different pages to the CardLayout
 
         viewMovie = new ViewMovie(this);
         
@@ -38,17 +41,18 @@ public class appGUI extends JFrame{
         mainPanel.add(new CreateUser(this), "Create Account");
         mainPanel.add(new BrowseMovie(this), "BrowseMovie");
         mainPanel.add(viewMovie, "ViewMovie");
+        
 
-        // Add the main panel to the frame
+        //add mainPanel to frame
         add(mainPanel);
 
-        // Show the Login page initially
+        //start program with showing login page 
         showCard("Login");
 
-        setVisible(true); // Make the frame visible
+        setVisible(true); 
     }
 
-    // Method to switch cards
+    //method to switch cards
     public void showCard(String cardName) {
 
         if(cardName.equals("Login") || cardName.equals("Create Account")){
@@ -61,10 +65,20 @@ public class appGUI extends JFrame{
         cardLayout.show(mainPanel, cardName);
 
         revalidate();
-        repaint();
+        repaint();  
 
-        
+    }
+    public void saveLoginDetails(String username, String password) {
+        this.loggedinEmail = username;
+        this.loggedinEmail = password;
+    }
 
+    public String getLoggedInUser() {
+        return loggedinEmail;
+    }
+
+    public String getLoggedInPassword() {
+        return loggedinPass;
     }
 
     public ViewMovie getViewMovie() {

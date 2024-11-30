@@ -238,8 +238,8 @@ public class RegisterUser extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 try {
                    
-                    String email = emailTxt.getText();
-                    String password = new String(passTxt.getPassword());
+                    String email = parent.getLoggedInUser();
+                    String password = parent.getLoggedInPassword();
                     String firstName = firstNameTxt.getText();
                     String lastName = lastNameTxt.getText();
                     String streetAddress = streetAddressTxt.getText();

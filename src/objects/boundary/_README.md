@@ -11,4 +11,5 @@ Compile: javac -cp "../../;../lib/mysql-connector-j-9.1.0.jar" login.java ../con
 
 
 run program (for now): 
-java -cp "../../;../../../lib/mysql-connector-j-9.1.0.jar" objects.boundary.Login       
+java -cp "../../;../../../lib/mysql-connector-j-9.1.0.jar" objects.boundary.appGUI
+

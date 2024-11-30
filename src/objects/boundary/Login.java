@@ -133,6 +133,7 @@ public class Login extends JPanel {
                 System.out.println(pass);
                 if( auth_user != false){
                     //go to main page
+                    parent.saveLoginDetails(user, pass); //save login details
                     parent.showCard("Home");
                     
                 }
