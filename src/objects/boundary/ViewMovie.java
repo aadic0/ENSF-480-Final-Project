@@ -12,10 +12,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.*;
+
 
 
 public class ViewMovie extends JPanel {
@@ -29,6 +30,8 @@ public class ViewMovie extends JPanel {
     private JButton showTimes;
     private JButton seatMap;
     private JButton purchaseTicket;
+
+    private Movie chosenMovie;
     
     
     //private JFrame frame; //reference to parent frame
@@ -104,6 +107,16 @@ public class ViewMovie extends JPanel {
 
         /*action listeners */
 
+        showTimes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                showTimesPopUp();
+                
+                
+            }
+        });
+
 
 
         
@@ -115,6 +128,7 @@ public class ViewMovie extends JPanel {
     }
 
     public void setMovieDetails(Movie movie) {
+        this.chosenMovie = movie;
         movietitle.setText("Title: " + movie.getName());
         genreLabel.setText("Genre: " + movie.getGenre());
         ratingLabel.setText("Rating: " + movie.getRating());
@@ -128,6 +142,83 @@ public class ViewMovie extends JPanel {
     }
 
     public void showTimesPopUp(){
+
+        if (chosenMovie == null) {
+            JOptionPane.showMessageDialog(this, "No movie selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JDialog dialog = new JDialog((Frame) null, "Showtimes for " + chosenMovie.getName(), true);
+        dialog.setLayout(new BorderLayout());
+        dialog.setSize(400, 300);
+        dialog.setLocationRelativeTo(this);
+
+        //retrieve showtimes
+        ShowtimeController showtimeController= new ShowtimeController();
+        Connection connection = DatabaseController.createConnection();
+        HashMap<Integer, ArrayList<Object>> showtimeMap = showtimeController.searchForShowtime(connection, chosenMovie.getName());
+
+        if (showtimeMap.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No showtimes available for this movie.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        //convert showtimeMap into a list to sort it in ascending order
+        ArrayList<Map.Entry<Integer, ArrayList<Object>>> showtimeEntries = new ArrayList<>(showtimeMap.entrySet());
+        showtimeEntries.sort((entry1, entry2) -> {
+        int roomID1 = (int) entry1.getValue().get(0);
+        int roomID2 = (int) entry2.getValue().get(0);
+        return Integer.compare(roomID1, roomID2);
+    });
+       
+
+        //panel to hold all showtimes
+        JPanel showtimesPanel = new JPanel();
+        showtimesPanel.setLayout(new BoxLayout(showtimesPanel, BoxLayout.Y_AXIS));
+
+
+        
+        for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeEntries) {
+            ArrayList<Object> details = entry.getValue();
+            Timestamp showDateTime = (Timestamp) details.get(2);
+            int theatreRoomID = (int) details.get(0);
+
+            //panel for each showtime
+            JPanel showtimePanel = new JPanel(new BorderLayout());
+            showtimePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+ 
+            //showtime details
+            JLabel detailsLabel = new JLabel("<html><b>Theatre Room:</b> " + theatreRoomID +"<br><b>Time:</b> " + showDateTime.toString() + "</html>");
+            showtimePanel.add(detailsLabel, BorderLayout.CENTER);
+
+            //pop-up confirmation
+            showtimePanel.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    JOptionPane.showMessageDialog(dialog, "You selected showtime: " + showDateTime, "Showtime Selected", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+
+            
+            showtimesPanel.add(showtimePanel);
+        }
+
+       
+        JScrollPane scrollPane = new JScrollPane(showtimesPanel);
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+
+       
+        //close pop-up
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+        dialog.add(closeButton, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+
+
+
+        
         
     }
 

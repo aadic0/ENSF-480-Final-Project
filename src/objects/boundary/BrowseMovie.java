@@ -29,7 +29,7 @@ public class BrowseMovie extends JPanel {
     //controller
     private ShowtimeController showControl;
 
-    private JFrame frame; //reference to parent frame
+    //private JFrame frame; //reference to parent frame
 
     //ctor
     public BrowseMovie(appGUI parent){
