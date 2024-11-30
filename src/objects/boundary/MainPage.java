@@ -143,21 +143,16 @@ public class MainPage extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == logoutOption){
 
-            //dispose();
-            // JFrame frame = new JFrame();
-            // Login loginPage = new Login(frame);
-            // loginPage.displayLoginGUI();
-
             parent.showCard("Login");
 
         }
         if(e.getSource() == registerAcc){
-            //dispose();
-            //dispose();
-            // RegisterUser register = new RegisterUser(frame);
-            // register.displayRegisterAcc();
+            
             parent.showCard("RegisterUser");
 
+        }
+        if(e.getSource() == homeBtn){
+            parent.showCard("Home");
         }
        
 

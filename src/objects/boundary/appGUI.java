@@ -43,7 +43,7 @@ public class appGUI extends JFrame{
     // Method to switch cards
     public void showCard(String cardName) {
 
-        if(cardName.equals("Login")){
+        if(cardName.equals("Login") || cardName.equals("Create Account")){
             setJMenuBar(null);
         }else{
 

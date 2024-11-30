@@ -1,6 +1,8 @@
 package objects.boundary;
 
 import objects.control.*;
+import objects.entity.PaymentInfo;
+import objects.entity.RegisteredUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,21 +22,28 @@ public class RegisterUser extends JPanel{
     private JLabel cityLabel;
     private JLabel provLabel;
     private JLabel postalLabel;
-    private JLabel paymentInfo;
+    private JLabel cardNumberLabel;
+    private JLabel expirationDateLabel;
+    private JLabel cvvLabel;
+    private JLabel paymentInfoLabel;
 
     private JTextField emailTxt;
-    private JTextField passTxt;
+    private JPasswordField passTxt;
     private JTextField firstNameTxt;
     private JTextField lastNameTxt;
     private JTextField streetAddressTxt;
     private JTextField cityTxt;
     private JTextField provTxt;
     private JTextField postalTxt;
-    private JTextField paymentInfoTxt;
+    
+    private JTextField cardNumberTxt;
+    private JTextField expirationDateTxt;
+    private JTextField cvvTxt;
+    RegisteredUserController controller;
 
 
 
-    private JButton enterbtn;
+    private JButton enterBtn;
 
     private JFrame frame;
 
@@ -44,7 +53,8 @@ public class RegisterUser extends JPanel{
 
         this.parent = parent;
 
-        RegisteredUserController controller;
+        
+        this.controller = new RegisteredUserController();
 
         // getContentPane().removeAll(); //clear
         // repaint();
@@ -160,14 +170,115 @@ public class RegisterUser extends JPanel{
         add(postalTxt,constraints); 
 
 
-        //enter, and then payment info?
-        paymentInfo= new JLabel("Payment");
+        //payment info
+        paymentInfoLabel = new JLabel("Payment Details:");
+        paymentInfoLabel.setFont(new Font("Arial",Font.BOLD,10));
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        constraints.gridwidth = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(paymentInfoLabel,constraints);
+
+        cardNumberLabel= new JLabel("Card Number:");
+        cardNumberLabel.setFont(new Font("Arial",Font.PLAIN,10));
+        constraints.gridx = 0;
+        constraints.gridy = 6;
+        constraints.gridwidth = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(cardNumberLabel,constraints);
+
+        cardNumberTxt = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 6;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(cardNumberTxt, constraints);
+
+
+        expirationDateLabel = new JLabel("Expiration Date:");
+        expirationDateLabel.setFont(new Font("Arial",Font.PLAIN,10));
+        constraints.gridx = 5;
+        constraints.gridy = 6;
+        constraints.gridwidth = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(expirationDateLabel,constraints);
+
+        expirationDateTxt = new JTextField(20);
+        constraints.gridx = 6;
+        constraints.gridy = 6;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(expirationDateTxt, constraints);
+
+
+        cvvLabel = new JLabel("CVV:");
+        cvvLabel.setFont(new Font("Arial",Font.PLAIN,10));
+        constraints.gridx = 0;
+        constraints.gridy = 7;
+        constraints.gridwidth = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(cvvLabel,constraints);
+
+        cvvTxt = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 7;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(cvvTxt, constraints);
+        //enter button
+
+       enterBtn = new JButton("Enter");
+       constraints.gridx = 4;
+       constraints.gridy = 8;
+       constraints.gridwidth = 1;
+       add(enterBtn, constraints);
+
+        enterBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                   
+                    String email = emailTxt.getText();
+                    String password = new String(passTxt.getPassword());
+                    String firstName = firstNameTxt.getText();
+                    String lastName = lastNameTxt.getText();
+                    String streetAddress = streetAddressTxt.getText();
+                    String city = cityTxt.getText();
+                    String province = provTxt.getText();
+                    String postalCode = postalTxt.getText();
+                    long cardNumber = Long.parseLong(cardNumberTxt.getText());
+                    String expirationDate = expirationDateTxt.getText();
+                    int cvv = Integer.parseInt(cvvTxt.getText());
+
+                    //create payment info
+                    PaymentInfo paymentInfo = new PaymentInfo(cardNumber, expirationDate, cvv);
+
+                    //registered user object
+                    RegisteredUser registeredUser = new RegisteredUser(email, firstName, lastName, streetAddress, city, province, postalCode, paymentInfo);
+
+                    //create registered user
+                    controller.registerUser(registeredUser, password);
+
+                    //success message
+                    JOptionPane.showMessageDialog(RegisterUser.this, "User registered successfully!");
+                    parent.showCard("Login");
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(RegisterUser.this, "Error: " + ex.getMessage(), "Registration Failed", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+
 
 
        
 
 
-    }
+    
 
     public void displayRegisterAcc(){
         // JFrame frame = new JFrame();

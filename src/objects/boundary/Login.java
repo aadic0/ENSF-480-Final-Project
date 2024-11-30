@@ -162,7 +162,7 @@ public class Login extends JPanel {
                 // CreateUser registerPage = new CreateUser(frame);
                 // frame.dispose();
                 // registerPage.displayRegister();
-                parent.showCard("Create");
+                parent.showCard("Create Account");
 
 
                 
@@ -201,11 +201,6 @@ public class Login extends JPanel {
     }
 
     public void displayLoginGUI(){
-        // JFrame frame = new JFrame();
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // frame.setSize(400, 300);
-        // frame.add(new Login(frame));
-        // frame.setVisible(true);
 
         parent.showCard("Login");
 
