@@ -245,6 +245,7 @@ public class TicketController {
         String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
 
         PaymentController paymentController = new PaymentController();
+        AnnouncementController announcementController = new AnnouncementController();
 
         try (Connection connection = DatabaseController.createConnection()) {
             
@@ -315,6 +316,12 @@ public class TicketController {
                     System.out.println("Failed to remove ticket");
                 
             } catch (Exception e) { e.printStackTrace(); }
+
+            String message = "Cancelled ticket " + ticketID;
+
+            announcementController.sendEmailAnnouncement(message, email);
+            
+
         } catch (Exception e) { e.printStackTrace(); }
     }
 
