@@ -201,11 +201,13 @@ public class Login extends JPanel {
     }
 
     public void displayLoginGUI(){
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.add(new Login(frame));
-        frame.setVisible(true);
+        // JFrame frame = new JFrame();
+        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setSize(400, 300);
+        // frame.add(new Login(frame));
+        // frame.setVisible(true);
+
+        parent.showCard("Login");
 
     }
 
@@ -214,7 +216,7 @@ public class Login extends JPanel {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 600);
-        frame.add(new Login(frame));
+        //parent.showCard("Login");
         frame.setVisible(true);
 
     }

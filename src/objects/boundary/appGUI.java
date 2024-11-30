@@ -41,8 +41,19 @@ public class appGUI extends JFrame{
     }
 
     // Method to switch cards
-        public void showCard(String cardName) {
+    public void showCard(String cardName) {
+
+        if(cardName.equals("Login")){
+            setJMenuBar(null);
+        }else{
+
+            setJMenuBar(new MainPage(this).menuBar());
+
+        }
         cardLayout.show(mainPanel, cardName);
+
+        revalidate();
+        repaint();
 
         
 

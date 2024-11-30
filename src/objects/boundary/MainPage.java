@@ -57,7 +57,7 @@ public class MainPage extends JPanel implements ActionListener {
         
        
         //menubar
-        // menuBar(this);
+        parent.setJMenuBar(menuBar());
        //mainPanel
 
         mainPanel = new JPanel();
@@ -233,7 +233,7 @@ public class MainPage extends JPanel implements ActionListener {
 
     }
 
-    public void menuBar(ActionListener listener){
+    public JMenuBar menuBar(){
         menubar = new JMenuBar();
        
        //create menus
@@ -273,7 +273,10 @@ public class MainPage extends JPanel implements ActionListener {
 
        //attach menubar to frame
        //setJMenuBar(menubar);
+      
        setVisible(true);
+
+       return menubar;
 
     }
 
