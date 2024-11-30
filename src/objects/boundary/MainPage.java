@@ -154,6 +154,9 @@ public class MainPage extends JPanel implements ActionListener {
         if(e.getSource() == homeBtn){
             parent.showCard("Home");
         }
+        if(e.getSource() == browseMovies){
+            parent.showCard("BrowseMovie");
+        }
        
 
     }

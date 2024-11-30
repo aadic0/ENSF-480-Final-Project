@@ -142,6 +142,10 @@ public class BrowseMovie extends JPanel {
         setVisible(true);
     }
 
+    public void displayMovies(){
+        parent.showCard("BrowseMovie");
+    }
+
 
     //temporary main method for testing
 
