@@ -154,6 +154,10 @@ public class appGUI extends JFrame{
         return loggedinEmail;
     }
 
+    public void setLoggedOut() {
+        this.loggedinEmail = null;
+    }
+
     public String getLoggedInPassword() {
         return loggedinPass;
     }

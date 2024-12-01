@@ -145,6 +145,7 @@ public class MainPage extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == logoutOption){
 
+            parent.setLoggedOut();
             parent.showCard("Login");
 
         }
