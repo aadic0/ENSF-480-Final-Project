@@ -1,4 +1,4 @@
-//boundary, browse movie announcments
+//boundary, view purchases
 
 package objects.boundary;
 
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class BrowseAnnouncment extends JPanel {
+public class ViewPurchases extends JPanel {
     //components
     private JLabel title;
     private appGUI parent;
@@ -33,7 +33,7 @@ public class BrowseAnnouncment extends JPanel {
     //private JFrame frame; //reference to parent frame
 
     //ctor
-    public BrowseAnnouncment(appGUI parent){
+    public ViewPurchases(appGUI parent){
         this.parent = parent;
         this.aControl = new AnnouncementController();
 
@@ -42,43 +42,45 @@ public class BrowseAnnouncment extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10,10,10,10);
        
-        title = new JLabel("View Announcements");
+        title = new JLabel("View Purchases");
         title.setFont(new Font("Arial", Font.BOLD,18));
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.CENTER;
         add(title, constraints); //add to the panel
 
-        //retrieve movies
-        HashMap<Integer, ArrayList<Object>> announceMap = aControl.retrieveAllAnnouncement(parent.getLoggedInUser());
+        //connect to database
+        Connection connection = DatabaseController.createConnection();
+        //retrieve purchases
+        HashMap<Integer, ArrayList<Object>> purchaseMap = aControl.retrieveEmailAnnouncement(connection, parent.getLoggedInUser());
 
         //debug prints:
         System.out.println("Announcements retrieved from database:");
-        for (Map.Entry<Integer, ArrayList<Object>> entry : announceMap.entrySet()) {
+        for (Map.Entry<Integer, ArrayList<Object>> entry : purchaseMap.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
-
+   
         // Convert to 2D array for JTable
-        String[][] announceData = new String[announceMap.size()][2];
+        String[][] purchaseData = new String[purchaseMap.size()][2];
         String[] columnNames = {"Date", "Message"};
         int row = 0;
 
-        for (ArrayList<Object> announceDetails : announceMap.values()) {
-            announceData[row][0] = announceDetails.get(1).toString(); // Date published 
-            announceData[row][1] = (String) announceDetails.get(0); // Message
+        for (ArrayList<Object> purchaseDetails : purchaseMap.values()) {
+            purchaseData[row][0] = purchaseDetails.get(1).toString(); // Date published 
+            purchaseData[row][1] = (String) purchaseDetails.get(0); // Message
             row++;
         }
 
         //Debug prints:
         System.out.println("Announcement array:");
-        for (String[] item : announceData) {
+        for (String[] item : purchaseData) {
             System.out.println("Row: " + Arrays.toString(item));
         }
 
         //Table for announements:
 
-        JTable announceTable = new JTable(new DefaultTableModel(announceData, columnNames) {
+        JTable purchaseTable = new JTable(new DefaultTableModel(purchaseData, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make cells non-editable
@@ -86,16 +88,16 @@ public class BrowseAnnouncment extends JPanel {
         });
         
         // Wrap table in a scroll pane
-        JScrollPane scrollPane = new JScrollPane(announceTable);
+        JScrollPane scrollPane = new JScrollPane(purchaseTable);
         
         // Adjust column widths
-        announceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        announceTable.getColumnModel().getColumn(0).setPreferredWidth(200); //width for date 
-        announceTable.getColumnModel().getColumn(1).setPreferredWidth(600); //width for message
+        purchaseTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        purchaseTable.getColumnModel().getColumn(0).setPreferredWidth(200); //width for date 
+        purchaseTable.getColumnModel().getColumn(1).setPreferredWidth(600); //width for message
         
         //set table size and fill
-        announceTable.setPreferredScrollableViewportSize(new Dimension(800, 400));
-        announceTable.setFillsViewportHeight(true);
+        purchaseTable.setPreferredScrollableViewportSize(new Dimension(800, 400));
+        purchaseTable.setFillsViewportHeight(true);
                 
         //scroll pane constraints
         constraints.gridx = 0;
