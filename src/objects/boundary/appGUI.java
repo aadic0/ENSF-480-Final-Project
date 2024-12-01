@@ -3,10 +3,14 @@ package objects.boundary;
 
 import java.awt.CardLayout;
 
+import objects.control.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.util.HashMap;
 import java.util.TreeMap; 
 
 public class appGUI extends JFrame{
@@ -29,10 +33,11 @@ public class appGUI extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 800);
 
-        
+        //setup seatmap
+       
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        seatMapPage = new SeatMapPageTest(null,this); 
+        seatMapPage = new SeatMapPageTest(retrieveSeatMap(),this);
         PaymentPage paymentPage = new PaymentPage(this);
 
 
@@ -87,10 +92,27 @@ public class appGUI extends JFrame{
         showCard("SeatMap");
     }
 
+   
+
     public void saveLoginDetails(String username, String password) {
         this.loggedinEmail = username;
         this.loggedinPass = password;
     }
+
+    private TreeMap<Integer, Boolean> retrieveSeatMap() {
+        TicketController ticketController = new TicketController();
+        HashMap<Integer, Boolean> seatMap = new HashMap<>();
+    
+        try (Connection connection = DatabaseController.createConnection()) {
+            seatMap = ticketController.retrieveAvailableSeats(connection, 9); // Replace `9` with appropriate showtimeID
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        // Convert to TreeMap for sorting
+        return new TreeMap<>(seatMap);
+    }
+    
 
     public String getLoggedInUser() {
         return loggedinEmail;
