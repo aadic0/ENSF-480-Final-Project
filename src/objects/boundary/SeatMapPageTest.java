@@ -194,10 +194,11 @@ public class SeatMapPageTest extends JPanel {
                             String movieTitle = parent.getViewMovie().getMovieTitle();
 
                             // Add purchase to ViewPurchases
-                            ViewPurchases viewPurchases = parent.getViewPurchases();
-                            if (viewPurchases != null) {
-                                viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
-                            }
+                            // ViewPurchases viewPurchases = parent.getViewPurchases();
+                            // if (viewPurchases != null) {
+                            //     viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
+                            // }
+                            updatePurchase(seatID, seatID, movieTitle, movieTitle);
 
                             System.out.println("BOUGHT seat: " + seatID);
                             break;
@@ -235,6 +236,18 @@ public class SeatMapPageTest extends JPanel {
         //frame.setSize(600, 600); 
         //frame.setVisible(true);
     }
+
+    //update purchases function
+
+    public void updatePurchase(int showTimeID, int seatID, String movieTitle, String userEmail){
+        
+        ViewPurchases viewPurchases = parent.getViewPurchases();
+         if (viewPurchases != null) {
+             viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
+        }
+
+    }
+
     //update seat to green/available
     public void updateSeatToGreen(int seatID) {
         Component[] components = this.getComponents(); // Get all components of SeatMapPageTest
@@ -334,6 +347,7 @@ public class SeatMapPageTest extends JPanel {
                     cancellationMessage,
                     cancellationMessage.contains("successful") ? "Success" : "Error",
                     cancellationMessage.contains("successful") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
+                    
                 );
         
                 // If successful, update the seat to green and close dialog

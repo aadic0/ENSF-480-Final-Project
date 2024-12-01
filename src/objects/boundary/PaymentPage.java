@@ -75,8 +75,12 @@ public class PaymentPage extends JPanel {
             } else {
 
                 TicketController ticketController = new TicketController();
+
+                int seatID = parent.getSeatID();
+                int showTimeID = parent.getSelectedShowtimeID();
+                String currentUser = parent.getLoggedInUser();
                 
-                ticketController.purchaseTicket(paymentInfo, parent.getSeatID(), parent.getSelectedShowtimeID(), parent.getLoggedInUser());
+                ticketController.purchaseTicket(paymentInfo, seatID, showTimeID, currentUser );
                 JOptionPane.showMessageDialog(this,
                         "Payment successful! Ticket purchased.",
                         "Success",
@@ -86,7 +90,11 @@ public class PaymentPage extends JPanel {
                 parent.getSeatMapPage().updateSeatToRed(parent.getSeatID());
                 //display receipt
                 Connection con = DatabaseController.createConnection();
-                parent.getSeatMapPage().displayReceipt(con, paymentInfo, cvv, cvv, cvvString);
+
+                //add purchase to purchases 
+                parent.getSeatMapPage().updatePurchase(showTimeID, seatID, expiration, cvvString);
+                
+                parent.getSeatMapPage().displayReceipt(con, paymentInfo, seatID, showTimeID, currentUser);
                 //update seat color/availability
                 //parent.updateSeatColor(parent.getSeatID());
                 parent.showCard("SeatMap");
