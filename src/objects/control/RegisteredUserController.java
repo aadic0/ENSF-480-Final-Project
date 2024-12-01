@@ -64,8 +64,8 @@ public class RegisteredUserController {
     public void registerUser(RegisteredUser registeredUser, String pwd) {
         String query1 = "INSERT INTO USER_PAYMENT_INFO (NumberCC, ExpirationDate, CVV, Email) " +
                         "VALUES (?, ?, ?, ?)";
-        String query2 = "INSERT INTO REGISTERED_USER (Email, Pwd, FirstName, LastName, StreetAddress, City, Province, PostalCode, PaymentID) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query2 = "INSERT INTO REGISTERED_USER (Email, FirstName, LastName, StreetAddress, City, Province, PostalCode, PaymentID) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         int paymentId = -1; // Payment ID we get after adding info to USER_PAYMENT_INFO
 
@@ -103,14 +103,13 @@ public class RegisteredUserController {
                 
                 // SEt paramaters for the statement
                 psRegisteredUser.setString(1, registeredUser.getEmail());
-                psRegisteredUser.setString(2, pwd);
-                psRegisteredUser.setString(3, registeredUser.getFName());
-                psRegisteredUser.setString(4, registeredUser.getLName());
-                psRegisteredUser.setString(5, registeredUser.getStreetAddress());
-                psRegisteredUser.setString(6, registeredUser.getCity());
-                psRegisteredUser.setString(7, registeredUser.getProvince());
-                psRegisteredUser.setString(8, registeredUser.getPostalCode());
-                psRegisteredUser.setInt(9, paymentId);
+                psRegisteredUser.setString(2, registeredUser.getFName());
+                psRegisteredUser.setString(3, registeredUser.getLName());
+                psRegisteredUser.setString(4, registeredUser.getStreetAddress());
+                psRegisteredUser.setString(5, registeredUser.getCity());
+                psRegisteredUser.setString(6, registeredUser.getProvince());
+                psRegisteredUser.setString(7, registeredUser.getPostalCode());
+                psRegisteredUser.setInt(8, paymentId);
                 int rowsAffectedRU = psRegisteredUser.executeUpdate();
 
                 // Just for testing, feel free to remove whenever

@@ -315,6 +315,8 @@ public class TicketController {
 
                 if (rowsAffected > 0) {
                     System.out.println("Removed Ticket with TicketID " + ticketID + " from DB");
+                    String message = "Cancelled ticket " + ticketID;
+                    announcementController.sendEmailAnnouncement(message, email);
                     return "Cancellation successful"; 
                 }
                 else
@@ -323,9 +325,9 @@ public class TicketController {
                 
             } catch (Exception e) { e.printStackTrace(); }
 
-            String message = "Cancelled ticket " + ticketID;
+            
 
-            announcementController.sendEmailAnnouncement(message, email);
+            
             
 
         } catch (Exception e) { 
@@ -869,9 +871,10 @@ public class TicketController {
                 + " with start time " + showtimeTimestamp
                 + " at theatre " + theatreName
                 + " with address " + theatreAddress  
-                + " at seat" + seatRow + " " + seatNum
+                + " at seat row " + seatRow + " number " + seatNum
                 + " in room " + roomName
-                + " for $" + TICKET_PRICE;
+                + " for $" + TICKET_PRICE
+                + ". Email has been sent to " + email;
 
         return message;
     }

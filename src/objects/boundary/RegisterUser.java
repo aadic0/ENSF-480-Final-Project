@@ -260,9 +260,9 @@ public class RegisterUser extends JPanel{
 
                     //create payment info
                     PaymentInfo paymentInfo = new PaymentInfo(cardNumber, expirationDate, cvv);
-
+                    System.err.println("Trying to register" + email);
                     //registered user object
-                    RegisteredUser registeredUser = new RegisteredUser(email, firstName, lastName, streetAddress, city, province, postalCode, paymentInfo);
+                    RegisteredUser registeredUser = new RegisteredUser(firstName, lastName, streetAddress, city, province, postalCode, email, paymentInfo);
 
                     //create registered user
                     controller.registerUser(registeredUser, password);
