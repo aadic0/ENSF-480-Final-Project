@@ -53,6 +53,7 @@ public class appGUI extends JFrame{
 
        
         mainPanel.add(new BrowseAnnouncment(this), "BrowseAnnouncement");
+        mainPanel.add(new ViewPurchases(this), "ViewPurchases");
         
 
         //add mainPanel to frame

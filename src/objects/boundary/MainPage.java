@@ -162,6 +162,9 @@ public class MainPage extends JPanel implements ActionListener {
         if(e.getSource() == announce){
             parent.showCard("BrowseAnnouncement");
         }
+        if(e.getSource() == viewCart){
+            parent.showCard("ViewPurchases");
+        }
        
 
     }
@@ -265,7 +268,7 @@ public class MainPage extends JPanel implements ActionListener {
        browseMovies.addActionListener(this);
        homeBtn.addActionListener(this);
        announce.addActionListener(this);
-       //viewCart.addActionListener(this);
+       viewCart.addActionListener(this);
        logoutOption.addActionListener(this);
        registerAcc.addActionListener(this);
 
