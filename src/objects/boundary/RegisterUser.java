@@ -71,7 +71,7 @@ public class RegisterUser extends JPanel{
         registerInfo.setFont(new Font("Arial",Font.PLAIN,10));
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 1;
+        constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.WEST;
         add(registerInfo,constraints);
 
