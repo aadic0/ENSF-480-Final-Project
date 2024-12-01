@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.sql.*;
 
 
@@ -91,19 +92,19 @@ public class ViewMovie extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
         add(showTimes, constraints);
 
-        seatMap = new JButton("Available Seats");
-        constraints.gridx = 2;
-        constraints.gridy = 6;
-        constraints.gridwidth = 1;
-        constraints.anchor = GridBagConstraints.CENTER;
-        add(seatMap, constraints);
+        // seatMap = new JButton("Available Seats");
+        // constraints.gridx = 2;
+        // constraints.gridy = 6;
+        // constraints.gridwidth = 1;
+        // constraints.anchor = GridBagConstraints.CENTER;
+        // add(seatMap, constraints);
         
-        purchaseTicket = new JButton("Purchase Ticket");
-        constraints.gridx = 3;
-        constraints.gridy = 6;
-        constraints.gridwidth = 1;
-        constraints.anchor = GridBagConstraints.CENTER;
-        add(purchaseTicket, constraints);
+        // purchaseTicket = new JButton("Purchase Ticket");
+        // constraints.gridx = 3;
+        // constraints.gridy = 6;
+        // constraints.gridwidth = 1;
+        // constraints.anchor = GridBagConstraints.CENTER;
+        // add(purchaseTicket, constraints);
 
         /*action listeners */
 
@@ -179,9 +180,12 @@ public class ViewMovie extends JPanel {
 
         
         for (Map.Entry<Integer, ArrayList<Object>> entry : showtimeEntries) {
+            
             ArrayList<Object> details = entry.getValue();
             Timestamp showDateTime = (Timestamp) details.get(2);
             int theatreRoomID = (int) details.get(0);
+            int showtimeID = entry.getKey();
+
 
             //panel for each showtime
             JPanel showtimePanel = new JPanel(new BorderLayout());
@@ -195,7 +199,10 @@ public class ViewMovie extends JPanel {
             showtimePanel.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
-                    JOptionPane.showMessageDialog(dialog, "You selected showtime: " + showDateTime, "Showtime Selected", JOptionPane.INFORMATION_MESSAGE);
+                    //JOptionPane.showMessageDialog(dialog, "You selected showtime: " + showDateTime, "Showtime Selected", JOptionPane.INFORMATION_MESSAGE);
+                    TreeMap<Integer, Boolean> seatMap = fetchSeatMap(showtimeID);
+                    new SeatMapPageTest((JFrame) SwingUtilities.getWindowAncestor(ViewMovie.this), seatMap); // Open seat map GUI
+                    dialog.dispose();
                 }
             });
 
@@ -221,6 +228,18 @@ public class ViewMovie extends JPanel {
         
         
     }
+
+    //fetch seatmap to pass to SeatMapPage 
+    private TreeMap<Integer, Boolean> fetchSeatMap(int showtimeID) {
+        TicketController ticketController = new TicketController();
+        try (Connection connection = DatabaseController.createConnection()) {
+            HashMap<Integer, Boolean> seatMap = ticketController.retrieveAvailableSeats(connection, showtimeID);
+            return new TreeMap<>(seatMap); // Sort the seat map
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        }
 
 
 

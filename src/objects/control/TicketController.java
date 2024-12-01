@@ -171,10 +171,13 @@ public class TicketController {
         
         // Create controller
         PaymentController paymentController = new PaymentController();
+        AnnouncementController announcementController = new AnnouncementController();
 
         // Create flags
         boolean ticketAvailable;
         boolean paymentValid = true;
+
+        Timestamp ticketBuyTime = null;
         
         // Check if ticket is available
         ticketAvailable = isPurchasable(seatID, showtimeID, email);
@@ -182,7 +185,7 @@ public class TicketController {
         if(ticketAvailable) {
             // Try to pay for ticket
             paymentValid = paymentController.pay(paymentInfo, TICKET_PRICE, email); // This will always return true, but stimulates paying
-
+            
 
             if(paymentValid) {
                 // Add ticket to database
@@ -191,9 +194,12 @@ public class TicketController {
                                    "VALUES (?, ?, ?, ?, ?)";
 
                     try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+                        ticketBuyTime = new Timestamp(System.currentTimeMillis());
+
                         preparedStatement.setInt(1, showtimeID);
                         preparedStatement.setInt(2, seatID);
-                        preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                        preparedStatement.setTimestamp(3, ticketBuyTime);
                         preparedStatement.setString(4, email);
                         preparedStatement.setFloat(5, TICKET_PRICE);
 
@@ -208,6 +214,11 @@ public class TicketController {
                     }
 
                     } catch (Exception e) { e.printStackTrace(); }
+
+
+                    String message = sendReceiptAnnouncement(connection, paymentInfo, seatID, showtimeID, email);
+                    announcementController.sendEmailAnnouncement(message, email);
+
                 } catch (Exception e) { e.printStackTrace(); }
             }
             
@@ -215,6 +226,9 @@ public class TicketController {
             System.out.println("Ticket unavailable for purchase");
             return;
         }
+        
+
+
     }
 
     /**
@@ -231,6 +245,7 @@ public class TicketController {
         String query3 = "DELETE FROM TICKET WHERE TicketID = ?"; // Remove ticket from DB
 
         PaymentController paymentController = new PaymentController();
+        AnnouncementController announcementController = new AnnouncementController();
 
         try (Connection connection = DatabaseController.createConnection()) {
             
@@ -301,6 +316,12 @@ public class TicketController {
                     System.out.println("Failed to remove ticket");
                 
             } catch (Exception e) { e.printStackTrace(); }
+
+            String message = "Cancelled ticket " + ticketID;
+
+            announcementController.sendEmailAnnouncement(message, email);
+            
+
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -673,6 +694,148 @@ public class TicketController {
         return true;
     }
 
+    /**
+     * Create a send reciept as announcement to user with email
+     * @param con
+     * @param paymentInfo
+     * @param seatID
+     * @param showtimeID
+     * @param email
+     * @return
+     */
+    public String sendReceiptAnnouncement(Connection con, PaymentInfo paymentInfo, int seatID, int showtimeID, String email){
+
+        
+        String query1 = "SELECT ShowDateTime, TheatreRoomID, MovieID FROM SHOWTIME WHERE ShowtimeID = ?";
+        String query0 = "SELECT Title FROM MOVIE WHERE MovieID = ?";
+        String query2 = "SELECT SeatRow, SeatNumber FROM SEAT WHERE SeatID = ?";
+        String query3 = "SELECT RoomName, TheatreID FROM THEATREROOM WHERE TheatreRoomID = ?";
+        String query4 = "SELECT TheatreName, StreetAddress FROM THEATRE WHERE TheatreID = ?";
+
+        String message = "";
+
+        int movieID = -1;
+        Timestamp showtimeTimestamp = null;
+        int theatreRoomID = -1;
+
+        String movieTitle = "";
+
+        int seatRow = -1;
+        int seatNum = -1;
+
+        String roomName = "";
+        int theatreID = -1;
+
+        String theatreName = "";
+        String theatreAddress = "";
+
+        // Query 3 - Get theatreRoomID and ShowDateTime
+        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+                
+            psQuery1.setInt(1, showtimeID);
+
+            // Find seat ID
+            try (ResultSet rs1 = psQuery1.executeQuery()) {
+                if (rs1.next()) {
+                    showtimeTimestamp = rs1.getTimestamp("ShowDateTime");
+                    theatreRoomID = rs1.getInt("TheatreRoomID");
+                    movieID = rs1.getInt("MovieID");
+                }
+                else {
+                    System.out.println("Timestamp for showtime not found");
+                    return ""; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // Query 0 - Get movie title
+        try (PreparedStatement psQuery0 = con.prepareStatement(query0)) {
+                
+            psQuery0.setInt(1, movieID);
+
+            // Find seat ID
+            try (ResultSet rs0 = psQuery0.executeQuery()) {
+                if (rs0.next())
+                movieTitle = rs0.getString("Title");
+
+                else {
+                    System.out.println("movie title not found");
+                    return ""; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+
+        // Query 2 - Get seat information
+        try (PreparedStatement psQuery2 = con.prepareStatement(query2)) {
+                
+            psQuery2.setInt(1, seatID);
+
+            // Find seat ID
+            try (ResultSet rs2 = psQuery2.executeQuery()) {
+                if (rs2.next()) {
+                    seatRow = rs2.getInt("SeatRow");
+                    seatNum = rs2.getInt("SeatNumber");
+                }
+                else {
+                    System.out.println("seat row and num for seatID not found");
+                    return ""; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        // Query 3 - Roomname and theatre ID
+        try (PreparedStatement psQuery3 = con.prepareStatement(query3)) {
+                
+            psQuery3.setInt(1, theatreRoomID);
+
+            // Find seat ID
+            try (ResultSet rs3 = psQuery3.executeQuery()) {
+                if (rs3.next()) {
+                    roomName = rs3.getString("RoomName");
+                    theatreID = rs3.getInt("TheatreID");
+                }
+                else {
+                    System.out.println("could not get RoomName or TheatreID");
+                    return ""; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+
+        // Query 4 - TheatreName and address
+        try (PreparedStatement psQuery4 = con.prepareStatement(query4)) {
+                
+            psQuery4.setInt(1, theatreID);
+
+            // Find seat ID
+            try (ResultSet rs4 = psQuery4.executeQuery()) {
+                if (rs4.next()) {
+                    theatreName = rs4.getString("TheatreName");
+                    theatreAddress = rs4.getString("StreetAddress");
+                }
+                else {
+                    System.out.println("could not get RoomName or TheatreID");
+                    return ""; // Couldn't get num of emails
+                }
+
+            } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace();  }
+
+        message = "Purchased ticket for " + movieTitle 
+                + " with start time " + showtimeTimestamp
+                + " at theatre " + theatreName
+                + " with address " + theatreAddress  
+                + " at seat" + seatRow + " " + seatNum
+                + " in room " + roomName;
+
+        return message;
+    }
+
 
 //-----------------------------------------------------------------//
     
@@ -698,7 +861,7 @@ public class TicketController {
                                                              //          seat is available(true) or not(false)
         
         // Query 1 - Find the TheatreRoomID associated with a ShowtimeID
-        try (PreparedStatement psQuery1 = con.prepareStatement(query1)) {
+        try (PreparedStatement psQuery1 = DatabaseController.createConnection().prepareStatement(query1)) {
                 
             psQuery1.setInt(1, showtimeID);
 
@@ -749,9 +912,6 @@ public class TicketController {
         
         return seatMap;
     }
-
-
-
 
 
 }

@@ -21,7 +21,7 @@ public class SeatMapPageTest {
     private static String userEmail = "user5@example.com";
 
 
-    public SeatMapPageTest(TreeMap<Integer, Boolean> seatMap) {
+    public SeatMapPageTest(JFrame parent, TreeMap<Integer, Boolean> seatMap) {
 
         TicketController ticketController = new TicketController();
 
@@ -36,6 +36,10 @@ public class SeatMapPageTest {
 
         frame = new JFrame("Seat Map");
         frame.setLayout(new BorderLayout()); 
+        frame.setAlwaysOnTop(true); 
+        frame.setResizable(false); 
+        frame.setLocationRelativeTo(parent);
+
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a screen panel at the top of the window
@@ -159,7 +163,7 @@ public class SeatMapPageTest {
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Frame/window settings
         frame.setSize(600, 600); 
