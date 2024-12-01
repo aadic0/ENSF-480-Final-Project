@@ -46,16 +46,13 @@ public class appGUI extends JFrame{
         mainPanel.add(new CreateUser(this), "Create Account");
         mainPanel.add(new BrowseMovie(this), "BrowseMovie");
         mainPanel.add(viewMovie, "ViewMovie");
-<<<<<<< HEAD
         mainPanel.add(seatMapPage, "SeatMap");
         mainPanel.add(paymentPage, "Payment");
 
 
 
        
-=======
         mainPanel.add(new BrowseAnnouncment(this), "BrowseAnnouncement");
->>>>>>> 3f851bc260d6919bf1cadddf2cafaa29050f3792
         
 
         //add mainPanel to frame
