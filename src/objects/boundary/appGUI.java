@@ -6,11 +6,13 @@ import java.awt.CardLayout;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener; 
+import java.awt.event.ActionListener;
+import java.util.TreeMap; 
 
 public class appGUI extends JFrame{
 
     private CardLayout cardLayout;
+    private SeatMapPageTest seatMapPage;
     private JPanel mainPanel;
     JFrame frame;
 
@@ -18,6 +20,7 @@ public class appGUI extends JFrame{
 
     private String loggedinEmail;
     private String loggedinPass;
+
 
 
     public appGUI(JFrame frame){
@@ -29,6 +32,8 @@ public class appGUI extends JFrame{
         
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
+        seatMapPage = new SeatMapPageTest(null,this); 
+        PaymentPage paymentPage = new PaymentPage(this);
 
 
        //add the different pages to the CardLayout
@@ -41,6 +46,12 @@ public class appGUI extends JFrame{
         mainPanel.add(new CreateUser(this), "Create Account");
         mainPanel.add(new BrowseMovie(this), "BrowseMovie");
         mainPanel.add(viewMovie, "ViewMovie");
+        mainPanel.add(seatMapPage, "SeatMap");
+        mainPanel.add(paymentPage, "Payment");
+
+
+
+       
         
 
         //add mainPanel to frame
@@ -68,9 +79,16 @@ public class appGUI extends JFrame{
         repaint();  
 
     }
+    //method to setup seatmap
+    public void showSeatMap(TreeMap<Integer, Boolean> seatMap) {
+        seatMapPage = new SeatMapPageTest(seatMap, this);
+        mainPanel.add(seatMapPage, "SeatMap");
+        showCard("SeatMap");
+    }
+
     public void saveLoginDetails(String username, String password) {
         this.loggedinEmail = username;
-        this.loggedinEmail = password;
+        this.loggedinPass = password;
     }
 
     public String getLoggedInUser() {
@@ -84,6 +102,7 @@ public class appGUI extends JFrame{
     public ViewMovie getViewMovie() {
         return viewMovie;
     }
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();

@@ -67,6 +67,14 @@ public class RegisterUser extends JPanel{
 
         // menuBar(this);
 
+        JLabel registerInfo = new JLabel("Pay $20 Annually to get The Full Experience!");
+        registerInfo.setFont(new Font("Arial",Font.PLAIN,10));
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        add(registerInfo,constraints);
+
         firstNameLabel = new JLabel("First Name:");
         firstNameLabel.setFont(new Font("Arial",Font.PLAIN,10));
         constraints.gridx = 0;
@@ -260,11 +268,11 @@ public class RegisterUser extends JPanel{
                     controller.registerUser(registeredUser, password);
 
                     //success message
-                    JOptionPane.showMessageDialog(RegisterUser.this, "User registered successfully!");
+                    JOptionPane.showMessageDialog(RegisterUser.this, "User registered successfully! Payment Confirmed!");
                     parent.showCard("Login");
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(RegisterUser.this, "Error: " + ex.getMessage(), "Registration Failed", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(RegisterUser.this, "Error: Please Fill in All Fields", "Registration Failed", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }
