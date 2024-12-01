@@ -76,9 +76,9 @@ public class BrowseAnnouncment extends JPanel {
         String[] columnNames = {"Date", "Message"};
         int row = 0;
 
-        for (ArrayList<Object> movieDetails : announceMap.values()) {
-            announceData[row][0] = (String) movieDetails.get(4); // Date published
-            announceData[row][1] = (String) movieDetails.get(3); // Message
+        for (ArrayList<Object> announceDetails : announceMap.values()) {
+            announceData[row][0] = announceDetails.get(1).toString(); // Date published 
+            announceData[row][1] = (String) announceDetails.get(0); // Message
             row++;
         }
 
