@@ -4,6 +4,7 @@ package objects.boundary;
 import java.awt.CardLayout;
 
 import objects.control.*;
+import objects.entity.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,15 @@ public class appGUI extends JFrame{
     private String loggedinEmail;
     private String loggedinPass;
 
+    private int seatID = -1;
+    //check for regular users if payment for ticket is successful
+    private boolean paymentSuccessful = false;
+
     int selectedShowtimeID;
+
+    PaymentInfo paymentInfo;
+
+    AnnouncementController announcementController;
 
 
 
@@ -69,6 +78,9 @@ public class appGUI extends JFrame{
         //start program with showing login page 
         showCard("Login");
 
+        // announcementController = new AnnouncementController();
+        // announcementController.retrieveAllAnnouncement(loggedinEmail);
+
         setVisible(true); 
     }
 
@@ -94,6 +106,9 @@ public class appGUI extends JFrame{
         mainPanel.add(seatMapPage, "SeatMap");
         showCard("SeatMap");
     }
+    public SeatMapPageTest getSeatMapPage() {
+        return seatMapPage; 
+    }
 
    
 
@@ -116,6 +131,14 @@ public class appGUI extends JFrame{
         return new TreeMap<>(seatMap);
     }
 
+    public void setSeatID(int seatID){
+        this.seatID = seatID;
+    }
+
+    public int getSeatID(){
+        return seatID;
+    }
+
     public void setSelectedShowtimeID(int showtimeID) {
         this.selectedShowtimeID = showtimeID;
     }
@@ -135,6 +158,13 @@ public class appGUI extends JFrame{
 
     public ViewMovie getViewMovie() {
         return viewMovie;
+    }
+
+    public void setPaymentSuccessful(boolean paymentSuccess){
+        this.paymentSuccessful = paymentSuccess;
+    }
+    public boolean getPaymentSuccessful(){
+        return paymentSuccessful;
     }
 
 

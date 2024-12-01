@@ -29,12 +29,14 @@ public class ViewPurchases extends JPanel {
 
     //controller
     private AnnouncementController aControl;
+    private TicketController tControl;
 
     //private JFrame frame; //reference to parent frame
 
     //ctor
     public ViewPurchases(appGUI parent){
         this.parent = parent;
+        this.tControl = new TicketController();
         this.aControl = new AnnouncementController();
 
         /*panel setup */

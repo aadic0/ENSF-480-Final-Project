@@ -8,9 +8,8 @@ import java.util.TreeMap;
 
 import javax.swing.*;
 
-import objects.control.DatabaseController;
-import objects.control.TicketController;
-import objects.entity.PaymentInfo;
+import objects.entity.*;
+import objects.control.*;
 
 public class SeatMapPageTest extends JPanel {
 
@@ -19,9 +18,12 @@ public class SeatMapPageTest extends JPanel {
 
     // Will get these values from somewhere
     //private static int    showtimeID = 9;
+    //private static int selectedSeatID = -1;
     private static int    showtimeID;
     private static String userEmail;
     private static PaymentInfo paymentInfo;
+
+    TicketController ticketController;
 
     appGUI parent;
 
@@ -118,12 +120,14 @@ public class SeatMapPageTest extends JPanel {
                 public void mouseClicked(MouseEvent e) {
                     if (isAvailable) {
                         // When selecting another seat, reset the color of the previously selected seat
-                        if (currentSelectedSeat != null) 
+                        if (currentSelectedSeat != null && isAvailable) 
                             currentSelectedSeat.setBackground(Color.GREEN);
 
                         // Change the current seat's color to gray
                         seatPanel.setBackground(Color.GRAY);
                         System.out.println("Clicked seat: " + seatID + " - Changed to gray");
+                        //save the seatID the user has pressed
+                        parent.setSeatID(seatID);
 
                         currentSelectedSeat = seatPanel;
                     }
@@ -137,17 +141,45 @@ public class SeatMapPageTest extends JPanel {
         // Add seat grid panel to the center of the frame
         add(seatGridPanel, BorderLayout.CENTER);
 
+        //back button to go back to movie view:
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton backButton = new JButton("Back");
+        
+        buttonPanel.add(backButton);
+
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        backButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                parent.showCard("ViewMovie");
+            }
+
+        });
+        add(buttonPanel, BorderLayout.SOUTH);
+
         // Create the "BUY" button and add it to the lower corner
         JButton buyButton = new JButton("BUY");
         buyButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                RegisteredUserController registeredUserController = new RegisteredUserController();
+                boolean isRegistered = registeredUserController.isRegisteredUser(parent.getLoggedInUser());
 
+                if(currentSelectedSeat == null){
+                    JOptionPane.showMessageDialog(SeatMapPageTest.this, "No seat selected. Please select a seat before proceeding.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+
+                }
+
+                if (isRegistered){
                 int seatID = -1;
 
                 if(!ticketController.isPurchasable(seatID, showtimeID, userEmail)) {
                     System.out.println("not purchasable");
+                    JOptionPane.showMessageDialog(SeatMapPageTest.this, "This seat is unavailable, please pick another one.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
                 // Buy the currently selected seat
@@ -167,25 +199,133 @@ public class SeatMapPageTest extends JPanel {
 
                     // Close the window
                     //frame.dispose();
+                    Connection con = DatabaseController.createConnection();
+                    displayReceipt(con, paymentInfo, seatID, seatID, userEmail);
+                }
                     
-                } else 
-                    System.out.println("No seat selected.");
+                } else if(!isRegistered){
+                    parent.showCard("Payment");
+
+                }
+                
             }
         });
 
         // Create a buy button in bottom right corner
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+       // JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(buyButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        //buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(buttonPanel, BorderLayout.SOUTH);
 
        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Frame/window settings
         //frame.setSize(600, 600); 
         //frame.setVisible(true);
+    }
+
+    //update seat to red/unavailable function
+    public void updateSeatToRed(int seatID) {
+        Component[] components = this.getComponents(); // Get all components of SeatMapPageTest
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                JPanel seatPanel = (JPanel) component;
+                Component[] seatComponents = seatPanel.getComponents();
+                for (Component seatComponent : seatComponents) {
+                    if (seatComponent instanceof JLabel) {
+                        JLabel label = (JLabel) seatComponent;
+                        if (label.getText().equals(String.valueOf(seatID))) {
+                            seatPanel.setBackground(Color.RED); // Mark seat as taken
+
+                            seatPanel.revalidate();
+                            seatPanel.repaint();
+                        
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void displayReceipt(Connection con, PaymentInfo paymentInfo, int seatID, int showtimeID, String email) {
+        //get receipt details
+        ticketController = new TicketController();
+        String receiptMessage = ticketController.sendReceiptAnnouncement(con, paymentInfo, seatID, showtimeID, email);
+    
+        //error checking (if receipt is empty)
+        if (receiptMessage.isEmpty()) {
+            JOptionPane.showMessageDialog(null, 
+                "Error generating receipt. Please try again.", 
+                "Receipt Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog receiptDialog = new JDialog((Frame) null, "Receipt Details", true);
+        receiptDialog.setLayout(new BorderLayout());
+        receiptDialog.setSize(400, 300);
+        receiptDialog.setLocationRelativeTo(null);
+
+        // Create a text area for the receipt message
+        JTextArea receiptTextArea = new JTextArea(receiptMessage);
+        receiptTextArea.setEditable(false);
+        receiptTextArea.setWrapStyleWord(true);
+        receiptTextArea.setLineWrap(true);
+        receiptTextArea.setMargin(new Insets(10, 10, 10, 10));
+        receiptDialog.add(new JScrollPane(receiptTextArea), BorderLayout.CENTER);
+
+        // Create the "Cancel Ticket" button
+        JButton cancelButton = new JButton("Cancel Ticket");
+        cancelButton.setBackground(Color.RED);
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setFocusPainted(false);
+        cancelButton.setBorderPainted(false);
+        cancelButton.setOpaque(true);
+
+        // Add action listener for the cancel button
+        cancelButton.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(
+                receiptDialog,
+                "Are you sure you want to cancel this ticket?",
+                "Confirm Cancellation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirmation == JOptionPane.YES_OPTION) {
+                // Logic to cancel the ticket (e.g., database update)
+                try {
+                    ticketController.refundTicket(seatID, email, paymentInfo);
+                    JOptionPane.showMessageDialog(receiptDialog,
+                        "Your ticket has been successfully canceled.",
+                        "Cancellation Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                    receiptDialog.dispose();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(receiptDialog,
+                        "Error canceling the ticket. Please try again.",
+                        "Cancellation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Add the button to the dialog
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(cancelButton);
+        receiptDialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Show the dialog
+        receiptDialog.setVisible(true);
+    }
+    
+
+    //function to cancel ticket
+    public void cancelTicket(){
+
+
     }
 
     public int getShowtimeID(){

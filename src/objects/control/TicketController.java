@@ -831,7 +831,8 @@ public class TicketController {
                 + " at theatre " + theatreName
                 + " with address " + theatreAddress  
                 + " at seat" + seatRow + " " + seatNum
-                + " in room " + roomName;
+                + " in room " + roomName
+                + " for $" + TICKET_PRICE;
 
         return message;
     }

@@ -106,6 +106,9 @@ public class BrowseAnnouncment extends JPanel {
         constraints.weightx = 1.0; // Expand horizontally
         constraints.weighty = 1.0; // Expand vertically
         add(scrollPane, constraints);
+
+        //aControl.sendPublicAnnouncement("Hello");
+        refreshAnnouncements();
         
         //button stuff  --> needs to be fixed for announement
 
@@ -172,6 +175,40 @@ public class BrowseAnnouncment extends JPanel {
 
         setVisible(true);
     }
+
+    public void refreshAnnouncements() {
+        removeAll(); // Clear the panel
+        revalidate();
+        repaint();
+    
+        // Retrieve announcements again
+        HashMap<Integer, ArrayList<Object>> announceMap = aControl.retrieveAllAnnouncement(parent.getLoggedInUser());
+    
+        // Convert data for JTable
+        String[][] announceData = new String[announceMap.size()][2];
+        String[] columnNames = {"Date", "Message"};
+        int row = 0;
+    
+        for (ArrayList<Object> announceDetails : announceMap.values()) {
+            announceData[row][0] = announceDetails.get(1).toString(); // Date
+            announceData[row][1] = (String) announceDetails.get(0); // Message
+            row++;
+        }
+    
+        JTable announceTable = new JTable(new DefaultTableModel(announceData, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+    
+        JScrollPane scrollPane = new JScrollPane(announceTable);
+        add(scrollPane); // Re-add the updated table
+    
+        revalidate();
+        repaint();
+    }
+    
 
     public void displayMovies(){
         parent.showCard("BrowseMovie");
