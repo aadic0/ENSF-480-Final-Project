@@ -135,7 +135,7 @@ public class SeatMapPageTest {
                     for (Component component : components) 
                         if (component instanceof JLabel) {
                             seatID = Integer.parseInt(((JLabel) component).getText());
-                            //ticketController.purchaseTicket(seatID, showtimeID, userEmail);
+                            ticketController.purchaseTicket(null,seatID, showtimeID, userEmail);
                             System.out.println("BOUGHT seat: " + seatID);
                         }
                     
