@@ -88,6 +88,7 @@ public class BrowseAnnouncment extends JPanel {
             System.out.println("Row: " + Arrays.toString(item));
         }
 
+        //Table for announements:
 
         JTable announceTable = new JTable(new DefaultTableModel(announceData, columnNames) {
             @Override
@@ -95,19 +96,29 @@ public class BrowseAnnouncment extends JPanel {
                 return false; // Make cells non-editable
             }
         });
-        announceTable.setFillsViewportHeight(true); // Ensure table fills the scroll pane
-
+        
+        // Wrap table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(announceTable);
-
+        
+        // Adjust column widths
+        announceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        announceTable.getColumnModel().getColumn(0).setPreferredWidth(200); //width for date 
+        announceTable.getColumnModel().getColumn(1).setPreferredWidth(600); //width for message
+        
+        //set table size and fill
+        announceTable.setPreferredScrollableViewportSize(new Dimension(800, 400));
+        announceTable.setFillsViewportHeight(true);
+                
+        //scroll pane constraints
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.CENTER;
-        constraints.gridwidth = GridBagConstraints.REMAINDER; // Span all columns if needed
-        constraints.fill = GridBagConstraints.BOTH; // Stretch both horizontally and vertically
-        constraints.weightx = 1.0; // Allow horizontal resizing
-        constraints.weighty = 1.0; // Allow vertical resizing
+        constraints.gridwidth = GridBagConstraints.REMAINDER; // Span entire panel width
+        constraints.fill = GridBagConstraints.BOTH; // Allow both horizontal and vertical stretching
+        constraints.weightx = 1.0; // Expand horizontally
+        constraints.weighty = 1.0; // Expand vertically
         add(scrollPane, constraints);
-
+        
         //button stuff  --> needs to be fixed for announement
 
         /*
