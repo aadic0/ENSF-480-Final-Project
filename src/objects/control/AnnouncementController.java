@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class AnnouncementController{
     
-    AnnouncementController() {}
+    public AnnouncementController() {}
 
 
 

@@ -41,6 +41,7 @@ public class appGUI extends JFrame{
         mainPanel.add(new CreateUser(this), "Create Account");
         mainPanel.add(new BrowseMovie(this), "BrowseMovie");
         mainPanel.add(viewMovie, "ViewMovie");
+        mainPanel.add(new BrowseAnnouncment(this), "BrowseAnnouncement");
         
 
         //add mainPanel to frame
@@ -97,6 +98,8 @@ public class appGUI extends JFrame{
     //     loginPage.displayLoginGUI();
         
     // }
+
+
 }
 
 
