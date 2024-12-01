@@ -107,8 +107,6 @@ public class BrowseAnnouncment extends JPanel {
         constraints.weighty = 1.0; // Expand vertically
         add(scrollPane, constraints);
 
-        //aControl.sendPublicAnnouncement("Hello");
-        refreshAnnouncements();
         
         //button stuff  --> needs to be fixed for announement
         // Add a selection button
@@ -166,6 +164,30 @@ public class BrowseAnnouncment extends JPanel {
     
         revalidate();
         repaint();
+
+        //RE-ADD BUTTON
+        // Add a selection button
+        JButton updateButton = new JButton("Update");
+        
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(10,10,10,10);
+
+        // Configure constraints
+        constraints.gridx = 0;
+        constraints.gridy = 2; // Assuming the table is at gridy = 1
+        constraints.gridwidth = GridBagConstraints.REMAINDER; // Span all columns
+        constraints.anchor = GridBagConstraints.CENTER; // Center the button
+        constraints.fill = GridBagConstraints.HORIZONTAL; // Stretch horizontally
+        constraints.weightx = 0; // No horizontal resizing
+        constraints.weighty = 0; // No vertical resizing
+        constraints.insets = new Insets(10, 10, 10, 10); // Add some spacing
+
+        // Add button to the panel
+        add(updateButton, constraints);
+
+        // Add action listener for functionality
+        updateButton.addActionListener(e -> {refreshAnnouncements();});
+
     }
     
 
