@@ -3,7 +3,6 @@
 package objects.boundary;
 
 import objects.control.*;
-//import objects.entity.RegisteredUser;
 import objects.entity.*;
 
 import javax.swing.*;
@@ -25,8 +24,6 @@ import java.util.Map;
 public class BrowseMovie extends JPanel {
     //components
     private JLabel title;
-    private JTextField searchMovie;
-    private JButton searchButton;
     private appGUI parent;
 
     //controller
@@ -55,8 +52,7 @@ public class BrowseMovie extends JPanel {
         Connection connection = DatabaseController.createConnection();
 
         //retrieve movies
-        ShowtimeController showtimeController = new ShowtimeController();
-        HashMap<Integer, ArrayList<Object>> movieMap = showtimeController.retrieveAllMovies(connection);
+        HashMap<Integer, ArrayList<Object>> movieMap = showControl.retrieveAllMovies(connection);
 
         //debug prints:
         System.out.println("Movies retrieved from database:");
@@ -86,10 +82,7 @@ public class BrowseMovie extends JPanel {
 
 
         // Create table and add to frame
-        //JTable movieTable = new JTable(new DefaultTableModel(movieData, columnNames));
-        //JScrollPane scrollPane = new JScrollPane(movieTable);
-
-
+        
         JTable movieTable = new JTable(new DefaultTableModel(movieData, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -108,8 +101,6 @@ public class BrowseMovie extends JPanel {
         constraints.weightx = 1.0; // Allow horizontal resizing
         constraints.weighty = 1.0; // Allow vertical resizing
         add(scrollPane, constraints);
-
-        //frame.setSize(800, 600); // Larger frame for testing
 
         //button stuff  
 
@@ -158,19 +149,10 @@ public class BrowseMovie extends JPanel {
                     }}
                 
 
-                /*
-                Movie movie = new Movie(movieData[selectedRow][0], movieData[selectedRow][1], movieData[selectedRow][2], movieData[selectedRow][3]);
-                ViewMovie viewMovie = parent.getViewMovie();
-                viewMovie.setMovieDetails(movie);
-                parent.showCard("ViewMovie");
-                */
-                
-
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a movie from the list.");
             }
         });
-
 
 
         setVisible(true);
