@@ -28,6 +28,9 @@ CREATE TABLE REGULAR_USER (
     PRIMARY KEY (Email)
 );
 
+ALTER TABLE REGULAR_USER
+ALTER StoreCredit SET DEFAULT 0.0;
+
 -- RegisteredUser table
 DROP TABLE IF EXISTS REGISTERED_USER;
 CREATE TABLE REGISTERED_USER (
@@ -114,12 +117,14 @@ DROP TABLE IF EXISTS ANNOUNCEMENT;
 CREATE TABLE ANNOUNCEMENT (
     AnnouncementID      INT AUTO_INCREMENT,
     IsPublic            BOOLEAN NOT NULL,
-    AnnouncementMessage VARCHAR(255) NOT NULL,
+    AnnouncementMessage VARCHAR(1000) NOT NULL,
     DateAnnounced       DATETIME NOT NULL,
     MovieID             INT,
+    Email               VARCHAR(255),
 
     PRIMARY KEY (AnnouncementID),
-    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE
+    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID) ON UPDATE CASCADE,
+    FOREIGN KEY (Email) REFERENCES REGULAR_USER(Email) ON UPDATE CASCADE
 
 );
 
@@ -130,6 +135,7 @@ CREATE TABLE TICKET (
     ShowtimeID          INT NOT NULL,
     SeatID              INT NOT NULL,
     PurchaseDateTime    DATETIME NOT NULL,
+    TicketPrice         FLOAT NOT NULL,
 
 -- Not making a foreign key because acountless users can have an email without being on DB
 -- I'm thinking we do email checks in the java code 
@@ -500,29 +506,37 @@ INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, MovieID)
 VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 10);
 
 
+
+
 -- ------------ --
 -- TEST QUERIES --
 -- ------------ --
 
 -- @block
 INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
-VALUES('user1@example.com', 'password', 0.00);
+VALUES('user1@example.com', 'password', 20);
 
-INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
-VALUES('user2@example.com', 'password', 0.00);
+INSERT INTO REGULAR_USER (Email, Pwd)
+VALUES('user2@example.com', 'password');
 
-INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
-VALUES('user3@example.com', 'password', 0.00);
+INSERT INTO REGULAR_USER (Email, Pwd)
+VALUES('user3@example.com', 'password');
 
-INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
-VALUES('user4@example.com', 'password', 0.00);
+INSERT INTO REGULAR_USER (Email, Pwd)
+VALUES('user4@example.com', 'password');
 
-INSERT INTO REGULAR_USER (Email, Pwd, StoreCredit)
-VALUES('user5@example.com', 'password', 0.00);
+INSERT INTO REGULAR_USER (Email, Pwd)
+VALUES('user5@example.com', 'password');
 
+-- @block
+INSERT INTO REGULAR_USER (Email, Pwd)
+VALUES('user6@example.com', 'password')
+
+
+-- @block
 INSERT INTO USER_PAYMENT_INFO (NumberCC, ExpirationDate, CVV, Email)
 VALUES 
-    (1234567812345678, '2026-12-31', 123, 'user6@example.com');
+    (1234567812345678, '2026-12-31', 123, 'user5@example.com');
     -- (9876543298765432, '2025-08-15', 456, 'user2@example.com'),
     -- (1122334455667788, '2027-05-20', 789, 'user3@example.com');
 
@@ -531,17 +545,25 @@ VALUES ('user5@example.com', 'John', 'Doe', 'Random Address', 'Calgary', 'Provin
 
 
 -- @block
-INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
-VALUES (9, 201, '2024-11-10 17:30:00', 'user1@example.com');
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
+VALUES (82, 201, '2024-11-10 17:30:00', 'user1@example.com', 20);
 
-INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
-VALUES (9, 202, '2024-11-10 17:31:00', 'user2@example.com');
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
+VALUES (9, 202, '2024-11-10 17:31:00', 'user2@example.com', 20);
 
-INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
-VALUES (9, 203, '2024-11-10 17:32:00', 'user3@example.com');
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
+VALUES (9, 203, '2024-11-10 17:32:00', 'user3@example.com', 20);
 
-INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email)
-VALUES (9, 204, '2024-11-10 17:32:00', 'user4@example.com');
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
+VALUES (9, 204, '2024-11-10 17:32:00', 'user4@example.com', 20);
+
+INSERT INTO TICKET (ShowtimeID, SeatID, PurchaseDateTime, Email, TicketPrice)
+VALUES (82, 205, '2024-11-10 17:32:00', 'user5@example.com', 20);
+
+
+-- @block
+INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, Email)
+VALUES (FALSE, 'Private announcement: Devonian Park', '2024-11-10 18:00:00', 'user1@example.com');
 
 -- @block
 -- SELECT --
@@ -561,9 +583,6 @@ SELECT * FROM TICKET;
 SELECT * FROM REGISTERED_USER;
 -- @block
 SELECT * FROM TICKET;
-
--- @block
-SELECT * FROM REGULAR_USER;
 
 -- @block
 SELECT * FROM ANNOUNCEMENT;
