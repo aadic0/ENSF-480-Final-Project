@@ -111,10 +111,8 @@ public class BrowseAnnouncment extends JPanel {
         refreshAnnouncements();
         
         //button stuff  --> needs to be fixed for announement
-
-        /*
         // Add a selection button
-        JButton selectButton = new JButton("Select Announcement");
+        JButton updateButton = new JButton("Update");
 
         // Configure constraints
         constraints.gridx = 0;
@@ -127,51 +125,12 @@ public class BrowseAnnouncment extends JPanel {
         constraints.insets = new Insets(10, 10, 10, 10); // Add some spacing
 
         // Add button to the panel
-        add(selectButton, constraints);
+        add(updateButton, constraints);
 
         // Add action listener for functionality
-        selectButton.addActionListener(e -> {
-            int selectedRow = announceTable.getSelectedRow();
-            if (selectedRow >= 0) {
+        updateButton.addActionListener(e -> {refreshAnnouncements();});
 
-                HashMap<Integer, ArrayList<Object>> movieInfo = showControl.searchForMovie(connection, movieData[selectedRow][0]); 
-
-                if (movieInfo!=null && !movieInfo.isEmpty()){
-                    for (Map.Entry<Integer, ArrayList<Object>> entry : movieInfo.entrySet()) {
-                    //in future add code so that movies match with respected covers
-                    ArrayList<Object> movieDetails = entry.getValue();
-
-                    //movie details
-                    int movieID = entry.getKey();
-                    String title = (String) movieDetails.get(0);
-                    String genre = (String) movieDetails.get(1);
-                    String rating = (String) movieDetails.get(2);
-                    Time runtime = (Time) movieDetails.get(3);
-                    String coverPath = "Images/cover.png";
-
-                    Movie movie = new Movie(movieID, title, genre, rating, runtime);
-
-                    ViewMovie viewMovie = parent.getViewMovie();
-                    viewMovie.setMovieDetails(movie);
-                    
-                    parent.showCard("ViewMovie");
-                    }}
-                
-
-                /*
-                Movie movie = new Movie(movieData[selectedRow][0], movieData[selectedRow][1], movieData[selectedRow][2], movieData[selectedRow][3]);
-                ViewMovie viewMovie = parent.getViewMovie();
-                viewMovie.setMovieDetails(movie);
-                parent.showCard("ViewMovie");
-                */
-                
-            /*
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select a movie from the list.");
-            }
-        });
-        */
-
+    
 
         setVisible(true);
     }
