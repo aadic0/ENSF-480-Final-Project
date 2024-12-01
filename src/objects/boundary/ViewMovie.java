@@ -235,6 +235,14 @@ public class ViewMovie extends JPanel {
         
     }
 
+    public Movie getChosenMovie() {
+        return chosenMovie;
+    }
+
+    public String getMovieTitle() {
+        return chosenMovie != null ? chosenMovie.getName() : null;
+    }
+
     //fetch seatmap to pass to SeatMapPage 
     private TreeMap<Integer, Boolean> fetchSeatMap(int showtimeID) {
         TicketController ticketController = new TicketController();

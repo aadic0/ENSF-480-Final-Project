@@ -5,6 +5,7 @@ import objects.entity.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
 
 public class PaymentPage extends JPanel {
 
@@ -83,6 +84,9 @@ public class PaymentPage extends JPanel {
                 parent.setPaymentSuccessful(true);
                 //notify seatmap
                 parent.getSeatMapPage().updateSeatToRed(parent.getSeatID());
+                //display receipt
+                Connection con = DatabaseController.createConnection();
+                parent.getSeatMapPage().displayReceipt(con, paymentInfo, cvv, cvv, cvvString);
                 //update seat color/availability
                 //parent.updateSeatColor(parent.getSeatID());
                 parent.showCard("SeatMap");

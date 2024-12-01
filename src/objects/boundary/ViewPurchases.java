@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.*;
 
 
 public class ViewPurchases extends JPanel {
@@ -32,6 +33,8 @@ public class ViewPurchases extends JPanel {
     private TicketController tControl;
 
     //private JFrame frame; //reference to parent frame
+    JTable purchaseTable;
+
 
     //ctor
     public ViewPurchases(appGUI parent){
@@ -82,7 +85,7 @@ public class ViewPurchases extends JPanel {
 
         //Table for announements:
 
-        JTable purchaseTable = new JTable(new DefaultTableModel(purchaseData, columnNames) {
+        purchaseTable = new JTable(new DefaultTableModel(purchaseData, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make cells non-editable
@@ -177,9 +180,38 @@ public class ViewPurchases extends JPanel {
         setVisible(true);
     }
 
+    
+
     public void displayMovies(){
         parent.showCard("BrowseMovie");
     }
+
+    public void addPurchase(int showtimeID, int seatID, String movieTitle, String userEmail) {
+        DefaultTableModel model = (DefaultTableModel) purchaseTable.getModel();
+        String purchaseDate = new Timestamp(System.currentTimeMillis()).toString();
+        String message = "Purchased ticket for " + movieTitle;
+    
+        // Add new row to the table
+        model.addRow(new Object[] { purchaseDate, message });
+    
+        // Add click listener for the new row to display the receipt
+        purchaseTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int selectedRow = purchaseTable.getSelectedRow();
+                if (selectedRow >= 0 && selectedRow == model.getRowCount() - 1) { // Ensure it's the new row clicked
+                    Connection con = DatabaseController.createConnection();
+                    SeatMapPageTest seatMapPage = parent.getSeatMapPage();
+                    if (seatMapPage != null) {
+                        seatMapPage.displayReceipt(con, null, seatID, showtimeID, userEmail);
+                    } else {
+                        JOptionPane.showMessageDialog(ViewPurchases.this, "Unable to display receipt.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+    }
+    
 
 
     //temporary main method for testing

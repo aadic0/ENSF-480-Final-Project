@@ -189,6 +189,16 @@ public class SeatMapPageTest extends JPanel {
                         if (component instanceof JLabel) {
                             seatID = Integer.parseInt(((JLabel) component).getText());
                             ticketController.purchaseTicket(paymentInfo, seatID, showtimeID, userEmail);
+
+                            //Connection con = DatabaseController.createConnection();
+                            String movieTitle = parent.getViewMovie().getMovieTitle();
+
+                            // Add purchase to ViewPurchases
+                            ViewPurchases viewPurchases = parent.getViewPurchases();
+                            if (viewPurchases != null) {
+                                viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
+                            }
+
                             System.out.println("BOUGHT seat: " + seatID);
                             break;
                         }
@@ -224,6 +234,27 @@ public class SeatMapPageTest extends JPanel {
         // Frame/window settings
         //frame.setSize(600, 600); 
         //frame.setVisible(true);
+    }
+    //update seat to green/available
+    public void updateSeatToGreen(int seatID) {
+        Component[] components = this.getComponents(); // Get all components of SeatMapPageTest
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                JPanel seatPanel = (JPanel) component;
+                Component[] seatComponents = seatPanel.getComponents();
+                for (Component seatComponent : seatComponents) {
+                    if (seatComponent instanceof JLabel) {
+                        JLabel label = (JLabel) seatComponent;
+                        if (label.getText().equals(String.valueOf(seatID))) {
+                            seatPanel.setBackground(Color.GREEN); // Mark seat as available (green)
+                            seatPanel.revalidate();
+                            seatPanel.repaint();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //update seat to red/unavailable function
@@ -267,7 +298,7 @@ public class SeatMapPageTest extends JPanel {
         receiptDialog.setSize(400, 300);
         receiptDialog.setLocationRelativeTo(null);
 
-        // Create a text area for the receipt message
+        //create a text area for the receipt message
         JTextArea receiptTextArea = new JTextArea(receiptMessage);
         receiptTextArea.setEditable(false);
         receiptTextArea.setWrapStyleWord(true);
@@ -275,7 +306,7 @@ public class SeatMapPageTest extends JPanel {
         receiptTextArea.setMargin(new Insets(10, 10, 10, 10));
         receiptDialog.add(new JScrollPane(receiptTextArea), BorderLayout.CENTER);
 
-        // Create the "Cancel Ticket" button
+        //create button for user to be able to cancel ticket
         JButton cancelButton = new JButton("Cancel Ticket");
         cancelButton.setBackground(Color.RED);
         cancelButton.setForeground(Color.WHITE);
@@ -283,7 +314,7 @@ public class SeatMapPageTest extends JPanel {
         cancelButton.setBorderPainted(false);
         cancelButton.setOpaque(true);
 
-        // Add action listener for the cancel button
+        //add action listener for the cancel button
         cancelButton.addActionListener(e -> {
             int confirmation = JOptionPane.showConfirmDialog(
                 receiptDialog,
@@ -292,21 +323,23 @@ public class SeatMapPageTest extends JPanel {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE
             );
-
+        
             if (confirmation == JOptionPane.YES_OPTION) {
-                // Logic to cancel the ticket (e.g., database update)
-                try {
-                    ticketController.refundTicket(seatID, email, paymentInfo);
-                    JOptionPane.showMessageDialog(receiptDialog,
-                        "Your ticket has been successfully canceled.",
-                        "Cancellation Success",
-                        JOptionPane.INFORMATION_MESSAGE);
+                int ticketID = ticketController.getTicketID(showtimeID, seatID, email);
+                String cancellationMessage = ticketController.refundTicket(ticketID, email, paymentInfo);
+        
+                // Display the cancellation message
+                JOptionPane.showMessageDialog(
+                    receiptDialog,
+                    cancellationMessage,
+                    cancellationMessage.contains("successful") ? "Success" : "Error",
+                    cancellationMessage.contains("successful") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
+                );
+        
+                // If successful, update the seat to green and close dialog
+                if (cancellationMessage.contains("successful")) {
+                    updateSeatToGreen(seatID);
                     receiptDialog.dispose();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(receiptDialog,
-                        "Error canceling the ticket. Please try again.",
-                        "Cancellation Error",
-                        JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -321,12 +354,6 @@ public class SeatMapPageTest extends JPanel {
         receiptDialog.setVisible(true);
     }
     
-
-    //function to cancel ticket
-    public void cancelTicket(){
-
-
-    }
 
     public int getShowtimeID(){
         return showtimeID;

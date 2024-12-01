@@ -231,13 +231,15 @@ public class TicketController {
 
     }
 
+    
+
     /**
      * Refund a ticket to an email
      * @param t
      * @param user
      * @param paymentInfo
      */
-    public void refundTicket(int ticketID, String email, PaymentInfo paymentInfo) {
+    public String refundTicket(int ticketID, String email, PaymentInfo paymentInfo) {
         
         String query1 = "SELECT Email, ShowtimeID FROM TICKET WHERE TicketID = ?"; // Make sure ticket exists
         int showtimeID = -1;
@@ -261,7 +263,7 @@ public class TicketController {
                     System.out.println("Ticket in DB");
                 } else {
                     System.out.println("Ticket not in DB");
-                    return;
+                    return "Ticket not in DB";
                 }
             } catch (Exception e) { e.printStackTrace(); }
 
@@ -275,7 +277,7 @@ public class TicketController {
                     // Get showDateTime and process
                     Timestamp showDateTime = rs2.getTimestamp("ShowDateTime");
 
-                    if (showDateTime == null) return;
+                    if (showDateTime == null) return "ShowDateTime is Null";
 
                     LocalDateTime showTime = showDateTime.toLocalDateTime();
                     System.out.println("showTime: " + showTime);
@@ -284,20 +286,21 @@ public class TicketController {
                     // Showtime is more than 72 hours away
                     if (nowTime.isBefore(showTime.minusHours(72))) {
                         System.out.println("Cancellation valid: More than 72 hours before showtime.");
-                    } 
+                    }
+                        
                     // User is trying to cancel after showtime
                     else if (nowTime.isAfter(showTime)) {
                         System.out.println("Cancellation not valid: Showtime has already occured");
-                        return;
+                        return "Cancellation not valid: Showtime has already occured";
                     }
                     // Showtimes is less than 72 hours away
                     else {
                         System.out.println("Cancellation not valid: Less than 72 hours before showtime.");
-                        return;
+                        return "Cancellation not valid: Less than 72 hours before showtime.";
                     }
                 } else {
                     System.out.println("No ShowtimeID");
-                    return;
+                    return "No ShowtimeID";
                 }
             } catch (Exception e) { e.printStackTrace(); }
 
@@ -310,10 +313,13 @@ public class TicketController {
 
                 int rowsAffected = preparedStatement3.executeUpdate();
 
-                if (rowsAffected > 0) 
+                if (rowsAffected > 0) {
                     System.out.println("Removed Ticket with TicketID " + ticketID + " from DB");
+                    return "Cancellation successful"; 
+                }
                 else
                     System.out.println("Failed to remove ticket");
+                    return "Failed to cancel ticket.";
                 
             } catch (Exception e) { e.printStackTrace(); }
 
@@ -322,8 +328,41 @@ public class TicketController {
             announcementController.sendEmailAnnouncement(message, email);
             
 
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+            return "An error occurred while processing the cancellation.";
+        
+        }
+
+        return "Cancellation processing failed unexpectedly.";
+   
     }
+
+    //getter to retrieve TicketID
+
+    public int getTicketID(int showtimeID, int seatID, String email) {
+        String query = "SELECT TicketID FROM TICKET WHERE ShowtimeID = ? AND SeatID = ? AND Email = ?";
+        int ticketID = -1;
+    
+        try (Connection connection = DatabaseController.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, showtimeID);
+            preparedStatement.setInt(2, seatID);
+            preparedStatement.setString(3, email);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    ticketID = resultSet.getInt("TicketID");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        return ticketID;
+    }
+    
 
 //-------------------------------------------------------------------
 
@@ -836,6 +875,7 @@ public class TicketController {
 
         return message;
     }
+
 
 
 //-----------------------------------------------------------------//

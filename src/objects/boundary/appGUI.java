@@ -18,6 +18,7 @@ public class appGUI extends JFrame{
 
     private CardLayout cardLayout;
     private SeatMapPageTest seatMapPage;
+    private ViewPurchases viewPurchases;
     private JPanel mainPanel;
     JFrame frame;
 
@@ -49,6 +50,7 @@ public class appGUI extends JFrame{
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         seatMapPage = new SeatMapPageTest(retrieveSeatMap(),this);
+        viewPurchases = new ViewPurchases(this);
         PaymentPage paymentPage = new PaymentPage(this);
 
 
@@ -69,7 +71,7 @@ public class appGUI extends JFrame{
 
        
         mainPanel.add(new BrowseAnnouncment(this), "BrowseAnnouncement");
-        mainPanel.add(new ViewPurchases(this), "ViewPurchases");
+        mainPanel.add(viewPurchases, "ViewPurchases");
         
 
         //add mainPanel to frame
@@ -165,6 +167,9 @@ public class appGUI extends JFrame{
     }
     public boolean getPaymentSuccessful(){
         return paymentSuccessful;
+    }
+    public ViewPurchases getViewPurchases() {
+        return viewPurchases;
     }
 
 
