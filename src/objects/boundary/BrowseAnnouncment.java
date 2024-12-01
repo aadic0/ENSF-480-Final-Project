@@ -83,7 +83,7 @@ public class BrowseAnnouncment extends JPanel {
         }
 
         //Debug prints:
-        System.out.println("Movies array:");
+        System.out.println("Announcement array:");
         for (String[] item : announceData) {
             System.out.println("Row: " + Arrays.toString(item));
         }
