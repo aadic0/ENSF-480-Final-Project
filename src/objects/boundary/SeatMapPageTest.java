@@ -18,8 +18,9 @@ public class SeatMapPageTest extends JPanel {
     private JPanel currentSelectedSeat = null;  
 
     // Will get these values from somewhere
-    private static int    showtimeID = 9;
-    private static String userEmail = "user1@example.com";
+    //private static int    showtimeID = 9;
+    private static int    showtimeID;
+    private static String userEmail;
     private static PaymentInfo paymentInfo;
 
     appGUI parent;
@@ -28,6 +29,8 @@ public class SeatMapPageTest extends JPanel {
     public SeatMapPageTest(TreeMap<Integer, Boolean> seatMap, appGUI parent) {
         
         this.parent = parent;
+        showtimeID = parent.getSelectedShowtimeID();
+        userEmail = parent.getLoggedInUser();
         paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
 
 

@@ -25,6 +25,8 @@ public class appGUI extends JFrame{
     private String loggedinEmail;
     private String loggedinPass;
 
+    int selectedShowtimeID;
+
 
 
     public appGUI(JFrame frame){
@@ -112,6 +114,14 @@ public class appGUI extends JFrame{
     
         // Convert to TreeMap for sorting
         return new TreeMap<>(seatMap);
+    }
+
+    public void setSelectedShowtimeID(int showtimeID) {
+        this.selectedShowtimeID = showtimeID;
+    }
+
+    public int getSelectedShowtimeID() {
+        return selectedShowtimeID;
     }
     
 

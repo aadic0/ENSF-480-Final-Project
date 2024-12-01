@@ -203,6 +203,9 @@ public class ViewMovie extends JPanel {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     //JOptionPane.showMessageDialog(dialog, "You selected showtime: " + showDateTime, "Showtime Selected", JOptionPane.INFORMATION_MESSAGE);
+                    //save showtime ID:
+                    parent.setSelectedShowtimeID(showtimeID);
+                    
                     TreeMap<Integer, Boolean> seatMap = fetchSeatMap(showtimeID);
                     parent.showSeatMap(seatMap);
                     dialog.dispose();
