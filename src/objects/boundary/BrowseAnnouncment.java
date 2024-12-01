@@ -137,6 +137,18 @@ public class BrowseAnnouncment extends JPanel {
         removeAll(); // Clear the panel
         revalidate();
         repaint();
+
+        /*panel setup */
+        setLayout(new GridBagLayout()); //arrange components in grid-like structure
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(10,10,10,10);
+       
+        title = new JLabel("View Announcements");
+        title.setFont(new Font("Arial", Font.BOLD,18));
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.CENTER;
+        add(title, constraints); //add to the panel
     
         // Retrieve announcements again
         HashMap<Integer, ArrayList<Object>> announceMap = aControl.retrieveAllAnnouncement(parent.getLoggedInUser());
@@ -160,7 +172,24 @@ public class BrowseAnnouncment extends JPanel {
         });
     
         JScrollPane scrollPane = new JScrollPane(announceTable);
-        add(scrollPane); // Re-add the updated table
+        // Adjust column widths
+        announceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        announceTable.getColumnModel().getColumn(0).setPreferredWidth(200); //width for date 
+        announceTable.getColumnModel().getColumn(1).setPreferredWidth(600); //width for message
+        
+        //set table size and fill
+        announceTable.setPreferredScrollableViewportSize(new Dimension(800, 400));
+        announceTable.setFillsViewportHeight(true);
+                
+        //scroll pane constraints
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.gridwidth = GridBagConstraints.REMAINDER; // Span entire panel width
+        constraints.fill = GridBagConstraints.BOTH; // Allow both horizontal and vertical stretching
+        constraints.weightx = 1.0; // Expand horizontally
+        constraints.weighty = 1.0; // Expand vertically
+        add(scrollPane, constraints);
     
         revalidate();
         repaint();
@@ -169,8 +198,6 @@ public class BrowseAnnouncment extends JPanel {
         // Add a selection button
         JButton updateButton = new JButton("Update");
         
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(10,10,10,10);
 
         // Configure constraints
         constraints.gridx = 0;
