@@ -33,6 +33,9 @@ public class ViewMovie extends JPanel {
     private JButton purchaseTicket;
 
     private Movie chosenMovie;
+
+    private int showtimeID;
+    
     
     
     //private JFrame frame; //reference to parent frame
@@ -195,13 +198,13 @@ public class ViewMovie extends JPanel {
             JLabel detailsLabel = new JLabel("<html><b>Theatre Room:</b> " + theatreRoomID +"<br><b>Time:</b> " + showDateTime.toString() + "</html>");
             showtimePanel.add(detailsLabel, BorderLayout.CENTER);
 
-            //pop-up confirmation
+            //navigate to seat map after choosing a showtime
             showtimePanel.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     //JOptionPane.showMessageDialog(dialog, "You selected showtime: " + showDateTime, "Showtime Selected", JOptionPane.INFORMATION_MESSAGE);
                     TreeMap<Integer, Boolean> seatMap = fetchSeatMap(showtimeID);
-                    new SeatMapPageTest((JFrame) SwingUtilities.getWindowAncestor(ViewMovie.this), seatMap); // Open seat map GUI
+                    parent.showSeatMap(seatMap);
                     dialog.dispose();
                 }
             });

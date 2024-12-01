@@ -1,59 +1,81 @@
-//payment window
-
 package objects.boundary;
 
-import objects.control.*;
+import objects.control.TicketController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class PaymentPage extends JPanel {
-    //components
-    private JLabel title;
-    //private JTextField searchMovie;
-    //private JButton searchButton;
-
-    //controller
-    //private ShowtimeController showControl;
-
-    private JFrame frame; //reference to parent frame
-
-    //ctor
-    public PaymentPage(JFrame frame){
-        this.frame = frame;
-        //this.showControl = new ShowtimeController(); //add required control obj
-
-        /*panel setup */
-        setLayout(new GridBagLayout()); //arrange components in grid-like structure
+    public PaymentPage(appGUI parent) {
+        setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(10,10,10,10);
-       
-        title = new JLabel("Movie Ticket-Booking App");
-        title.setFont(new Font("Arial", Font.BOLD,18));
+        constraints.insets = new Insets(10, 10, 10, 10);
+
+        // Card number
+        JLabel cardLabel = new JLabel("Card Number:");
         constraints.gridx = 0;
         constraints.gridy = 0;
+        add(cardLabel, constraints);
+
+        JTextField cardField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        add(cardField, constraints);
+
+        // Expiration date
+        JLabel expLabel = new JLabel("Expiration Date (MM/YY):");
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        add(expLabel, constraints);
+
+        JTextField expField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        add(expField, constraints);
+
+        // CVV
+        JLabel cvvLabel = new JLabel("CVV:");
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        add(cvvLabel, constraints);
+
+        JTextField cvvField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        add(cvvField, constraints);
+
+        // Submit button
+        JButton submitButton = new JButton("Confirm");
+        submitButton.addActionListener(e -> {
+            String cardNumber = cardField.getText();
+            String expiration = expField.getText();
+            String cvv = cvvField.getText();
+
+            if (validatePayment(cardNumber, expiration, cvv)) {
+                TicketController ticketController = new TicketController();
+                // Assuming seatID and showtimeID are passed dynamically
+                ticketController.purchaseTicket(null, 1, 1, parent.getLoggedInUser());
+                JOptionPane.showMessageDialog(this,
+                        "Payment successful! Ticket purchased.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                parent.showCard("SeatMap");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid payment details. Please try again.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.CENTER;
-        add(title, constraints); //add to the panel
-
-
-    }
-    
-
-    //temporary main method for testing
-    public static void main(String[] args){
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.add(new PaymentPage(frame));
-        frame.setVisible(true);
-    
+        add(submitButton, constraints);
     }
 
+    private boolean validatePayment(String cardNumber, String expiration, String cvv) {
+        // Basic validation for example purposes
+        return cardNumber.matches("\\d{16}") && expiration.matches("\\d{2}/\\d{2}") && cvv.matches("\\d{3}");
+    }
 }
