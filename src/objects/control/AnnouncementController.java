@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class AnnouncementController{
     
-    AnnouncementController() {}
+    public AnnouncementController() {}
 
 
 
@@ -213,7 +213,7 @@ public class AnnouncementController{
      * @return Hashmap of announcements
      */
     public HashMap<Integer, ArrayList<Object>> retrievePrivateAnnouncement(Connection con) {
-        String query = "SELECT FROM ANNOUNCEMENT WHERE IsPublic = FALSE";
+        String query = "SELECT * FROM ANNOUNCEMENT WHERE IsPublic = FALSE";
 
         HashMap<Integer, ArrayList<Object>> announcementMap = new HashMap<>();
 
@@ -245,7 +245,7 @@ public class AnnouncementController{
      * @return Hashmap of announcements
      */
     public HashMap<Integer, ArrayList<Object>> retrievePublicAnnouncement(Connection con) {
-        String query = "SELECT FROM ANNOUNCEMENT WHERE IsPublic = TRUE";
+        String query = "SELECT * FROM ANNOUNCEMENT WHERE IsPublic = TRUE";
 
         HashMap<Integer, ArrayList<Object>> announcementMap = new HashMap<>();
 
@@ -278,7 +278,7 @@ public class AnnouncementController{
      * @return
      */
     public HashMap<Integer, ArrayList<Object>> retrieveEmailAnnouncement(Connection con, String email) {
-        String query = "SELECT FROM ANNOUNCEMENT WHERE Email = ?";
+        String query = "SELECT * FROM ANNOUNCEMENT WHERE Email = ?";
 
         HashMap<Integer, ArrayList<Object>> announcementMap = new HashMap<>();
 

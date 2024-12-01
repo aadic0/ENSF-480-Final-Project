@@ -1,8 +1,9 @@
-//boundary, browse movies 
+//boundary, browse movie announcments
 
 package objects.boundary;
 
 import objects.control.*;
+//import objects.entity.RegisteredUser;
 import objects.entity.*;
 
 import javax.swing.*;
@@ -21,27 +22,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class BrowseMovie extends JPanel {
+public class BrowseAnnouncment extends JPanel {
     //components
     private JLabel title;
     private appGUI parent;
 
     //controller
-    private ShowtimeController showControl;
+    private AnnouncementController aControl;
 
     //private JFrame frame; //reference to parent frame
 
     //ctor
-    public BrowseMovie(appGUI parent){
+    public BrowseAnnouncment(appGUI parent){
         this.parent = parent;
-        this.showControl = new ShowtimeController();
+        this.aControl = new AnnouncementController();
 
         /*panel setup */
         setLayout(new GridBagLayout()); //arrange components in grid-like structure
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10,10,10,10);
        
-        title = new JLabel("Browse Available Movies");
+        title = new JLabel("View Announcements");
         title.setFont(new Font("Arial", Font.BOLD,18));
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -52,46 +53,51 @@ public class BrowseMovie extends JPanel {
         Connection connection = DatabaseController.createConnection();
 
         //retrieve movies
-        HashMap<Integer, ArrayList<Object>> movieMap = showControl.retrieveAllMovies(connection);
+        //HashMap<Integer, ArrayList<Object>> announceMap = aControl.retrieveAllAnnouncement(parent.getLoggedInUser());
+        HashMap<Integer, ArrayList<Object>> announceMap = aControl.retrieveAllAnnouncement(parent.getLoggedInUser());
 
         //debug prints:
-        System.out.println("Movies retrieved from database:");
-        for (Map.Entry<Integer, ArrayList<Object>> entry : movieMap.entrySet()) {
+        System.out.println("Announcements retrieved from database:");
+        for (Map.Entry<Integer, ArrayList<Object>> entry : announceMap.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
+        /* 
+        AnnouncementID      INT AUTO_INCREMENT,
+        IsPublic            BOOLEAN NOT NULL,
+        AnnouncementMessage VARCHAR(255) NOT NULL,
+        DateAnnounced       DATETIME NOT NULL,
+        MovieID             INT,
+
+        */
 
         // Convert to 2D array for JTable
-        String[][] movieData = new String[movieMap.size()][4];
-        String[] columnNames = {"Title", "Genre", "Rating", "Runtime"};
+        String[][] announceData = new String[announceMap.size()][2];
+        String[] columnNames = {"Date", "Message"};
         int row = 0;
 
-        for (ArrayList<Object> movieDetails : movieMap.values()) {
-            movieData[row][0] = (String) movieDetails.get(0); // Title
-            movieData[row][1] = (String) movieDetails.get(1); // Genre
-            movieData[row][2] = (String) movieDetails.get(2); // Rating
-            movieData[row][3] = movieDetails.get(3).toString(); // Runtime
+        for (ArrayList<Object> announceDetails : announceMap.values()) {
+            announceData[row][0] = announceDetails.get(1).toString(); // Date published 
+            announceData[row][1] = (String) announceDetails.get(0); // Message
             row++;
         }
 
         //Debug prints:
-        System.out.println("Movies array:");
-        for (String[] item : movieData) {
+        System.out.println("Announcement array:");
+        for (String[] item : announceData) {
             System.out.println("Row: " + Arrays.toString(item));
         }
 
 
-        // Create table and add to frame
-        
-        JTable movieTable = new JTable(new DefaultTableModel(movieData, columnNames) {
+        JTable announceTable = new JTable(new DefaultTableModel(announceData, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make cells non-editable
             }
         });
-        movieTable.setFillsViewportHeight(true); // Ensure table fills the scroll pane
+        announceTable.setFillsViewportHeight(true); // Ensure table fills the scroll pane
 
-        JScrollPane scrollPane = new JScrollPane(movieTable);
+        JScrollPane scrollPane = new JScrollPane(announceTable);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
@@ -102,10 +108,11 @@ public class BrowseMovie extends JPanel {
         constraints.weighty = 1.0; // Allow vertical resizing
         add(scrollPane, constraints);
 
-        //button stuff  
+        //button stuff  --> needs to be fixed for announement
 
+        /*
         // Add a selection button
-        JButton selectButton = new JButton("Select Movie");
+        JButton selectButton = new JButton("Select Announcement");
 
         // Configure constraints
         constraints.gridx = 0;
@@ -122,7 +129,7 @@ public class BrowseMovie extends JPanel {
 
         // Add action listener for functionality
         selectButton.addActionListener(e -> {
-            int selectedRow = movieTable.getSelectedRow();
+            int selectedRow = announceTable.getSelectedRow();
             if (selectedRow >= 0) {
 
                 HashMap<Integer, ArrayList<Object>> movieInfo = showControl.searchForMovie(connection, movieData[selectedRow][0]); 
@@ -149,10 +156,19 @@ public class BrowseMovie extends JPanel {
                     }}
                 
 
+                /*
+                Movie movie = new Movie(movieData[selectedRow][0], movieData[selectedRow][1], movieData[selectedRow][2], movieData[selectedRow][3]);
+                ViewMovie viewMovie = parent.getViewMovie();
+                viewMovie.setMovieDetails(movie);
+                parent.showCard("ViewMovie");
+                */
+                
+            /*
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a movie from the list.");
             }
         });
+        */
 
 
         setVisible(true);
