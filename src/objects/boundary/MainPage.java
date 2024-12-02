@@ -8,14 +8,11 @@ import objects.entity.Movie;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.MouseListener.*;
 import java.sql.Connection;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-
 
 
 public class MainPage extends JPanel implements ActionListener {
@@ -50,23 +47,17 @@ public class MainPage extends JPanel implements ActionListener {
 
     MainPage(appGUI parent){
 
-        //setup frame
-        // setTitle("Movie App");
-        // setSize(800, 800);
-        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.parent = parent;
         setLayout(new BorderLayout());
         
        
         //menubar
         parent.setJMenuBar(menuBar());
-       //mainPanel
-
+       
+        //mainPanel
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
     
-
-      
 
        //wrapper panel to center everything
        JPanel searchwrapperPanel = new JPanel(new GridBagLayout());
@@ -109,8 +100,6 @@ public class MainPage extends JPanel implements ActionListener {
        add(mainPanel);
        
 
-
-
        //search btn
         JButton searchButton = new JButton();
         searchButton.setToolTipText("Search");
@@ -131,11 +120,6 @@ public class MainPage extends JPanel implements ActionListener {
                
             }
         });
-
-        //add(searchPanel, BorderLayout.NORTH);
-
-
-
 
 
 
@@ -283,13 +267,8 @@ public class MainPage extends JPanel implements ActionListener {
        accMenu.add(logoutOption);
        
        //add menus to menubar
-       //menubar.add(menubar);
-       //menubar.add(homeBtn);
-       //menubar.add(registerUser);
        menubar.add(navigateMenu);
        menubar.add(accMenu);
-      // menubar.add(logoutOption);
-
 
        //attach menubar to frame
        //setJMenuBar(menubar);
