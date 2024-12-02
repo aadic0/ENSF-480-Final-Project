@@ -115,11 +115,6 @@ public class BrowseAnnouncment extends JPanel {
     }
     
 
-    public void displayMovies(){
-        parent.showCard("BrowseMovie");
-    }
-
-
     //temporary main method for testing
 
     /*
