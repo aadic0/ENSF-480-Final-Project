@@ -229,6 +229,41 @@ public class RegisteredUserController {
 
 
     /**
+ * Retrieves the PaymentInfo for a registered user based on their email.
+ * @param email The email of the registered user.
+ * @return A PaymentInfo object containing the user's payment details, or null if no details are found.
+ */
+    public PaymentInfo getPaymentInfo(String email) {
+        // SQL query to retrieve payment details
+        String query = "SELECT NumberCC, ExpirationDate, CVV FROM USER_PAYMENT_INFO WHERE Email = ?";
+        PaymentInfo paymentInfo = null;
+
+        try (Connection connection = DatabaseController.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            // Set the email parameter in the query
+            preparedStatement.setString(1, email);
+
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Retrieve payment details from the result set
+                    long cardNumber = resultSet.getLong("NumberCC");
+                    String expirationDate = resultSet.getString("ExpirationDate");
+                    int cvv = resultSet.getInt("CVV");
+
+                    // Create a PaymentInfo object with the retrieved data
+                    paymentInfo = new PaymentInfo(cardNumber, expirationDate, cvv);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log any SQL exceptions for debugging
+        }
+
+        return paymentInfo;
+    }
+
+    /**
      * Update email information in SQL database
      * @param email 
      */

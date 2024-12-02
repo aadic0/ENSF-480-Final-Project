@@ -186,7 +186,7 @@ public class ViewPurchases extends JPanel {
         parent.showCard("BrowseMovie");
     }
 
-    public void addPurchase(int showtimeID, int seatID, String movieTitle, String userEmail) {
+    public void addPurchase(int showtimeID, int seatID, String movieTitle, String userEmail,PaymentInfo paymentInfo) {
         DefaultTableModel model = (DefaultTableModel) purchaseTable.getModel();
         String purchaseDate = new Timestamp(System.currentTimeMillis()).toString();
         String message = "Purchased ticket for " + movieTitle;
@@ -203,13 +203,17 @@ public class ViewPurchases extends JPanel {
                     Connection con = DatabaseController.createConnection();
                     SeatMapPageTest seatMapPage = parent.getSeatMapPage();
                     if (seatMapPage != null) {
-                        seatMapPage.displayReceipt(con, null, seatID, showtimeID, userEmail);
+                        seatMapPage.displayReceipt(con, paymentInfo, seatID, showtimeID, userEmail);
                     } else {
                         JOptionPane.showMessageDialog(ViewPurchases.this, "Unable to display receipt.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
         });
+    }
+
+    public void changePurchase(){
+
     }
     
 

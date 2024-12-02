@@ -92,7 +92,7 @@ public class PaymentPage extends JPanel {
                 Connection con = DatabaseController.createConnection();
 
                 //add purchase to purchases 
-                parent.getSeatMapPage().updatePurchase(showTimeID, seatID, expiration, cvvString);
+                parent.getSeatMapPage().updatePurchase(showTimeID, seatID, expiration, cvvString,paymentInfo);
                 
                 parent.getSeatMapPage().displayReceipt(con, paymentInfo, seatID, showTimeID, currentUser);
                 //update seat color/availability
@@ -107,6 +107,16 @@ public class PaymentPage extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
         add(submitButton, constraints);
     }
+
+    public PaymentInfo getPaymentInfo(){
+        return paymentInfo;
+    }
+
+    public void setPaymentInfo(PaymentInfo paymentInfo){
+        this.paymentInfo = paymentInfo;
+    }
+
+
 
     
 

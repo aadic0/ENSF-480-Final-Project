@@ -45,7 +45,9 @@ public class RegisterUser extends JPanel{
 
     private JButton enterBtn;
 
-    private JFrame frame;
+    //private JFrame frame;
+
+    private PaymentInfo paymentInfo;
 
     private appGUI parent;
 
@@ -259,7 +261,7 @@ public class RegisterUser extends JPanel{
                     int cvv = Integer.parseInt(cvvTxt.getText());
 
                     //create payment info
-                    PaymentInfo paymentInfo = new PaymentInfo(cardNumber, expirationDate, cvv);
+                    paymentInfo = new PaymentInfo(cardNumber, expirationDate, cvv);
                     System.err.println("Trying to register" + email);
                     //registered user object
                     RegisteredUser registeredUser = new RegisteredUser(firstName, lastName, streetAddress, city, province, postalCode, email, paymentInfo);
@@ -277,6 +279,14 @@ public class RegisterUser extends JPanel{
                 }
             }
         });
+    }
+
+    public PaymentInfo getPaymentInfo(){
+        return paymentInfo;
+    }
+
+    public void setPaymentInfo(PaymentInfo paymentInfo){
+        this.paymentInfo = paymentInfo;
     }
 
 

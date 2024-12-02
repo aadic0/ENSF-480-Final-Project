@@ -345,6 +345,9 @@ public class TicketController {
     public int getTicketID(int showtimeID, int seatID, String email) {
         String query = "SELECT TicketID FROM TICKET WHERE ShowtimeID = ? AND SeatID = ? AND Email = ?";
         int ticketID = -1;
+
+        System.out.println("Retrieving ticket with ShowtimeID=" + showtimeID + ", SeatID=" + seatID + ", Email=" + email);
+
     
         try (Connection connection = DatabaseController.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -356,6 +359,7 @@ public class TicketController {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     ticketID = resultSet.getInt("TicketID");
+                    System.out.println("Retrieved TicketID: " + ticketID);
                 }
             }
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-//boundary, where when the user clicks on a movie, takes them to a page with the movie +full description
+//boundary, where when the user clicks on a movie, takes them to a page with the movie + movie details
 
 //purchase ticket, display seatmpa/browse available seats, view showtimes
 
@@ -94,20 +94,6 @@ public class ViewMovie extends JPanel {
         constraints.gridwidth = 1;
         constraints.anchor = GridBagConstraints.CENTER;
         add(showTimes, constraints);
-
-        // seatMap = new JButton("Available Seats");
-        // constraints.gridx = 2;
-        // constraints.gridy = 6;
-        // constraints.gridwidth = 1;
-        // constraints.anchor = GridBagConstraints.CENTER;
-        // add(seatMap, constraints);
-        
-        // purchaseTicket = new JButton("Purchase Ticket");
-        // constraints.gridx = 3;
-        // constraints.gridy = 6;
-        // constraints.gridwidth = 1;
-        // constraints.anchor = GridBagConstraints.CENTER;
-        // add(purchaseTicket, constraints);
 
         /*action listeners */
 

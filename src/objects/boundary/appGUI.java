@@ -33,13 +33,17 @@ public class appGUI extends JFrame{
 
     int selectedShowtimeID;
 
-    PaymentInfo paymentInfo;
+    PaymentInfo registeredUserPayment;
+
+    RegisteredUserController registeredUserController;
 
     AnnouncementController announcementController;
 
 
 
     public appGUI(JFrame frame){
+        // retireve registered user payment data
+
 
         setTitle("Movie App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,6 +136,27 @@ public class appGUI extends JFrame{
         // Convert to TreeMap for sorting
         return new TreeMap<>(seatMap);
     }
+    //getters and setters for registereduserPayment
+    public PaymentInfo getRegisteredUserPayment() {
+        return registeredUserPayment;
+    }
+    
+    
+    public PaymentInfo setRegisteredUserPayment(String userEmail) {
+        registeredUserController = new RegisteredUserController();
+
+
+        if (registeredUserController.isRegisteredUser(userEmail) && userEmail!=null ){
+            registeredUserPayment = registeredUserController.getPaymentInfo(userEmail);
+            if (registeredUserPayment == null) {
+                System.out.println("No payment information found for the user: " + userEmail);
+            }
+            return registeredUserPayment;
+        }else{
+            System.out.println("User is not registered or logged in.");
+            return null;
+        }
+    }
 
     public void setSeatID(int seatID){
         this.seatID = seatID;
@@ -165,6 +190,15 @@ public class appGUI extends JFrame{
     public ViewMovie getViewMovie() {
         return viewMovie;
     }
+    // //getter/setter for user paymentInfo
+    // public PaymentInfo getPaymentInfo(){
+    //     paymentPage
+    // }
+
+    // public void setPaymentInfo(){
+        
+
+    // }
 
     public void setPaymentSuccessful(boolean paymentSuccess){
         this.paymentSuccessful = paymentSuccess;
@@ -175,6 +209,7 @@ public class appGUI extends JFrame{
     public ViewPurchases getViewPurchases() {
         return viewPurchases;
     }
+
 
 
     public static void main(String[] args) {

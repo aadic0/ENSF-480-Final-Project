@@ -33,7 +33,8 @@ public class SeatMapPageTest extends JPanel {
         this.parent = parent;
         showtimeID = parent.getSelectedShowtimeID();
         userEmail = parent.getLoggedInUser();
-        paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
+        //paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
+        
 
 
         // if (seatMap == null) {
@@ -174,6 +175,8 @@ public class SeatMapPageTest extends JPanel {
                 }
 
                 if (isRegistered){
+                paymentInfo = parent.setRegisteredUserPayment(userEmail);
+                System.out.println(paymentInfo);
                 int seatID = -1;
 
                 if(!ticketController.isPurchasable(seatID, showtimeID, userEmail)) {
@@ -193,12 +196,18 @@ public class SeatMapPageTest extends JPanel {
                             //Connection con = DatabaseController.createConnection();
                             String movieTitle = parent.getViewMovie().getMovieTitle();
 
+                            //RegisterUser registerUser = new RegisterUser(parent);
+
+                            //PaymentInfo paymentInfo = registerUser.getPaymentInfo();
+
+                            System.out.print(paymentInfo.getCardNumber());
+
                             // Add purchase to ViewPurchases
                             // ViewPurchases viewPurchases = parent.getViewPurchases();
                             // if (viewPurchases != null) {
                             //     viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
                             // }
-                            updatePurchase(seatID, seatID, movieTitle, movieTitle);
+                            updatePurchase(seatID, seatID, movieTitle, movieTitle,paymentInfo);
 
                             System.out.println("BOUGHT seat: " + seatID);
                             break;
@@ -239,11 +248,11 @@ public class SeatMapPageTest extends JPanel {
 
     //update purchases function
 
-    public void updatePurchase(int showTimeID, int seatID, String movieTitle, String userEmail){
+    public void updatePurchase(int showTimeID, int seatID, String movieTitle, String userEmail, PaymentInfo paymentInfo){
         
         ViewPurchases viewPurchases = parent.getViewPurchases();
          if (viewPurchases != null) {
-             viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
+             viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail, paymentInfo);
         }
 
     }
@@ -347,7 +356,7 @@ public class SeatMapPageTest extends JPanel {
                     cancellationMessage,
                     cancellationMessage.contains("successful") ? "Success" : "Error",
                     cancellationMessage.contains("successful") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE
-                    
+
                 );
         
                 // If successful, update the seat to green and close dialog
