@@ -92,7 +92,7 @@ public class PaymentPage extends JPanel {
                 Connection con = DatabaseController.createConnection();
 
                 //add purchase to purchases 
-                parent.getSeatMapPage().updatePurchase(showTimeID, seatID, expiration, cvvString,paymentInfo);
+                parent.getSeatMapPage().updatePurchase(showTimeID, seatID, expiration, currentUser, paymentInfo);
                 
                 parent.getSeatMapPage().displayReceipt(con, paymentInfo, seatID, showTimeID, currentUser);
                 //update seat color/availability

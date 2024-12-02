@@ -191,7 +191,7 @@ public class SeatMapPageTest extends JPanel {
                     for (Component component : components) 
                         if (component instanceof JLabel) {
                             seatID = Integer.parseInt(((JLabel) component).getText());
-                            ticketController.purchaseTicket(paymentInfo, seatID, showtimeID, userEmail);
+                            ticketController.purchaseTicket(paymentInfo, seatID, showtimeID, parent.getLoggedInUser());
 
                             //Connection con = DatabaseController.createConnection();
                             String movieTitle = parent.getViewMovie().getMovieTitle();
@@ -207,7 +207,7 @@ public class SeatMapPageTest extends JPanel {
                             // if (viewPurchases != null) {
                             //     viewPurchases.addPurchase(showtimeID, seatID, movieTitle, userEmail);
                             // }
-                            updatePurchase(seatID, seatID, movieTitle, movieTitle,paymentInfo);
+                            updatePurchase(showtimeID, seatID, movieTitle, userEmail, paymentInfo);
 
                             System.out.println("BOUGHT seat: " + seatID);
                             break;
@@ -220,7 +220,7 @@ public class SeatMapPageTest extends JPanel {
                     // Close the window
                     //frame.dispose();
                     Connection con = DatabaseController.createConnection();
-                    displayReceipt(con, paymentInfo, seatID, seatID, userEmail);
+                    displayReceipt(con, paymentInfo, seatID, showtimeID, userEmail);
                 }
                     
                 } else if(!isRegistered){
