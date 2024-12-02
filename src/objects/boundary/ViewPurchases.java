@@ -14,8 +14,6 @@ import org.w3c.dom.events.MouseEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,6 +32,8 @@ public class ViewPurchases extends JPanel {
 
     //private JFrame frame; //reference to parent frame
     JTable purchaseTable;
+
+    private Map<Integer, Object[]> purchaseDetailsMap = new HashMap<>();
 
 
     //ctor
@@ -94,6 +94,30 @@ public class ViewPurchases extends JPanel {
         
         // Wrap table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(purchaseTable);
+
+        // Add click listener for the new row to display the receipt
+        purchaseTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int selectedRow = purchaseTable.getSelectedRow();
+                if (selectedRow >= 0 && purchaseDetailsMap.containsKey(selectedRow)) {
+                    Object[] details = purchaseDetailsMap.get(selectedRow);
+                    int showtimeID = (int) details[0];
+                    int seatID = (int) details[1];
+                    String movieTitle = (String) details[2];
+                    String userEmail = (String) details[3];
+                    PaymentInfo paymentInfo = (PaymentInfo) details[4];
+        
+                    Connection con = DatabaseController.createConnection();
+                    SeatMapPageTest seatMapPage = parent.getSeatMapPage();
+                    if (seatMapPage != null) {
+                        seatMapPage.displayReceipt(con, paymentInfo, seatID, showtimeID, userEmail);
+                    } else {
+                        JOptionPane.showMessageDialog(ViewPurchases.this, "Unable to display receipt.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
         
         // Adjust column widths
         purchaseTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -192,24 +216,13 @@ public class ViewPurchases extends JPanel {
         String message = "Purchased ticket for " + movieTitle;
     
         // Add new row to the table
-        model.addRow(new Object[] { purchaseDate, message });
+        int rowIndex = model.getRowCount();
+        model.addRow(new Object[]{purchaseDate, message});
+
+        purchaseDetailsMap.put(rowIndex, new Object[]{showtimeID, seatID, movieTitle, userEmail, paymentInfo});
     
-        // Add click listener for the new row to display the receipt
-        purchaseTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int selectedRow = purchaseTable.getSelectedRow();
-                if (selectedRow >= 0 && selectedRow == model.getRowCount() - 1) { // Ensure it's the new row clicked
-                    Connection con = DatabaseController.createConnection();
-                    SeatMapPageTest seatMapPage = parent.getSeatMapPage();
-                    if (seatMapPage != null) {
-                        seatMapPage.displayReceipt(con, paymentInfo, seatID, showtimeID, userEmail);
-                    } else {
-                        JOptionPane.showMessageDialog(ViewPurchases.this, "Unable to display receipt.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
+        
+        
     }
 
     public void changePurchase(){
