@@ -1,3 +1,0 @@
-temp file
-
-This directory is where the mysql connector library will go

@@ -1,3 +1,0 @@
-temp file
-
-This directory is where the .class files will go

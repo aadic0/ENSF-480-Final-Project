@@ -207,15 +207,10 @@ public class MainPage extends JPanel implements ActionListener {
                         parent.showCard("ViewMovie");
                         //OnMovieClick();
 
-
-
                     }
                 });
 
-
-
                 }
-
 
 
             } else{
@@ -281,16 +276,5 @@ public class MainPage extends JPanel implements ActionListener {
 
     public void viewAnnouncement(){}
 
-    // public void viewMovie(String movieTitle){
-    //     JPanel moviePage = new JPanel();
-    //     JLabel test = new JLabel("hi");
-    //     moviePage.add(test);
-    //     moviePage.setVisible(true);
-    // }
-
-    // public void displayMainPage(){
-    //     //MainPage mainPage = new MainPage();
-        
-    // }
     
 }

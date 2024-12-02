@@ -19,8 +19,6 @@ public class Login extends JPanel {
 
     private JButton loginButton;
     private JButton registerButton;
-    private JButton guestButton;
-    private JButton adminButton;
 
     private appGUI parent;
 
@@ -100,22 +98,6 @@ public class Login extends JPanel {
         constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.CENTER;
         add(registerButton, constraints);
-        
-        //admin btn
-        adminButton = new JButton("Login as Admin");
-        constraints.gridx = 0;
-        constraints.gridy = 5;
-        constraints.gridwidth = 2;
-        constraints.anchor = GridBagConstraints.CENTER;
-        add(adminButton, constraints);
-
-        //guest button
-        guestButton = new JButton("Continue as Guest");
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 1;
-        //constraints.anchor = GridBagConstraints.CENTER;
-        add(guestButton, constraints);
 
         /*action listeners */
 
@@ -163,23 +145,10 @@ public class Login extends JPanel {
             }
         });
 
-        guestButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //go to mainpage
-                parent.showCard("Home");
-
-            }
-        });
 
 
-        adminButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //go to admin login page
 
-            }
-        });
+
 
 
     }

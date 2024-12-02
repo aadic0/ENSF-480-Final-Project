@@ -290,14 +290,6 @@ public class RegisterUser extends JPanel{
     }
 
 
-
-
-
-       
-
-
-    
-
     public void displayRegisterAcc(){
         // JFrame frame = new JFrame();
         // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -308,15 +300,6 @@ public class RegisterUser extends JPanel{
 
     }
     
-    
-    
-
-    
-
-
-
-
-
 
     
 }
