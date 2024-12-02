@@ -7,9 +7,6 @@ import objects.control.*;
 import objects.entity.*;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.TreeMap; 
@@ -71,9 +68,6 @@ public class appGUI extends JFrame{
         mainPanel.add(seatMapPage, "SeatMap");
         mainPanel.add(paymentPage, "Payment");
 
-
-
-       
         mainPanel.add(new BrowseAnnouncment(this), "BrowseAnnouncement");
         mainPanel.add(viewPurchases, "ViewPurchases");
         
@@ -84,8 +78,6 @@ public class appGUI extends JFrame{
         //start program with showing login page 
         showCard("Login");
 
-        // announcementController = new AnnouncementController();
-        // announcementController.retrieveAllAnnouncement(loggedinEmail);
 
         setVisible(true); 
     }
@@ -116,7 +108,6 @@ public class appGUI extends JFrame{
         return seatMapPage; 
     }
 
-   
 
     public void saveLoginDetails(String username, String password) {
         this.loggedinEmail = username;
@@ -216,17 +207,6 @@ public class appGUI extends JFrame{
         JFrame frame = new JFrame();
         new appGUI(frame);
     }
-    // public static void main(String[] args){
-    //     Login loginPage;
-        
-    //     loginPage = new Login();
-
-    //     loginPage.displayLoginGUI();
-        
-    // }
-
 
 }
-
-
 

@@ -22,8 +22,6 @@ public class Login extends JPanel {
     private JButton guestButton;
     private JButton adminButton;
 
-    private JFrame frame; //reference to parent frame
-
     private appGUI parent;
 
     String user;
@@ -157,10 +155,7 @@ public class Login extends JPanel {
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                //go to register page
-                // CreateUser registerPage = new CreateUser(frame);
-                // frame.dispose();
-                // registerPage.displayRegister();
+                //go to create account
                 parent.showCard("Create Account");
 
 
@@ -172,9 +167,6 @@ public class Login extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 //go to mainpage
-                // frame.dispose();
-                // new MainPage();
-                //mainPage.displayMainPage();
                 parent.showCard("Home");
 
             }
@@ -188,13 +180,6 @@ public class Login extends JPanel {
 
             }
         });
-
-
-
-
-
-
-
 
 
     }
@@ -214,9 +199,6 @@ public class Login extends JPanel {
         frame.setVisible(true);
 
     }
-
-
-
 
     
 }

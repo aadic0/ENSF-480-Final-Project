@@ -3,23 +3,11 @@
 package objects.boundary;
 
 import objects.control.*;
-//import objects.entity.RegisteredUser;
-import objects.entity.*;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import org.w3c.dom.events.MouseEvent;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class BrowseAnnouncment extends JPanel {
@@ -30,7 +18,6 @@ public class BrowseAnnouncment extends JPanel {
     //controller
     private AnnouncementController aControl;
 
-    //private JFrame frame; //reference to parent frame
 
     //ctor
     public BrowseAnnouncment(appGUI parent){

@@ -8,11 +8,7 @@ import objects.entity.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import org.w3c.dom.events.MouseEvent;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -28,8 +24,6 @@ public class BrowseMovie extends JPanel {
 
     //controller
     private ShowtimeController showControl;
-
-    //private JFrame frame; //reference to parent frame
 
     //ctor
     public BrowseMovie(appGUI parent){
@@ -138,7 +132,6 @@ public class BrowseMovie extends JPanel {
                     String genre = (String) movieDetails.get(1);
                     String rating = (String) movieDetails.get(2);
                     Time runtime = (Time) movieDetails.get(3);
-                    String coverPath = "Images/cover.png";
 
                     Movie movie = new Movie(movieID, title, genre, rating, runtime);
 
