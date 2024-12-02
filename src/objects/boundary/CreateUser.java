@@ -135,7 +135,7 @@ public class CreateUser extends JPanel {
 
         if( pass.equals(passVerify)){
             //create user in database
-            UserController createUser = new UserController();
+            RegisteredUserController createUser = new RegisteredUserController();
             createUser.createUser(email,pass);
             JLabel authError = new JLabel("User successfully created!");
             authError.setForeground(Color.GREEN);

@@ -130,6 +130,32 @@ public class RegisteredUserController {
     }
 
     /**
+     * Create a user object and add to database (MIGHT CHANGE, IDK IF WE EVEN WANT TO ADD NON-REGISTERED USERS TO DB)
+     * @param email
+     * @param pwd
+     * @return user object (may not keep)
+     */
+    public void createUser(String email, String pwd) {
+        // Try to connect to database
+        try (Connection connection = DatabaseController.createConnection();) { 
+            
+            // Prepare query
+            String query = "INSERT INTO REGULAR_USER(Email, Pwd) VALUES(?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, email); // Changes '?' to the text
+            preparedStatement.setString(2, pwd);
+            
+            // Execute Query
+            preparedStatement.executeUpdate();
+            
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    /**
      * Update the name in SQL database
      * @param firstName
      * @param lastName

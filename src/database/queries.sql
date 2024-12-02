@@ -291,8 +291,6 @@ VALUES (TRUE, 'Public announcement: Scary Shark Movie', '2024-11-20 18:00:00', 9
 INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, MovieID)
 VALUES (TRUE, 'Public announcement: Devonian Park', '2024-11-20 18:00:00', 10);
 
-INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, MovieID)
-VALUES (TRUE, 'Public announcement: Devonian Park', '2024-11-20 18:00:00', 10);
 
 -- Private Announcements
 INSERT INTO ANNOUNCEMENT (IsPublic, AnnouncementMessage, DateAnnounced, MovieID)
