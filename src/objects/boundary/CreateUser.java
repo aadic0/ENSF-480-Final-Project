@@ -185,8 +185,5 @@ public void displayRegister(){
 
 }
 
-// public void becomeRegisteredUser(){
-//     JLabel username;
-// }
     
 }

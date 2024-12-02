@@ -382,44 +382,4 @@ public class SeatMapPageTest extends JPanel {
         return showtimeID;
     }
 
-    // public static void main(String[] args) {
-    //     TicketController ticketController = new TicketController();
-    //     HashMap<Integer, Boolean> seatMap = new HashMap<>();
-
-    //     paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
-
-    //     // ***************
-    //     // Will properly instantiate variables here when avaialable
-    //     // ****************
-    //     // showtimeID = 44;
-    //     // userEmail = "user1@example.com";
-    //     // ***************
-    //     // Will properly instantiate variables here when avaialable
-    //     // ****************
-
-    //     // Create a connection to DB to get a map for the showtime
-    //     try (Connection connection = DatabaseController.createConnection()) {
-    //         seatMap = ticketController.retrieveAvailableSeats(connection, showtimeID);
-    //     } catch (Exception e) { e.printStackTrace(); }
-
-    //     // Sort the HashMap by turning it into a TreeMap
-    //     TreeMap<Integer, Boolean> sortedSeatMap = new TreeMap<>(seatMap);
-
-    //     new SeatMapPageTest(sortedSeatMap);
-    // }
-
-    // public void retrieveSeatMap(){
-    //     //this.seatMapPage = seatMapPage;
-    //     TicketController ticketController = new TicketController();
-    //     HashMap<Integer, Boolean> seatMap = new HashMap<>();
-
-    //     //paymentInfo = new PaymentInfo(1234567812345678L, "2026-11-30", 123);
-    //     try (Connection connection = DatabaseController.createConnection()) {
-    //          seatMap = ticketController.retrieveAvailableSeats(connection, showtimeID);
-    //     } catch (Exception e) { e.printStackTrace(); }
-
-    //     TreeMap<Integer, Boolean> sortedSeatMap = new TreeMap<>(seatMap);
-
-    //    new SeatMapPageTest(sortedSeatMap, parent);
-    // }
 }

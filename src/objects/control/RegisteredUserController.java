@@ -15,10 +15,6 @@ import objects.entity.RegisteredUser;
 public class RegisteredUserController {
 
 
-    // private static final String DB_URL = "jdbc:mysql://localhost:3307/THEATRE_DB"; // i already had some shit running on port 3306, so i used 3307, change urs to 3306 or whatever port u are using
-    // private static final String DB_USER = "admin";
-    // private static final String DB_PASSWORD = "admin"; // replace with ur guys' user and password, theres probably a better way to implement htis
-
     private String emailID;
 
     public RegisteredUserController() {}
@@ -317,17 +313,6 @@ public class RegisteredUserController {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Cancel the user's registration (stop payment)
-     * This will stop any recurring payments and deactivate the user account.
-     * @param regUser The registered user whose account will be cancelled
-     */
-    // public void cancelRegistration(RegisteredUser regUser) {
-
-    // }
-
-
 
 
 }
